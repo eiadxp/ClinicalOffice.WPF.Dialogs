@@ -9,6 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -32,6 +33,7 @@ namespace ClinicalOffice.WPF.Dialogs
         Yes,
         No
     }
+    [ContentProperty(nameof(DialogContent))]
     public class DialogBase : ContentControl
     {
         /// <summary>
@@ -41,9 +43,13 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// This panel will hold the dialog buttons.
         /// </summary>
-        StackPanel _ButtonsPanel;
+        Grid _ButtonsGrid;
         /// <summary>
-        /// These will hold the buttons for enter and escape keys.
+        /// This will hold the actual dialog contents.
+        /// </summary>
+        ContentControl _DialogContent;
+        /// <summary>
+        /// These will hold the buttons.
         /// </summary>
         ButtonBase _OkButton, _CancelButton, _YesButton, _NoButton;
 
@@ -59,6 +65,14 @@ namespace ClinicalOffice.WPF.Dialogs
             CreateControls();
         }
         #region Properties
+        public object DialogContent
+        {
+            get { return (object)GetValue(DialogContentProperty); }
+            set { SetValue(DialogContentProperty, value); }
+        }
+        public static readonly DependencyProperty DialogContentProperty =
+            DependencyProperty.Register("DialogContent", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
+
         public DialogButtons DialogButtons
         {
             get => (DialogButtons)GetValue(DialogButtonsProperty);
@@ -137,24 +151,32 @@ namespace ClinicalOffice.WPF.Dialogs
         #region Private methods
         void CreateControls()
         {
-            _ButtonsPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-            Grid.SetRow(_ButtonsPanel, 2);
+            _DialogContent = new ContentControl();
+            Grid.SetRow(_DialogContent, 1);
+            BindingOperations.SetBinding(_DialogContent, ContentProperty, 
+                                         new Binding(nameof(DialogContent)) { Source = this });
+
+            _ButtonsGrid = new Grid() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
+            Grid.SetIsSharedSizeScope(_ButtonsGrid, true);
+            Grid.SetRow(_ButtonsGrid, 2);
             CreateButtons();
 
             _DialogGrid = new Grid();
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
-            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
-            _DialogGrid.Children.Add(_ButtonsPanel);
+            _DialogGrid.Children.Add(_DialogContent);
+            _DialogGrid.Children.Add(_ButtonsGrid);
             Content = _DialogGrid;
         }
         void CreateButtons()
         {
-            foreach (var button in _ButtonsPanel.Children)
+            foreach (var button in _ButtonsGrid.Children)
             {
                 if (button is ButtonBase) (button as ButtonBase).Click -= Button_Click;
             }
-            _ButtonsPanel.Children.Clear();
+            _ButtonsGrid.Children.Clear();
+            _ButtonsGrid.ColumnDefinitions.Clear();
             _OkButton = null;
             _CancelButton = null;
             _YesButton = null;
@@ -187,7 +209,9 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             var b = OnCreateButton(content);
             b.Click += Button_Click;
-            _ButtonsPanel.Children.Add(b);
+            _ButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition() { SharedSizeGroup = "dialogButtons" });
+            Grid.SetColumn(b, _ButtonsGrid.ColumnDefinitions.Count - 1);
+            _ButtonsGrid.Children.Add(b);
             return b;
         }
         void Button_Click(object sender, RoutedEventArgs e) { }
