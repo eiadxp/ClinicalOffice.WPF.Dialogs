@@ -37,9 +37,13 @@ namespace ClinicalOffice.WPF.Dialogs
     public class DialogBase : ContentControl
     {
         /// <summary>
-        /// This grid has three rows for: Dialogdialog title, Dialogdialog content, and dialog buttons
+        /// This grid has three rows for: Dialogdialog title, dialog content, and dialog buttons
         /// </summary>
         Grid _DialogGrid;
+        /// <summary>
+        /// This will hold the content of the dialog title.
+        /// </summary>
+        DialogTitleControl _DialogTitleContent;
         /// <summary>
         /// This panel will hold the dialog buttons.
         /// </summary>
@@ -47,7 +51,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// This will hold the actual dialog contents.
         /// </summary>
-        ContentControl _DialogContent;
+        DialogContentControl _DialogContent;
         /// <summary>
         /// These will hold the buttons.
         /// </summary>
@@ -65,6 +69,17 @@ namespace ClinicalOffice.WPF.Dialogs
             CreateControls();
         }
         #region Properties
+        public new object Content { get => DialogContent; set => DialogContent = value; }
+        public DialogTitleControl DialogTitleControl { get => _DialogTitleContent; }
+
+        public object DialogTitle
+        {
+            get { return (object)GetValue(DialogTitleProperty); }
+            set { SetValue(DialogTitleProperty, value); }
+        }
+        public static readonly DependencyProperty DialogTitleProperty =
+            DependencyProperty.Register("DialogTitle", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
+
         public object DialogContent
         {
             get { return (object)GetValue(DialogContentProperty); }
@@ -151,7 +166,12 @@ namespace ClinicalOffice.WPF.Dialogs
         #region Private methods
         void CreateControls()
         {
-            _DialogContent = new ContentControl();
+            _DialogTitleContent = new DialogTitleControl();
+            Grid.SetRow(_DialogTitleContent, 0);
+            BindingOperations.SetBinding(_DialogTitleContent, ContentProperty,
+                                         new Binding(nameof(DialogTitle)) { Source = this });
+
+            _DialogContent = new DialogContentControl();
             Grid.SetRow(_DialogContent, 1);
             BindingOperations.SetBinding(_DialogContent, ContentProperty, 
                                          new Binding(nameof(DialogContent)) { Source = this });
@@ -165,9 +185,10 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.Children.Add(_DialogTitleContent);
             _DialogGrid.Children.Add(_DialogContent);
             _DialogGrid.Children.Add(_ButtonsGrid);
-            Content = _DialogGrid;
+            base.Content = _DialogGrid;
         }
         void CreateButtons()
         {
@@ -217,4 +238,7 @@ namespace ClinicalOffice.WPF.Dialogs
         void Button_Click(object sender, RoutedEventArgs e) { }
         #endregion
     }
+    public class DialogTitleControl : UserControl { }
+    public class DialogButtonsControl : UserControl { }
+    public class DialogContentControl : UserControl { }
 }
