@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs">
+    <Style x:Key="DialogTitleControl" TargetType="ContentControl" >
+        <Setter Property="FontStyle" Value="Oblique"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"/>
+    </Style>
+    <Style x:Key="{x:Type dialogs:DialogTitleControl}" TargetType="dialogs:DialogTitleControl" BasedOn="{StaticResource DialogTitleControl}"/>
+</ResourceDictionary>

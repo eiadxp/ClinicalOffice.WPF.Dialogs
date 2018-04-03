@@ -6,15 +6,5 @@
                              xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
                              xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
                              mc:Ignorable="d" Height="450" Width="800" DialogButtons="OkCancel" DialogTitle="Title">
-    <dialogs:DialogBase.Resources>
-        <Style TargetType="dialogs:DialogTitleControl">
-            <Setter Property="Background" Value="AliceBlue"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="DodgerBlue"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        </Style>
-    </dialogs:DialogBase.Resources>
-    <TextBlock Text="What are you doing?"/>
+    <TextBlock Text="What are you doing?" />
 </dialogs:DialogBase>

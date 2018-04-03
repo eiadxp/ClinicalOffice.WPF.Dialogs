@@ -44,6 +44,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// This will hold the content of the dialog title.
         /// </summary>
         DialogTitleControl _DialogTitleContent;
+        DialogButtonsControl _DialogButtonsBar;
         /// <summary>
         /// This panel will hold the dialog buttons.
         /// </summary>
@@ -59,6 +60,8 @@ namespace ClinicalOffice.WPF.Dialogs
 
         static DialogBase()
         {
+            //DefaultStyleKeyProperty.
+            //    OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(typeof(DialogBase)));
             HorizontalContentAlignmentProperty.
                 OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
             VerticalContentAlignmentProperty.
@@ -158,6 +161,14 @@ namespace ClinicalOffice.WPF.Dialogs
             if (dialog?._NoButton != null) dialog._NoButton.Content = e.NewValue;
         }
 
+        public Style DialogButtonStyle
+        {
+            get { return (Style)GetValue(DialogButtonStyleProperty); }
+            set { SetValue(DialogButtonStyleProperty, value); }
+        }
+        public static readonly DependencyProperty DialogButtonStyleProperty =
+            DependencyProperty.Register("DialogButtonStyle", typeof(Style), typeof(DialogBase), new PropertyMetadata(null));
+
         #endregion
         virtual protected ButtonBase OnCreateButton(object content)
         {
@@ -176,10 +187,19 @@ namespace ClinicalOffice.WPF.Dialogs
             BindingOperations.SetBinding(_DialogContent, ContentProperty, 
                                          new Binding(nameof(DialogContent)) { Source = this });
 
+            _DialogButtonsBar = new DialogButtonsControl()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center
+            };
+            Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
+            Grid.SetRow(_DialogButtonsBar, 2);
+
             _ButtonsGrid = new Grid() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
-            Grid.SetIsSharedSizeScope(_ButtonsGrid, true);
-            Grid.SetRow(_ButtonsGrid, 2);
             CreateButtons();
+            _DialogButtonsBar.Content = _ButtonsGrid;
 
             _DialogGrid = new Grid();
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
@@ -187,14 +207,15 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.Children.Add(_DialogTitleContent);
             _DialogGrid.Children.Add(_DialogContent);
-            _DialogGrid.Children.Add(_ButtonsGrid);
+            _DialogGrid.Children.Add(_DialogButtonsBar);
             base.Content = _DialogGrid;
         }
         void CreateButtons()
         {
-            foreach (var button in _ButtonsGrid.Children)
+            foreach (var button in _ButtonsGrid.Children.OfType<ButtonBase>())
             {
-                if (button is ButtonBase) (button as ButtonBase).Click -= Button_Click;
+                button.Click -= Button_Click;
+                BindingOperations.ClearBinding(button, StyleProperty);
             }
             _ButtonsGrid.Children.Clear();
             _ButtonsGrid.ColumnDefinitions.Clear();
@@ -230,6 +251,8 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             var b = OnCreateButton(content);
             b.Click += Button_Click;
+            BindingOperations.SetBinding(b, StyleProperty, 
+                new Binding(nameof(DialogButtonStyle)) { Source = this, Mode = BindingMode.OneWay });
             _ButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition() { SharedSizeGroup = "dialogButtons" });
             Grid.SetColumn(b, _ButtonsGrid.ColumnDefinitions.Count - 1);
             _ButtonsGrid.Children.Add(b);
@@ -238,7 +261,28 @@ namespace ClinicalOffice.WPF.Dialogs
         void Button_Click(object sender, RoutedEventArgs e) { }
         #endregion
     }
-    public class DialogTitleControl : UserControl { }
-    public class DialogButtonsControl : UserControl { }
-    public class DialogContentControl : UserControl { }
+    public class DialogTitleControl : UserControl
+    {
+        static DialogTitleControl()
+        {
+            DefaultStyleKeyProperty.
+                OverrideMetadata(typeof(DialogTitleControl), new FrameworkPropertyMetadata(typeof(DialogTitleControl)));
+        }
+    }
+    public class DialogButtonsControl : UserControl
+    {
+        static DialogButtonsControl()
+        {
+            //DefaultStyleKeyProperty.
+            //    OverrideMetadata(typeof(DialogButtonsControl), new FrameworkPropertyMetadata(typeof(DialogButtonsControl)));
+        }
+    }
+    public class DialogContentControl : UserControl
+    {
+        static DialogContentControl()
+        {
+            //DefaultStyleKeyProperty.
+            //    OverrideMetadata(typeof(DialogContentControl), new FrameworkPropertyMetadata(typeof(DialogContentControl)));
+        }
+    }
 }
