@@ -76,8 +76,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Themes\generic.xaml">
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

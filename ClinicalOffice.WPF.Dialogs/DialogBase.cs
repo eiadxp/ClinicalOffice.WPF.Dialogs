@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -36,6 +37,7 @@ namespace ClinicalOffice.WPF.Dialogs
     [ContentProperty(nameof(DialogContent))]
     public class DialogBase : ContentControl
     {
+        #region Fields
         /// <summary>
         /// This grid has three rows for: Dialogdialog title, dialog content, and dialog buttons
         /// </summary>
@@ -44,6 +46,9 @@ namespace ClinicalOffice.WPF.Dialogs
         /// This will hold the content of the dialog title.
         /// </summary>
         DialogTitleControl _DialogTitleContent;
+        /// <summary>
+        /// This will hold the buutons grid and will allow styling and templating.
+        /// </summary>
         DialogButtonsControl _DialogButtonsBar;
         /// <summary>
         /// This panel will hold the dialog buttons.
@@ -57,11 +62,15 @@ namespace ClinicalOffice.WPF.Dialogs
         /// These will hold the buttons.
         /// </summary>
         ButtonBase _OkButton, _CancelButton, _YesButton, _NoButton;
-
+        /// <summary>
+        /// This will hold the parent background image.
+        /// </summary>
+        Border _ParentBackground;
+        #endregion
         static DialogBase()
         {
-            //DefaultStyleKeyProperty.
-            //    OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(typeof(DialogBase)));
+            DefaultStyleKeyProperty.
+                OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(typeof(DialogBase)));
             HorizontalContentAlignmentProperty.
                 OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
             VerticalContentAlignmentProperty.
@@ -181,11 +190,13 @@ namespace ClinicalOffice.WPF.Dialogs
             Grid.SetRow(_DialogTitleContent, 0);
             BindingOperations.SetBinding(_DialogTitleContent, ContentProperty,
                                          new Binding(nameof(DialogTitle)) { Source = this });
+            Panel.SetZIndex(_DialogTitleContent, 1);
 
             _DialogContent = new DialogContentControl();
             Grid.SetRow(_DialogContent, 1);
             BindingOperations.SetBinding(_DialogContent, ContentProperty, 
                                          new Binding(nameof(DialogContent)) { Source = this });
+            Panel.SetZIndex(_DialogContent, 2);
 
             _DialogButtonsBar = new DialogButtonsControl()
             {
@@ -196,19 +207,29 @@ namespace ClinicalOffice.WPF.Dialogs
             };
             Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
             Grid.SetRow(_DialogButtonsBar, 2);
+            Panel.SetZIndex(_DialogButtonsBar, 3);
 
             _ButtonsGrid = new Grid() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
             CreateButtons();
             _DialogButtonsBar.Content = _ButtonsGrid;
 
+            _ParentBackground = new Border();
+            _ParentBackground.Effect = new BlurEffect();
+            _ParentBackground.Opacity = 0.8;
+            Grid.SetRowSpan(_ParentBackground, 3);
+            Panel.SetZIndex(_ParentBackground, 0);
+
             _DialogGrid = new Grid();
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.Background = Brushes.Black;
+            _DialogGrid.Children.Add(_ParentBackground);
             _DialogGrid.Children.Add(_DialogTitleContent);
             _DialogGrid.Children.Add(_DialogContent);
             _DialogGrid.Children.Add(_DialogButtonsBar);
             base.Content = _DialogGrid;
+            _DialogGrid.Effect = null;
         }
         void CreateButtons()
         {
@@ -259,6 +280,14 @@ namespace ClinicalOffice.WPF.Dialogs
             return b;
         }
         void Button_Click(object sender, RoutedEventArgs e) { }
+        void SetBackgroundBrush(ContentControl parent)
+        {
+            if (parent?.Content == null || !(parent.Content is Visual))
+            {
+                Background = new SolidColorBrush(Colors.Black) { Opacity = .4 };
+            }
+            var b = new VisualBrush(parent.Content as Visual);
+        }
         #endregion
     }
     public class DialogTitleControl : UserControl
@@ -273,16 +302,16 @@ namespace ClinicalOffice.WPF.Dialogs
     {
         static DialogButtonsControl()
         {
-            //DefaultStyleKeyProperty.
-            //    OverrideMetadata(typeof(DialogButtonsControl), new FrameworkPropertyMetadata(typeof(DialogButtonsControl)));
+            DefaultStyleKeyProperty.
+                OverrideMetadata(typeof(DialogButtonsControl), new FrameworkPropertyMetadata(typeof(DialogButtonsControl)));
         }
     }
     public class DialogContentControl : UserControl
     {
         static DialogContentControl()
         {
-            //DefaultStyleKeyProperty.
-            //    OverrideMetadata(typeof(DialogContentControl), new FrameworkPropertyMetadata(typeof(DialogContentControl)));
+            DefaultStyleKeyProperty.
+                OverrideMetadata(typeof(DialogContentControl), new FrameworkPropertyMetadata(typeof(DialogContentControl)));
         }
     }
 }
