@@ -24,5 +24,11 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
         {
             InitializeComponent();
         }
+
+        private void ShowCustomDialog(object sender, RoutedEventArgs e)
+        {
+            var w = new CustomDialog();
+            w.ShowDialog(this);
+        }
     }
 }

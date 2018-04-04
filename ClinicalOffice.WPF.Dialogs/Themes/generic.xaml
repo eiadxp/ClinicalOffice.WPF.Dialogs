@@ -31,7 +31,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogBase">
-                    <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                    <ContentPresenter />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -44,6 +44,8 @@
                 </Style>
             </Setter.Value>
         </Setter>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
     </Style>
     <Style  x:Key="{x:Type dialogs:DialogContentControl}" TargetType="dialogs:DialogContentControl">
         <Setter Property="Template">

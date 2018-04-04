@@ -5,6 +5,6 @@
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                              xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
                              xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
-                             mc:Ignorable="d" Height="450" Width="800" DialogButtons="OkCancel" DialogTitle="Title">
+                             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" DialogButtons="OkCancel" DialogTitle="Title">
     <TextBlock Text="What are you doing?" />
 </dialogs:DialogBase>

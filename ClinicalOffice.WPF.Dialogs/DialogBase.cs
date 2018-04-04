@@ -35,11 +35,11 @@ namespace ClinicalOffice.WPF.Dialogs
         No
     }
     [ContentProperty(nameof(DialogContent))]
-    public class DialogBase : ContentControl
+    public class DialogBase : UserControl
     {
         #region Fields
         /// <summary>
-        /// This grid has three rows for: Dialogdialog title, dialog content, and dialog buttons
+        /// This grid has five rows for: top margins, dialogdialog title, dialog content, dialog buttons bar, and lower margins
         /// </summary>
         Grid _DialogGrid;
         /// <summary>
@@ -65,7 +65,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// This will hold the parent background image.
         /// </summary>
-        Border _ParentBackground;
+        Image _ParentBackground;
         #endregion
         static DialogBase()
         {
@@ -187,13 +187,13 @@ namespace ClinicalOffice.WPF.Dialogs
         void CreateControls()
         {
             _DialogTitleContent = new DialogTitleControl();
-            Grid.SetRow(_DialogTitleContent, 0);
+            Grid.SetRow(_DialogTitleContent, 1);
             BindingOperations.SetBinding(_DialogTitleContent, ContentProperty,
                                          new Binding(nameof(DialogTitle)) { Source = this });
             Panel.SetZIndex(_DialogTitleContent, 1);
 
             _DialogContent = new DialogContentControl();
-            Grid.SetRow(_DialogContent, 1);
+            Grid.SetRow(_DialogContent, 2);
             BindingOperations.SetBinding(_DialogContent, ContentProperty, 
                                          new Binding(nameof(DialogContent)) { Source = this });
             Panel.SetZIndex(_DialogContent, 2);
@@ -206,24 +206,26 @@ namespace ClinicalOffice.WPF.Dialogs
                 VerticalContentAlignment = VerticalAlignment.Center
             };
             Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
-            Grid.SetRow(_DialogButtonsBar, 2);
+            Grid.SetRow(_DialogButtonsBar, 3);
             Panel.SetZIndex(_DialogButtonsBar, 3);
 
             _ButtonsGrid = new Grid() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
             CreateButtons();
             _DialogButtonsBar.Content = _ButtonsGrid;
 
-            _ParentBackground = new Border();
+            _ParentBackground = new Image();
             _ParentBackground.Effect = new BlurEffect();
             _ParentBackground.Opacity = 0.8;
-            Grid.SetRowSpan(_ParentBackground, 3);
+            Grid.SetRowSpan(_ParentBackground, 5);
             Panel.SetZIndex(_ParentBackground, 0);
 
             _DialogGrid = new Grid();
-            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
-            _DialogGrid.Background = Brushes.Black;
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            //_DialogGrid.Background = Brushes.Black;
             _DialogGrid.Children.Add(_ParentBackground);
             _DialogGrid.Children.Add(_DialogTitleContent);
             _DialogGrid.Children.Add(_DialogContent);
@@ -282,11 +284,22 @@ namespace ClinicalOffice.WPF.Dialogs
         void Button_Click(object sender, RoutedEventArgs e) { }
         void SetBackgroundBrush(ContentControl parent)
         {
-            if (parent?.Content == null || !(parent.Content is Visual))
-            {
-                Background = new SolidColorBrush(Colors.Black) { Opacity = .4 };
-            }
-            var b = new VisualBrush(parent.Content as Visual);
+            var element = parent?.Content as UIElement;
+            if (element == null) return;
+            var source = new RenderTargetBitmap((int)element.RenderSize.Width, 
+                                                (int)element.RenderSize.Height, 
+                                                96, 96, PixelFormats.Pbgra32);
+            source.Render(element);
+            _ParentBackground.Source = source;
+        }
+        #endregion
+        #region Public Methods
+        object _OldContent;
+        public void ShowDialog(ContentControl parent)
+        {
+            SetBackgroundBrush(parent);
+            _OldContent = parent.Content;
+            parent.Content = this;
         }
         #endregion
     }
