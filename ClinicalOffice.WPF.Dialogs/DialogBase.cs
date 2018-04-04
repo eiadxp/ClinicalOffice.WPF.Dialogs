@@ -35,11 +35,11 @@ namespace ClinicalOffice.WPF.Dialogs
         No
     }
     [ContentProperty(nameof(DialogContent))]
-    public class DialogBase : ContentControl
+    public class DialogBase : UserControl
     {
         #region Fields
         /// <summary>
-        /// This grid has three rows for: Dialogdialog title, dialog content, and dialog buttons
+        /// This grid has five rows for: top margins, dialogdialog title, dialog content, dialog buttons bar, and lower margins
         /// </summary>
         Grid _DialogGrid;
         /// <summary>
@@ -66,6 +66,14 @@ namespace ClinicalOffice.WPF.Dialogs
         /// This will hold the parent background image.
         /// </summary>
         Border _ParentBackground;
+        /// <summary>
+        /// This is just a semi transparent color over the background item to give faded effect.
+        /// </summary>
+        Border _ParentBackgroundOverlayColor;
+        /// <summary>
+        /// This is a dump control to hold the old content in it and resize it with the dialog.
+        /// </summary>
+        ContentControl _OldContentContainer;
         #endregion
         static DialogBase()
         {
@@ -183,20 +191,29 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             return new Button() { Content = content };
         }
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            _OldContentContainer.Width = sizeInfo.NewSize.Width;
+            _OldContentContainer.Height = sizeInfo.NewSize.Height;
+            _OldContentContainer.Measure(sizeInfo.NewSize);
+            _OldContentContainer.Arrange(new Rect(_OldContentContainer.DesiredSize));
+            SetBackgroundBrush(_OldContentContainer);
+        }
         #region Private methods
         void CreateControls()
         {
             _DialogTitleContent = new DialogTitleControl();
-            Grid.SetRow(_DialogTitleContent, 0);
+            Grid.SetRow(_DialogTitleContent, 1);
             BindingOperations.SetBinding(_DialogTitleContent, ContentProperty,
                                          new Binding(nameof(DialogTitle)) { Source = this });
-            Panel.SetZIndex(_DialogTitleContent, 1);
+            Panel.SetZIndex(_DialogTitleContent, 2);
 
             _DialogContent = new DialogContentControl();
-            Grid.SetRow(_DialogContent, 1);
+            Grid.SetRow(_DialogContent, 2);
             BindingOperations.SetBinding(_DialogContent, ContentProperty, 
                                          new Binding(nameof(DialogContent)) { Source = this });
-            Panel.SetZIndex(_DialogContent, 2);
+            Panel.SetZIndex(_DialogContent, 3);
 
             _DialogButtonsBar = new DialogButtonsControl()
             {
@@ -206,8 +223,8 @@ namespace ClinicalOffice.WPF.Dialogs
                 VerticalContentAlignment = VerticalAlignment.Center
             };
             Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
-            Grid.SetRow(_DialogButtonsBar, 2);
-            Panel.SetZIndex(_DialogButtonsBar, 3);
+            Grid.SetRow(_DialogButtonsBar, 3);
+            Panel.SetZIndex(_DialogButtonsBar, 4);
 
             _ButtonsGrid = new Grid() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
             CreateButtons();
@@ -216,15 +233,23 @@ namespace ClinicalOffice.WPF.Dialogs
             _ParentBackground = new Border();
             _ParentBackground.Effect = new BlurEffect();
             _ParentBackground.Opacity = 0.8;
-            Grid.SetRowSpan(_ParentBackground, 3);
+            Grid.SetRowSpan(_ParentBackground, 5);
             Panel.SetZIndex(_ParentBackground, 0);
 
+            _ParentBackgroundOverlayColor = new Border() { Background = Brushes.Black, Opacity = 0.2 };
+            Grid.SetRowSpan(_ParentBackgroundOverlayColor, 5);
+            Panel.SetZIndex(_ParentBackgroundOverlayColor, 1);
+
+            _OldContentContainer = new ContentControl();
+
             _DialogGrid = new Grid();
-            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
-            _DialogGrid.Background = Brushes.Black;
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.Children.Add(_ParentBackground);
+            _DialogGrid.Children.Add(_ParentBackgroundOverlayColor);
             _DialogGrid.Children.Add(_DialogTitleContent);
             _DialogGrid.Children.Add(_DialogContent);
             _DialogGrid.Children.Add(_DialogButtonsBar);
@@ -282,11 +307,17 @@ namespace ClinicalOffice.WPF.Dialogs
         void Button_Click(object sender, RoutedEventArgs e) { }
         void SetBackgroundBrush(ContentControl parent)
         {
-            if (parent?.Content == null || !(parent.Content is Visual))
-            {
-                Background = new SolidColorBrush(Colors.Black) { Opacity = .4 };
-            }
-            var b = new VisualBrush(parent.Content as Visual);
+            var element = parent?.Content as UIElement;
+            if (element == null) return;
+            _ParentBackground.Background = new VisualBrush(element) { Stretch = Stretch.Uniform, AlignmentX=AlignmentX.Left, AlignmentY=AlignmentY.Top };
+        }
+        #endregion
+        #region Public Methods
+        public void ShowDialog(ContentControl parent)
+        {
+            SetBackgroundBrush(parent);
+            _OldContentContainer.Content = parent.Content;
+            parent.Content = this;
         }
         #endregion
     }

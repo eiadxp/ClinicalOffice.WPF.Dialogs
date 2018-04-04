@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <ToolBar>
+            <Button Content="Show custom dialog" Click="ShowCustomDialog"/>
+        </ToolBar>
+        <ProgressBar IsIndeterminate="True" Height="24" />
+    </StackPanel>
 </Window>
