@@ -5,6 +5,9 @@
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                              xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
                              xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
-                             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" DialogButtons="OkCancel" DialogTitle="Title">
+                             mc:Ignorable="d" d:DesignHeight="219.263" d:DesignWidth="313.314" DialogButtons="OkCancel" DialogTitle="Title">
+    <dialogs:DialogBase.DialogEffect>
+        <DropShadowEffect/>
+    </dialogs:DialogBase.DialogEffect>
     <TextBlock Text="What are you doing?" />
 </dialogs:DialogBase>

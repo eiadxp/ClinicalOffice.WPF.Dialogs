@@ -1,13 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs">
-    <SolidColorBrush x:Key="BorderBrush" Color="CornflowerBlue"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="LightBlue"/>
     <SolidColorBrush x:Key="ButtonBrush" Color="White" Opacity="0.5"/>
+    <SolidColorBrush x:Key="ButtonsBarBrush" Color="CornflowerBlue"/>
+    <SolidColorBrush x:Key="TitleBarBrush" Color="AliceBlue"/>
     <Style x:Key="{x:Type dialogs:DialogTitleControl}" TargetType="dialogs:DialogTitleControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogTitleControl">
-                    <Border Background="AliceBlue" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Padding="5">
+                    <Border Background="{StaticResource TitleBarBrush}" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Padding="5">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -19,7 +21,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogButtonsControl">
-                    <Border Background="LightBlue" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Padding="5">
+                    <Border Background="{StaticResource ButtonsBarBrush}" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Padding="5">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -44,6 +46,11 @@
                 </Style>
             </Setter.Value>
         </Setter>
+        <!--<Setter Property="DialogEffect">
+            <Setter.Value>
+                <DropShadowEffect/>
+            </Setter.Value>
+        </Setter>-->
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
     </Style>
@@ -58,5 +65,15 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    <Style  x:Key="{x:Type dialogs:DialogPartsControl}" TargetType="dialogs:DialogPartsControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="dialogs:DialogPartsControl">
+                    <ContentPresenter/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Margin" Value="15"/>
     </Style>
 </ResourceDictionary>

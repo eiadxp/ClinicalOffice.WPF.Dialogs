@@ -53,6 +53,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogButtonsControl.cs" />
+    <Compile Include="DialogContentControl.cs" />
+    <Compile Include="DialogPartsControl.cs" />
+    <Compile Include="DialogTitleControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

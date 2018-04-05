@@ -39,25 +39,13 @@ namespace ClinicalOffice.WPF.Dialogs
     {
         #region Fields
         /// <summary>
-        /// This grid has five rows for: top margins, dialogdialog title, dialog content, dialog buttons bar, and lower margins
+        /// This grid has three rows for: top margins, dialog parts control, and lower margins
         /// </summary>
         Grid _DialogGrid;
         /// <summary>
-        /// This will hold the content of the dialog title.
+        /// This is the displayed dialog which has a title, buttons, and contents.
         /// </summary>
-        DialogTitleControl _DialogTitleContent;
-        /// <summary>
-        /// This will hold the buutons grid and will allow styling and templating.
-        /// </summary>
-        DialogButtonsControl _DialogButtonsBar;
-        /// <summary>
-        /// This panel will hold the dialog buttons.
-        /// </summary>
-        Grid _ButtonsGrid;
-        /// <summary>
-        /// This will hold the actual dialog contents.
-        /// </summary>
-        DialogContentControl _DialogContent;
+        DialogPartsControl _DialogPartsControl;
         /// <summary>
         /// These will hold the buttons.
         /// </summary>
@@ -90,7 +78,15 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         #region Properties
         public new object Content { get => DialogContent; set => DialogContent = value; }
-        public DialogTitleControl DialogTitleControl { get => _DialogTitleContent; }
+        public DialogPartsControl DialogPartsControl { get => _DialogPartsControl; }
+
+        public Effect DialogEffect
+        {
+            get { return (Effect)GetValue(DialogEffectProperty); }
+            set { SetValue(DialogEffectProperty, value); }
+        }
+        public static readonly DependencyProperty DialogEffectProperty =
+            DependencyProperty.Register("DialogEffect", typeof(Effect), typeof(DialogBase), new PropertyMetadata(null));
 
         public object DialogTitle
         {
@@ -203,36 +199,8 @@ namespace ClinicalOffice.WPF.Dialogs
         #region Private methods
         void CreateControls()
         {
-            _DialogTitleContent = new DialogTitleControl();
-            Grid.SetRow(_DialogTitleContent, 1);
-            BindingOperations.SetBinding(_DialogTitleContent, ContentProperty,
-                                         new Binding(nameof(DialogTitle)) { Source = this });
-            Panel.SetZIndex(_DialogTitleContent, 2);
-
-            _DialogContent = new DialogContentControl();
-            Grid.SetRow(_DialogContent, 2);
-            BindingOperations.SetBinding(_DialogContent, ContentProperty, 
-                                         new Binding(nameof(DialogContent)) { Source = this });
-            Panel.SetZIndex(_DialogContent, 3);
-
-            _DialogButtonsBar = new DialogButtonsControl()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center
-            };
-            Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
-            Grid.SetRow(_DialogButtonsBar, 3);
-            Panel.SetZIndex(_DialogButtonsBar, 4);
-
-            _ButtonsGrid = new Grid() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom };
-            CreateButtons();
-            _DialogButtonsBar.Content = _ButtonsGrid;
-
             _ParentBackground = new Border();
             _ParentBackground.Effect = new BlurEffect();
-            _ParentBackground.Opacity = 0.8;
             Grid.SetRowSpan(_ParentBackground, 5);
             Panel.SetZIndex(_ParentBackground, 0);
 
@@ -242,29 +210,35 @@ namespace ClinicalOffice.WPF.Dialogs
 
             _OldContentContainer = new ContentControl();
 
+            _DialogPartsControl = new DialogPartsControl();
+            Grid.SetRow(_DialogPartsControl, 1);
+            Panel.SetZIndex(_DialogPartsControl, 3);
+            BindingOperations.SetBinding(_DialogPartsControl.DialogTitleControl, ContentProperty,
+                                         new Binding(nameof(DialogTitle)) { Source = this });
+            BindingOperations.SetBinding(_DialogPartsControl.DialogContentControl, ContentProperty,
+                                         new Binding(nameof(DialogContent)) { Source = this });
+            BindingOperations.SetBinding(_DialogPartsControl.DialogPartsEffects, EffectProperty,
+                                         new Binding(nameof(DialogEffect)) { Source = this });
+
+            CreateButtons();
+
             _DialogGrid = new Grid();
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
-            _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.Children.Add(_ParentBackground);
             _DialogGrid.Children.Add(_ParentBackgroundOverlayColor);
-            _DialogGrid.Children.Add(_DialogTitleContent);
-            _DialogGrid.Children.Add(_DialogContent);
-            _DialogGrid.Children.Add(_DialogButtonsBar);
+            _DialogGrid.Children.Add(_DialogPartsControl);
             base.Content = _DialogGrid;
-            _DialogGrid.Effect = null;
         }
         void CreateButtons()
         {
-            foreach (var button in _ButtonsGrid.Children.OfType<ButtonBase>())
+            foreach (var button in _DialogPartsControl.DialogButtonsControl.GetButtons())
             {
                 button.Click -= Button_Click;
                 BindingOperations.ClearBinding(button, StyleProperty);
             }
-            _ButtonsGrid.Children.Clear();
-            _ButtonsGrid.ColumnDefinitions.Clear();
+            _DialogPartsControl.DialogButtonsControl.ClearButtons();
             _OkButton = null;
             _CancelButton = null;
             _YesButton = null;
@@ -299,9 +273,7 @@ namespace ClinicalOffice.WPF.Dialogs
             b.Click += Button_Click;
             BindingOperations.SetBinding(b, StyleProperty, 
                 new Binding(nameof(DialogButtonStyle)) { Source = this, Mode = BindingMode.OneWay });
-            _ButtonsGrid.ColumnDefinitions.Add(new ColumnDefinition() { SharedSizeGroup = "dialogButtons" });
-            Grid.SetColumn(b, _ButtonsGrid.ColumnDefinitions.Count - 1);
-            _ButtonsGrid.Children.Add(b);
+            _DialogPartsControl.DialogButtonsControl.AddButton(b);
             return b;
         }
         void Button_Click(object sender, RoutedEventArgs e) { }
@@ -320,29 +292,5 @@ namespace ClinicalOffice.WPF.Dialogs
             parent.Content = this;
         }
         #endregion
-    }
-    public class DialogTitleControl : UserControl
-    {
-        static DialogTitleControl()
-        {
-            DefaultStyleKeyProperty.
-                OverrideMetadata(typeof(DialogTitleControl), new FrameworkPropertyMetadata(typeof(DialogTitleControl)));
-        }
-    }
-    public class DialogButtonsControl : UserControl
-    {
-        static DialogButtonsControl()
-        {
-            DefaultStyleKeyProperty.
-                OverrideMetadata(typeof(DialogButtonsControl), new FrameworkPropertyMetadata(typeof(DialogButtonsControl)));
-        }
-    }
-    public class DialogContentControl : UserControl
-    {
-        static DialogContentControl()
-        {
-            DefaultStyleKeyProperty.
-                OverrideMetadata(typeof(DialogContentControl), new FrameworkPropertyMetadata(typeof(DialogContentControl)));
-        }
     }
 }
