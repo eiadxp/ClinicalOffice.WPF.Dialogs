@@ -25,10 +25,11 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
             InitializeComponent();
         }
 
-        private void ShowCustomDialog(object sender, RoutedEventArgs e)
+        private async void ShowCustomDialog(object sender, RoutedEventArgs e)
         {
             var w = new CustomDialog();
-            w.ShowDialog(this);
+            await w.ShowDialogAsync(this);
+            MessageBox.Show("This message is called directly after showing the dialog.");
         }
     }
 }

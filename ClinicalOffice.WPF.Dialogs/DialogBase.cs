@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,6 +39,7 @@ namespace ClinicalOffice.WPF.Dialogs
     public class DialogBase : UserControl
     {
         #region Fields
+        ManualResetEvent _DialogCloseResetEvent;
         /// <summary>
         /// This grid has three rows for: top margins, dialog parts control, and lower margins
         /// </summary>
@@ -75,10 +77,19 @@ namespace ClinicalOffice.WPF.Dialogs
         public DialogBase()
         {
             CreateControls();
+            _DialogCloseResetEvent = new ManualResetEvent(false);
         }
         #region Properties
         public new object Content { get => DialogContent; set => DialogContent = value; }
         public DialogPartsControl DialogPartsControl { get => _DialogPartsControl; }
+
+        public Type DialogButtonType
+        {
+            get { return (Type)GetValue(DialogButtonTypeProperty); }
+            set { SetValue(DialogButtonTypeProperty, value); }
+        }
+        public static readonly DependencyProperty DialogButtonTypeProperty =
+            DependencyProperty.Register("DialogButtonType", typeof(Type), typeof(DialogBase), new PropertyMetadata(null));
 
         public Effect DialogEffect
         {
@@ -110,7 +121,7 @@ namespace ClinicalOffice.WPF.Dialogs
             set => SetValue(DialogButtonsProperty, value);
         }
         public static readonly DependencyProperty DialogButtonsProperty =
-            DependencyProperty.Register("DialogButtons", typeof(DialogButtons), typeof(DialogBase), 
+            DependencyProperty.Register("DialogButtons", typeof(DialogButtons), typeof(DialogBase),
                 new FrameworkPropertyMetadata(DialogButtons.None, FrameworkPropertyMetadataOptions.AffectsArrange, DialogButtonsChangedCallback));
         static void DialogButtonsChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as DialogBase)?.CreateButtons();
 
@@ -185,6 +196,21 @@ namespace ClinicalOffice.WPF.Dialogs
         #endregion
         virtual protected ButtonBase OnCreateButton(object content)
         {
+            if (DialogButtonType != null && DialogButtonType.IsAssignableFrom(typeof(ButtonBase)))
+            {
+                try
+                {
+                    var b = Activator.CreateInstance(DialogButtonType) as ButtonBase;
+                    if (b != null)
+                    {
+                        b.Content = content;
+                        return b;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
             return new Button() { Content = content };
         }
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -267,29 +293,61 @@ namespace ClinicalOffice.WPF.Dialogs
                     break;
             }
         }
+        virtual protected bool OnClosing(DialogResult result)
+        {
+            return true;
+        }
         ButtonBase CreateButton(object content)
         {
             var b = OnCreateButton(content);
             b.Click += Button_Click;
-            BindingOperations.SetBinding(b, StyleProperty, 
+            BindingOperations.SetBinding(b, StyleProperty,
                 new Binding(nameof(DialogButtonStyle)) { Source = this, Mode = BindingMode.OneWay });
             _DialogPartsControl.DialogButtonsControl.AddButton(b);
             return b;
         }
-        void Button_Click(object sender, RoutedEventArgs e) { }
+        void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult result = DialogResult.None;
+            if (sender == _OkButton) result = DialogResult.Ok;
+            if (sender == _CancelButton) result = DialogResult.Cancel;
+            if (sender == _YesButton) result = DialogResult.Yes;
+            if (sender == _NoButton) result = DialogResult.No;
+            if (OnClosing(result))
+            {
+                DialogResult = result;
+                Close();
+            }
+        }
         void SetBackgroundBrush(ContentControl parent)
         {
             var element = parent?.Content as UIElement;
             if (element == null) return;
-            _ParentBackground.Background = new VisualBrush(element) { Stretch = Stretch.Uniform, AlignmentX=AlignmentX.Left, AlignmentY=AlignmentY.Top };
+            _ParentBackground.Background = new VisualBrush(element) { Stretch = Stretch.Uniform, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top };
         }
         #endregion
         #region Public Methods
-        public void ShowDialog(ContentControl parent)
+        public void ShowDialog(ContentControl parent, bool keybordEnabled = true)
         {
+            _DialogCloseResetEvent.Reset();
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;
             parent.Content = this;
+        }
+        public Task<DialogResult> ShowDialogAsync(ContentControl parent)
+        {
+            return Task.Run(() =>
+            {
+                Dispatcher.Invoke(() => ShowDialog(parent));
+                _DialogCloseResetEvent.WaitOne();
+                return Dispatcher.Invoke(() => DialogResult);
+            });
+        }
+        public void Close()
+        {
+            var c = Parent as ContentControl;
+            if (c != null) c.Content = _OldContentContainer.Content;
+            _DialogCloseResetEvent.Set();
         }
         #endregion
     }
