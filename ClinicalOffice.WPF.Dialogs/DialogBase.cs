@@ -45,14 +45,6 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         Grid _DialogGrid;
         /// <summary>
-        /// This is the displayed dialog which has a title, buttons, and contents.
-        /// </summary>
-        DialogPartsControl _DialogPartsControl;
-        /// <summary>
-        /// These will hold the buttons.
-        /// </summary>
-        ButtonBase _OkButton, _CancelButton, _YesButton, _NoButton;
-        /// <summary>
         /// This will hold the parent background image.
         /// </summary>
         Border _ParentBackground;
@@ -64,6 +56,14 @@ namespace ClinicalOffice.WPF.Dialogs
         /// This is a dump control to hold the old content in it and resize it with the dialog.
         /// </summary>
         ContentControl _OldContentContainer;
+        /// <summary>
+        /// This is the displayed dialog which has a title, buttons, and contents.
+        /// </summary>
+        DialogPartsControl _DialogPartsControl;
+        /// <summary>
+        /// These will hold the buttons.
+        /// </summary>
+        ButtonBase _OkButton, _CancelButton, _YesButton, _NoButton;
         #endregion
         static DialogBase()
         {
@@ -213,6 +213,11 @@ namespace ClinicalOffice.WPF.Dialogs
             }
             return new Button() { Content = content };
         }
+        virtual protected bool OnDialogOk() => OnClosing(DialogResult.Ok);
+        virtual protected bool OnDialogCancel() => OnClosing(DialogResult.Cancel);
+        virtual protected bool OnDialogYes() => OnClosing(DialogResult.Yes);
+        virtual protected bool OnDialogNo() => OnClosing(DialogResult.No);
+        virtual protected bool OnClosing(DialogResult result) => true;
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
@@ -256,69 +261,61 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogGrid.Children.Add(_ParentBackgroundOverlayColor);
             _DialogGrid.Children.Add(_DialogPartsControl);
             base.Content = _DialogGrid;
+
+            CommandBindings.Add(new CommandBinding(DialogCommands.Ok, OkCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.Cancel, CancelCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.Yes, YesCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.No, NoCommandExecuted));
+            InputBindings.Add(new InputBinding(DialogCommands.Ok, new KeyGesture(Key.Return)));
+            InputBindings.Add(new InputBinding(DialogCommands.Cancel, new KeyGesture(Key.Escape)));
         }
         void CreateButtons()
         {
             foreach (var button in _DialogPartsControl.DialogButtonsControl.GetButtons())
-            {
-                button.Click -= Button_Click;
                 BindingOperations.ClearBinding(button, StyleProperty);
-            }
             _DialogPartsControl.DialogButtonsControl.ClearButtons();
             _OkButton = null;
             _CancelButton = null;
             _YesButton = null;
             _NoButton = null;
+            InputBindings.Clear();
             switch (DialogButtons)
             {
                 case DialogButtons.None:
                     break;
                 case DialogButtons.Ok:
-                    _OkButton = CreateButton(DialogOkContent);
+                    _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok);
                     break;
                 case DialogButtons.OkCancel:
-                    _OkButton = CreateButton(DialogOkContent);
-                    _CancelButton = CreateButton(DialogCancelContent);
+                    _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok);
+                    _CancelButton = CreateButton(DialogCancelContent, DialogCommands.Cancel);
                     break;
                 case DialogButtons.YesNo:
-                    _YesButton = CreateButton(DialogYesContent);
-                    _NoButton = CreateButton(DialogNoContent);
+                    _YesButton = CreateButton(DialogYesContent, DialogCommands.Yes);
+                    _NoButton = CreateButton(DialogNoContent, DialogCommands.No);
                     break;
                 case DialogButtons.YesNoCancel:
-                    _YesButton = CreateButton(DialogYesContent);
-                    _NoButton = CreateButton(DialogNoContent);
-                    _CancelButton = CreateButton(DialogCancelContent);
+                    _YesButton = CreateButton(DialogYesContent, DialogCommands.Yes);
+                    _NoButton = CreateButton(DialogNoContent, DialogCommands.No);
+                    _CancelButton = CreateButton(DialogCancelContent, DialogCommands.Cancel);
                     break;
                 default:
                     break;
             }
         }
-        virtual protected bool OnClosing(DialogResult result)
-        {
-            return true;
-        }
-        ButtonBase CreateButton(object content)
+        ButtonBase CreateButton(object content, ICommand command)
         {
             var b = OnCreateButton(content);
-            b.Click += Button_Click;
+            b.Command = command;
             BindingOperations.SetBinding(b, StyleProperty,
                 new Binding(nameof(DialogButtonStyle)) { Source = this, Mode = BindingMode.OneWay });
             _DialogPartsControl.DialogButtonsControl.AddButton(b);
             return b;
         }
-        void Button_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult result = DialogResult.None;
-            if (sender == _OkButton) result = DialogResult.Ok;
-            if (sender == _CancelButton) result = DialogResult.Cancel;
-            if (sender == _YesButton) result = DialogResult.Yes;
-            if (sender == _NoButton) result = DialogResult.No;
-            if (OnClosing(result))
-            {
-                DialogResult = result;
-                Close();
-            }
-        }
+        void OkCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogOk()) Close(); }
+        void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogCancel()) Close(); }
+        void YesCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogYes()) Close(); }
+        void NoCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogNo()) Close(); }
         void SetBackgroundBrush(ContentControl parent)
         {
             var element = parent?.Content as UIElement;
@@ -333,6 +330,7 @@ namespace ClinicalOffice.WPF.Dialogs
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;
             parent.Content = this;
+            Keyboard.AddKeyDownHandler((object,RoutedEventArgs) => DialogCommands.Ok.Execute());
         }
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
         {

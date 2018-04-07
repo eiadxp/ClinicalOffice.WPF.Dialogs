@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DialogButtonsControl.cs" />
+    <Compile Include="DialogCommands.cs" />
     <Compile Include="DialogContentControl.cs" />
     <Compile Include="DialogPartsControl.cs" />
     <Compile Include="DialogTitleControl.cs" />
