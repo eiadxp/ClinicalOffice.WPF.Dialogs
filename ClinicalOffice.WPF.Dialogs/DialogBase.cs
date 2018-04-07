@@ -194,6 +194,7 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogButtonStyle", typeof(Style), typeof(DialogBase), new PropertyMetadata(null));
 
         #endregion
+        #region Virtsual methods
         virtual protected ButtonBase OnCreateButton(object content)
         {
             if (DialogButtonType != null && DialogButtonType.IsAssignableFrom(typeof(ButtonBase)))
@@ -218,6 +219,7 @@ namespace ClinicalOffice.WPF.Dialogs
         virtual protected bool OnDialogYes() => OnClosing(DialogResult.Yes);
         virtual protected bool OnDialogNo() => OnClosing(DialogResult.No);
         virtual protected bool OnClosing(DialogResult result) => true;
+        #endregion
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
@@ -226,6 +228,23 @@ namespace ClinicalOffice.WPF.Dialogs
             _OldContentContainer.Measure(sizeInfo.NewSize);
             _OldContentContainer.Arrange(new Rect(_OldContentContainer.DesiredSize));
             SetBackgroundBrush(_OldContentContainer);
+        }
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (e.Key == Key.Return)
+            {
+                if (_OkButton != null) _OkButton.Command?.Execute(null);
+                else if (_YesButton != null) _YesButton.Command?.Execute(null);
+                else e.Handled = false;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                if (_CancelButton != null) _CancelButton.Command?.Execute(null);
+                else if (_NoButton != null) _NoButton.Command?.Execute(null);
+                else e.Handled = false;
+            }
+            base.OnPreviewKeyDown(e);
         }
         #region Private methods
         void CreateControls()
@@ -266,8 +285,6 @@ namespace ClinicalOffice.WPF.Dialogs
             CommandBindings.Add(new CommandBinding(DialogCommands.Cancel, CancelCommandExecuted));
             CommandBindings.Add(new CommandBinding(DialogCommands.Yes, YesCommandExecuted));
             CommandBindings.Add(new CommandBinding(DialogCommands.No, NoCommandExecuted));
-            InputBindings.Add(new InputBinding(DialogCommands.Ok, new KeyGesture(Key.Return)));
-            InputBindings.Add(new InputBinding(DialogCommands.Cancel, new KeyGesture(Key.Escape)));
         }
         void CreateButtons()
         {
@@ -316,6 +333,7 @@ namespace ClinicalOffice.WPF.Dialogs
         void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogCancel()) Close(); }
         void YesCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogYes()) Close(); }
         void NoCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogNo()) Close(); }
+        public void KeyEventHandler(Object sender, KeyEventArgs e) { }
         void SetBackgroundBrush(ContentControl parent)
         {
             var element = parent?.Content as UIElement;
@@ -324,13 +342,13 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         #endregion
         #region Public Methods
-        public void ShowDialog(ContentControl parent, bool keybordEnabled = true)
+        public void ShowDialog(ContentControl parent)
         {
             _DialogCloseResetEvent.Reset();
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;
             parent.Content = this;
-            Keyboard.AddKeyDownHandler((object,RoutedEventArgs) => DialogCommands.Ok.Execute());
+            FocusManager.SetFocusedElement(this, _DialogPartsControl);
         }
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
         {

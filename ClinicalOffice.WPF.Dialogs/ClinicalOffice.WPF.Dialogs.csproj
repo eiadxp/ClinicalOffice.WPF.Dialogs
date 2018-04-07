@@ -58,7 +58,7 @@
     <Compile Include="DialogContentControl.cs" />
     <Compile Include="DialogPartsControl.cs" />
     <Compile Include="DialogTitleControl.cs" />
-    <Compile Include="Parameters.cs" />
+    <Compile Include="DialogParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

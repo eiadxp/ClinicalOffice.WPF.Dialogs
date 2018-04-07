@@ -5,7 +5,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogTitleControl">
-                    <Border Background="{x:Static dialogs:Parameters.TitleBackground}" BorderThickness="1" BorderBrush="{x:Static dialogs:Parameters.BorderBackground}" Padding="5">
+                    <Border Background="{x:Static dialogs:DialogParameters.TitleBackground}" BorderThickness="1" BorderBrush="{x:Static dialogs:DialogParameters.BorderBackground}" Padding="5">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -17,7 +17,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogButtonsControl">
-                    <Border Background="{x:Static dialogs:Parameters.ButtonsBarBackground}" BorderThickness="1" BorderBrush="{x:Static dialogs:Parameters.BorderBackground}" Padding="5">
+                    <Border Background="{x:Static dialogs:DialogParameters.ButtonsBarBackground}" BorderThickness="1" BorderBrush="{x:Static dialogs:DialogParameters.BorderBackground}" Padding="5">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -38,7 +38,7 @@
                 <Style TargetType="ButtonBase">
                     <Setter Property="Margin" Value="5"/>
                     <Setter Property="Padding" Value="5"/>
-                    <Setter Property="Background" Value="{x:Static dialogs:Parameters.ButtonsBackground}"/>
+                    <Setter Property="Background" Value="{x:Static dialogs:DialogParameters.ButtonsBackground}"/>
                 </Style>
             </Setter.Value>
         </Setter>
@@ -49,7 +49,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogContentControl">
-                    <Border Background="{x:Static SystemColors.WindowBrush}" BorderThickness="1" BorderBrush="{x:Static dialogs:Parameters.BorderBackground}"
+                    <Border Background="{x:Static SystemColors.WindowBrush}" BorderThickness="1" BorderBrush="{x:Static dialogs:DialogParameters.BorderBackground}"
                             Padding="15, 25">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>

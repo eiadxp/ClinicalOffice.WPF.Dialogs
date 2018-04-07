@@ -9,9 +9,9 @@ namespace ClinicalOffice.WPF.Dialogs
 {
     public static class DialogCommands
     {
-        public static RoutedCommand Ok { get; } = new RoutedCommand();
-        public static RoutedCommand Cancel { get; } = new RoutedCommand();
-        public static RoutedCommand Yes { get; } = new RoutedCommand();
-        public static RoutedCommand No { get; } = new RoutedCommand();
+        public static RoutedUICommand Ok { get; } = new RoutedUICommand();
+        public static RoutedUICommand Cancel { get; } = new RoutedUICommand();
+        public static RoutedUICommand Yes { get; } = new RoutedUICommand();
+        public static RoutedUICommand No { get; } = new RoutedUICommand();
     }
 }

@@ -7,9 +7,6 @@
         xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
-        <dialogs:DialogParameters x:Key="Any" TitleBackground="BlueViolet"/>
-    </Window.Resources>
     <StackPanel>
         <ToolBar>
             <Button Content="Show custom dialog" Click="ShowCustomDialog"/>
