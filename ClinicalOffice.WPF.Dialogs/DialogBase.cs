@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,6 +17,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace ClinicalOffice.WPF.Dialogs
 {
@@ -83,6 +85,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public new object Content { get => DialogContent; set => DialogContent = value; }
         public DialogPartsControl DialogPartsControl { get => _DialogPartsControl; }
 
+        [Category("Dialog")]
         public Type DialogButtonType
         {
             get { return (Type)GetValue(DialogButtonTypeProperty); }
@@ -91,6 +94,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogButtonTypeProperty =
             DependencyProperty.Register("DialogButtonType", typeof(Type), typeof(DialogBase), new PropertyMetadata(null));
 
+        [Category("Dialog")]
         public Effect DialogEffect
         {
             get { return (Effect)GetValue(DialogEffectProperty); }
@@ -99,6 +103,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogEffectProperty =
             DependencyProperty.Register("DialogEffect", typeof(Effect), typeof(DialogBase), new PropertyMetadata(null));
 
+        [Category("Dialog")]
         public object DialogTitle
         {
             get { return (object)GetValue(DialogTitleProperty); }
@@ -107,6 +112,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogTitleProperty =
             DependencyProperty.Register("DialogTitle", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        [Category("Dialog")]
         public object DialogContent
         {
             get { return (object)GetValue(DialogContentProperty); }
@@ -115,6 +121,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogContentProperty =
             DependencyProperty.Register("DialogContent", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        [Category("Dialog")]
         public DialogButtons DialogButtons
         {
             get => (DialogButtons)GetValue(DialogButtonsProperty);
@@ -125,6 +132,7 @@ namespace ClinicalOffice.WPF.Dialogs
                 new FrameworkPropertyMetadata(DialogButtons.None, FrameworkPropertyMetadataOptions.AffectsArrange, DialogButtonsChangedCallback));
         static void DialogButtonsChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as DialogBase)?.CreateButtons();
 
+        [Category("Dialog")]
         public DialogResult DialogResult
         {
             get { return (DialogResult)GetValue(DialogResultProperty); }
@@ -133,6 +141,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogResultProperty =
             DependencyProperty.Register("DialogResult", typeof(DialogResult), typeof(DialogBase), new PropertyMetadata(DialogResult.None));
 
+        [Category("Dialog")]
         public object DialogOkContent
         {
             get { return (object)GetValue(DialogOkContentProperty); }
@@ -146,6 +155,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (dialog?._OkButton != null) dialog._OkButton.Content = e.NewValue;
         }
 
+        [Category("Dialog")]
         public object DialogCancelContent
         {
             get { return (object)GetValue(DialogCancelContentProperty); }
@@ -159,6 +169,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (dialog?._CancelButton != null) dialog._CancelButton.Content = e.NewValue;
         }
 
+        [Category("Dialog")]
         public object DialogYesContent
         {
             get { return (object)GetValue(DialogYesContentProperty); }
@@ -172,6 +183,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (dialog?._YesButton != null) dialog._YesButton.Content = e.NewValue;
         }
 
+        [Category("Dialog")]
         public object DialogNoContent
         {
             get { return (object)GetValue(DialogNoContentProperty); }
@@ -185,6 +197,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (dialog?._NoButton != null) dialog._NoButton.Content = e.NewValue;
         }
 
+        [Category("Dialog")]
         public Style DialogButtonStyle
         {
             get { return (Style)GetValue(DialogButtonStyleProperty); }
@@ -192,7 +205,6 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogButtonStyleProperty =
             DependencyProperty.Register("DialogButtonStyle", typeof(Style), typeof(DialogBase), new PropertyMetadata(null));
-
         #endregion
         #region Virtsual methods
         virtual protected ButtonBase OnCreateButton(object content)
