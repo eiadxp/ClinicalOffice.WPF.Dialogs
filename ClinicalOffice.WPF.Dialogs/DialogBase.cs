@@ -205,6 +205,24 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogButtonStyleProperty =
             DependencyProperty.Register("DialogButtonStyle", typeof(Style), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public Brush DialogParentOverlay
+        {
+            get { return (Brush)GetValue(DialogParentOverlayProperty); }
+            set { SetValue(DialogParentOverlayProperty, value); }
+        }
+        public static readonly DependencyProperty DialogParentOverlayProperty =
+            DependencyProperty.Register("DialogParentOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(new SolidColorBrush(Colors.Black) { Opacity = .2 }));
+
+        [Category("Dialog")]
+        public Effect DialogParentEffect
+        {
+            get { return (Effect)GetValue(DialogParentEffectProperty); }
+            set { SetValue(DialogParentEffectProperty, value); }
+        }
+        public static readonly DependencyProperty DialogParentEffectProperty =
+            DependencyProperty.Register("DialogParentEffect", typeof(Effect), typeof(DialogBase), new PropertyMetadata(new BlurEffect()));
         #endregion
         #region Virtsual methods
         virtual protected ButtonBase OnCreateButton(object content)
@@ -262,11 +280,14 @@ namespace ClinicalOffice.WPF.Dialogs
         void CreateControls()
         {
             _ParentBackground = new Border();
-            _ParentBackground.Effect = new BlurEffect();
+            BindingOperations.SetBinding(_ParentBackground, EffectProperty,
+                                         new Binding(nameof(DialogParentEffect)) { Source = this });
             Grid.SetRowSpan(_ParentBackground, 5);
             Panel.SetZIndex(_ParentBackground, 0);
 
-            _ParentBackgroundOverlayColor = new Border() { Background = Brushes.Black, Opacity = 0.2 };
+            _ParentBackgroundOverlayColor = new Border();
+            BindingOperations.SetBinding(_ParentBackgroundOverlayColor, BackgroundProperty,
+                                         new Binding(nameof(DialogParentOverlay)) { Source = this });
             Grid.SetRowSpan(_ParentBackgroundOverlayColor, 5);
             Panel.SetZIndex(_ParentBackgroundOverlayColor, 1);
 
