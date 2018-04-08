@@ -1,0 +1,25 @@
+﻿<local:DialogBase x:Class="ClinicalOffice.WPF.Dialogs.DialogMessage"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                  xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs"
+                  mc:Ignorable="d" 
+                  d:DesignHeight="200" d:DesignWidth="400"
+                  DialogTitle="Title" DialogButtons="Ok">
+    <local:DialogBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Geometery.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </local:DialogBase.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Viewbox Child="{StaticResource QuestionIcon}"/>
+        <TextBlock Grid.Column="1" Text="Message" VerticalAlignment="Center" Margin="10,0" TextWrapping="Wrap"/>
+    </Grid>
+</local:DialogBase>
