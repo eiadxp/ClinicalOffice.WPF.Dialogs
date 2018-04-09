@@ -401,16 +401,14 @@ namespace ClinicalOffice.WPF.Dialogs
         public void SetTheme(Brush themeBrush)
         {
             _DialogPartsControl.Background = themeBrush;
-            _DialogPartsControl.Opacity = 1;
-            _DialogPartsControl.DialogPartsEffects.Background = themeBrush;
 
-            _DialogPartsControl.DialogButtonsControl.Background = new SolidColorBrush(Colors.White) { Opacity = .8 };
+            _DialogPartsControl.DialogButtonsControl.Background = new SolidColorBrush(Colors.White) { Opacity = .4 };
             _DialogPartsControl.DialogButtonsControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
 
             _DialogPartsControl.DialogTitleControl.Background = new SolidColorBrush(Colors.White) { Opacity = .6 };
             _DialogPartsControl.DialogTitleControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
 
-            _DialogPartsControl.DialogContentControl.Background = new SolidColorBrush(Colors.White) { Opacity = .4 };
+            _DialogPartsControl.DialogContentControl.Background = new SolidColorBrush(Colors.White) { Opacity = .8 };
             _DialogPartsControl.DialogContentControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace ClinicalOffice.WPF.Dialogs
@@ -53,14 +54,16 @@ namespace ClinicalOffice.WPF.Dialogs
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center
+                //HorizontalContentAlignment = HorizontalAlignment.Center,
+                //VerticalContentAlignment = VerticalAlignment.Center
             };
             Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
             Grid.SetRow(_DialogButtonsBar, 2);
             Panel.SetZIndex(_DialogButtonsBar, 1);
 
             _DialogPartsEffect = new Border() { Background = Brushes.Black };
+            BindingOperations.SetBinding(this, BackgroundProperty, 
+                                         new Binding(nameof(Background)) { Source = _DialogPartsEffect, Mode = BindingMode.TwoWay });
             Grid.SetRowSpan(_DialogPartsEffect, 3);
             Panel.SetZIndex(_DialogPartsEffect, 0);
 
