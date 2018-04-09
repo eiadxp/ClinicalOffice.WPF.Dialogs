@@ -28,6 +28,7 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
         private async void ShowCustomDialog(object sender, RoutedEventArgs e)
         {
             var w = new CustomDialog();
+            //w.SetTheme(new SolidColorBrush(Colors.Red));
             await w.ShowDialogAsync(this);
             MessageBox.Show("This message is called directly after showing the dialog.");
         }

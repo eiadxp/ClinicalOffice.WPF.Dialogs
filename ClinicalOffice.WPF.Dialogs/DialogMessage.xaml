@@ -19,7 +19,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Viewbox Child="{StaticResource QuestionIcon}"/>
+        <Viewbox Child="{StaticResource WarningIcon}"/>
         <TextBlock Grid.Column="1" Text="Message" VerticalAlignment="Center" Margin="10,0" TextWrapping="Wrap"/>
     </Grid>
 </local:DialogBase>
