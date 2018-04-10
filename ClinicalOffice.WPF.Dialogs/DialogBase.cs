@@ -315,6 +315,8 @@ namespace ClinicalOffice.WPF.Dialogs
                                          new Binding(nameof(DialogContent)) { Source = this });
             BindingOperations.SetBinding(_DialogPartsControl.DialogBackground, EffectProperty,
                                          new Binding(nameof(DialogEffect)) { Source = this });
+            BindingOperations.SetBinding(_DialogPartsControl.DialogBackground, BackgroundProperty,
+                                         new Binding(nameof(DialogBackGround)) { Source = this });
 
             CreateButtons();
 

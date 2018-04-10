@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace ClinicalOffice.WPF.Dialogs
 {
-    public class DialogPartsControl : ContentControl
+    public class DialogPartsControl : Border
     {
         Grid _MainGrid;
         /// <summary>
@@ -32,12 +32,16 @@ namespace ClinicalOffice.WPF.Dialogs
 
         static DialogPartsControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DialogPartsControl),
-                new FrameworkPropertyMetadata(typeof(DialogPartsControl)));
+            VerticalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl),
+                new FrameworkPropertyMetadata(VerticalAlignment.Center));
+            HorizontalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl),
+                new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
+            MarginProperty.OverrideMetadata(typeof(DialogPartsControl),
+                new FrameworkPropertyMetadata(new Thickness(15)));
         }
         public DialogPartsControl()
         {
-            _MainGrid = new Grid();
+            _MainGrid = new Grid() { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch };
             _MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
@@ -54,14 +58,12 @@ namespace ClinicalOffice.WPF.Dialogs
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                //HorizontalContentAlignment = HorizontalAlignment.Center,
-                //VerticalContentAlignment = VerticalAlignment.Center
             };
             Grid.SetIsSharedSizeScope(_DialogButtonsBar, true);
             Grid.SetRow(_DialogButtonsBar, 2);
             Panel.SetZIndex(_DialogButtonsBar, 1);
 
-            _DialogBackGround = new Border() { Background = Brushes.Black };
+            _DialogBackGround = new Border();
             BindingOperations.SetBinding(this, BackgroundProperty, 
                                          new Binding(nameof(Background)) { Source = _DialogBackGround, Mode = BindingMode.TwoWay });
             Grid.SetRowSpan(_DialogBackGround, 3);
@@ -72,7 +74,7 @@ namespace ClinicalOffice.WPF.Dialogs
             _MainGrid.Children.Add(_DialogButtonsBar);
             _MainGrid.Children.Add(_DialogBackGround);
 
-            Content = _MainGrid;
+            Child = _MainGrid;
         }
     }
 }
