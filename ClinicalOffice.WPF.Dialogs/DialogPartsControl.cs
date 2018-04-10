@@ -24,11 +24,11 @@ namespace ClinicalOffice.WPF.Dialogs
         DialogContentControl _DialogContent;
         public DialogContentControl DialogContentControl { get => _DialogContent; }
         /// <summary>
-        /// This is just a layer under the dialog parts to apply effects on it through DialogEffect property of DialogBase.
-        /// Applying effects to the DialogPartsControl will cause a blur to its content.
+        /// This is used to create a background for the dialog.
+        /// usefull for back ground color and effects like DropShadowEffect.
         /// </summary>
-        Border _DialogPartsEffect;
-        public Border DialogPartsEffects { get => _DialogPartsEffect; }
+        Border _DialogBackGround;
+        public Border DialogBackground { get => _DialogBackGround; }
 
         static DialogPartsControl()
         {
@@ -61,16 +61,16 @@ namespace ClinicalOffice.WPF.Dialogs
             Grid.SetRow(_DialogButtonsBar, 2);
             Panel.SetZIndex(_DialogButtonsBar, 1);
 
-            _DialogPartsEffect = new Border() { Background = Brushes.Black };
+            _DialogBackGround = new Border() { Background = Brushes.Black };
             BindingOperations.SetBinding(this, BackgroundProperty, 
-                                         new Binding(nameof(Background)) { Source = _DialogPartsEffect, Mode = BindingMode.TwoWay });
-            Grid.SetRowSpan(_DialogPartsEffect, 3);
-            Panel.SetZIndex(_DialogPartsEffect, 0);
+                                         new Binding(nameof(Background)) { Source = _DialogBackGround, Mode = BindingMode.TwoWay });
+            Grid.SetRowSpan(_DialogBackGround, 3);
+            Panel.SetZIndex(_DialogBackGround, 0);
 
             _MainGrid.Children.Add(_DialogTitleContent);
             _MainGrid.Children.Add(_DialogContent);
             _MainGrid.Children.Add(_DialogButtonsBar);
-            _MainGrid.Children.Add(_DialogPartsEffect);
+            _MainGrid.Children.Add(_DialogBackGround);
 
             Content = _MainGrid;
         }

@@ -223,6 +223,19 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogParentEffectProperty =
             DependencyProperty.Register("DialogParentEffect", typeof(Effect), typeof(DialogBase), new PropertyMetadata(new BlurEffect()));
+
+
+        public Brush DialogBackGround
+        {
+            get { return (Brush)GetValue(DialogBackGroundProperty); }
+            set { SetValue(DialogBackGroundProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DialogBackGround.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DialogBackGroundProperty =
+            DependencyProperty.Register("DialogBackGround", typeof(Brush), typeof(DialogBase), new PropertyMetadata(DialogParameters.BorderBackground));
+
+
         #endregion
         #region Virtsual methods
         virtual protected ButtonBase OnCreateButton(object content)
@@ -300,7 +313,7 @@ namespace ClinicalOffice.WPF.Dialogs
                                          new Binding(nameof(DialogTitle)) { Source = this });
             BindingOperations.SetBinding(_DialogPartsControl.DialogContentControl, ContentProperty,
                                          new Binding(nameof(DialogContent)) { Source = this });
-            BindingOperations.SetBinding(_DialogPartsControl.DialogPartsEffects, EffectProperty,
+            BindingOperations.SetBinding(_DialogPartsControl.DialogBackground, EffectProperty,
                                          new Binding(nameof(DialogEffect)) { Source = this });
 
             CreateButtons();
