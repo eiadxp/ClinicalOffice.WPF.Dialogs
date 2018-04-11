@@ -309,7 +309,7 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogPartsControl = new DialogPartsControl();
             Grid.SetRow(_DialogPartsControl, 1);
             Panel.SetZIndex(_DialogPartsControl, 3);
-            BindingOperations.SetBinding(_DialogPartsControl.DialogTitleControl, ContentProperty,
+            BindingOperations.SetBinding(_DialogPartsControl.DialogTitleControl, DialogTitleControl.ContentProperty,
                                          new Binding(nameof(DialogTitle)) { Source = this });
             BindingOperations.SetBinding(_DialogPartsControl.DialogContentControl, ContentProperty,
                                          new Binding(nameof(DialogContent)) { Source = this });

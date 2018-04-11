@@ -25,20 +25,12 @@
         <Setter Property="DialogEffect" Value="{StaticResource DropShadowEffect}"/>
     </Style>
     <Style x:Key="{x:Type dialogs:DialogTitleControl}" TargetType="dialogs:DialogTitleControl">
-        <!--<Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="dialogs:DialogTitleControl">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>-->
         <Setter Property="Background" Value="{x:Static dialogs:DialogParameters.TitleBackground}"/>
         <Setter Property="BorderBrush" Value="{x:Static dialogs:DialogParameters.BorderBackground}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="5"/>
-        <!--<Setter Property="FontWeight" Value="ExtraBold"/>-->
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
     <Style x:Key="{x:Type dialogs:DialogButtonsControl}" TargetType="dialogs:DialogButtonsControl">
         <Setter Property="Background" Value="{x:Static dialogs:DialogParameters.ButtonsBarBackground}"/>
