@@ -24,5 +24,7 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             InitializeComponent();
         }
+        public UIElement Icon { get => MessageIcon.Child; set => MessageIcon.Child = value; }
+        public string Text { get => MessageText.Text; set => MessageText.Text = value; }
     }
 }

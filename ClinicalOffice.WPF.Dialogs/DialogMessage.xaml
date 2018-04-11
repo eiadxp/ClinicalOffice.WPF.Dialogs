@@ -7,19 +7,12 @@
                   mc:Ignorable="d" 
                   d:DesignHeight="200" d:DesignWidth="400"
                   DialogTitle="Title" DialogButtons="Ok">
-    <local:DialogBase.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Geometery.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </local:DialogBase.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Viewbox Child="{StaticResource WarningIcon}"/>
-        <TextBlock Grid.Column="1" Text="Message" VerticalAlignment="Center" Margin="10,0" TextWrapping="Wrap"/>
+        <Viewbox x:Name="MessageIcon"/>
+        <TextBlock x:Name="MessageText" Grid.Column="1" VerticalAlignment="Center" Margin="10,0" TextWrapping="Wrap"/>
     </Grid>
 </local:DialogBase>

@@ -28,9 +28,18 @@
         <Setter Property="Background" Value="{x:Static dialogs:DialogParameters.TitleBackground}"/>
         <Setter Property="BorderBrush" Value="{x:Static dialogs:DialogParameters.BorderBackground}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="5"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="FontWeight" Value="ExtraBold"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="dialogs:DialogTitleControl">
+                    <Border Padding="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style x:Key="{x:Type dialogs:DialogButtonsControl}" TargetType="dialogs:DialogButtonsControl">
         <Setter Property="Background" Value="{x:Static dialogs:DialogParameters.ButtonsBarBackground}"/>
@@ -63,7 +72,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="15,25"/>
     </Style>
-    <!--<Style  x:Key="{x:Type dialogs:DialogPartsControl}" TargetType="dialogs:DialogPartsControl">
+    <Style  x:Key="{x:Type dialogs:DialogPartsControl}" TargetType="dialogs:DialogPartsControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialogs:DialogPartsControl">
@@ -72,5 +81,5 @@
             </Setter.Value>
         </Setter>
         <Setter Property="Margin" Value="15"/>
-    </Style>-->
+    </Style>
 </ResourceDictionary>

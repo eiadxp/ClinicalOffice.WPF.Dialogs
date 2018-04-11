@@ -12,29 +12,29 @@ namespace ClinicalOffice.WPF.Dialogs
     {
         static DialogParameters current = new DialogParameters();
 
-        public static Brush GetTitleBackGround(Application obj)
+        public static Brush GetTitleBackground(Application obj)
         {
-            return (Brush)current.GetValue(TitleBackGroundProperty);
+            return (Brush)current.GetValue(TitleBackgroundProperty);
         }
-        public static void SetTitleBackGround(Application obj, Brush value)
+        public static void SetTitleBackground(Application obj, Brush value)
         {
-            current.SetValue(TitleBackGroundProperty, value);
+            current.SetValue(TitleBackgroundProperty, value);
         }
-        public static readonly DependencyProperty TitleBackGroundProperty =
-            DependencyProperty.RegisterAttached("TitleBackGround", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.White) { Opacity = 0.8 }));
-        public static Brush TitleBackground { get => GetTitleBackGround(null); set => SetTitleBackGround(null, value); }
+        public static readonly DependencyProperty TitleBackgroundProperty =
+            DependencyProperty.RegisterAttached("TitleBackground", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.White) { Opacity = 0.8 }));
+        public static Brush TitleBackground { get => GetTitleBackground(null); set => SetTitleBackground(null, value); }
 
-        public static Brush GetContentBackGround(Application obj)
+        public static Brush GetContentBackground(Application obj)
         {
-            return (Brush)current.GetValue(ContentBackGroundProperty);
+            return (Brush)current.GetValue(ContentBackgroundProperty);
         }
-        public static void SetContentBackGround(Application obj, Brush value)
+        public static void SetContentBackground(Application obj, Brush value)
         {
-            current.SetValue(ContentBackGroundProperty, value);
+            current.SetValue(ContentBackgroundProperty, value);
         }
-        public static readonly DependencyProperty ContentBackGroundProperty =
-            DependencyProperty.RegisterAttached("ContentBackGround", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.White) { Opacity = 0.9 }));
-        public static Brush ContentBackground { get => GetContentBackGround(null); set => SetContentBackGround(null, value); }
+        public static readonly DependencyProperty ContentBackgroundProperty =
+            DependencyProperty.RegisterAttached("ContentBackground", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.White) { Opacity = 0.9 }));
+        public static Brush ContentBackground { get => GetContentBackground(null); set => SetContentBackground(null, value); }
 
         public static Brush GetButtonsBarBackground(Application obj)
         {

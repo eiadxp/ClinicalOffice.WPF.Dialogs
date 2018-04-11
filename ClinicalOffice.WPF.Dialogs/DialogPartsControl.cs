@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace ClinicalOffice.WPF.Dialogs
 {
-    public class DialogPartsControl : Border
+    public class DialogPartsControl : UserControl
     {
         Grid _MainGrid;
         /// <summary>
@@ -32,6 +32,8 @@ namespace ClinicalOffice.WPF.Dialogs
 
         static DialogPartsControl()
         {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DialogPartsControl),
+                new FrameworkPropertyMetadata(typeof(DialogPartsControl)));
             VerticalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl),
                 new FrameworkPropertyMetadata(VerticalAlignment.Center));
             HorizontalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl),
@@ -64,7 +66,7 @@ namespace ClinicalOffice.WPF.Dialogs
             Panel.SetZIndex(_DialogButtonsBar, 1);
 
             _DialogBackGround = new Border();
-            BindingOperations.SetBinding(this, BackgroundProperty, 
+            BindingOperations.SetBinding(this, BackgroundProperty,
                                          new Binding(nameof(Background)) { Source = _DialogBackGround, Mode = BindingMode.TwoWay });
             Grid.SetRowSpan(_DialogBackGround, 3);
             Panel.SetZIndex(_DialogBackGround, 0);
@@ -74,7 +76,7 @@ namespace ClinicalOffice.WPF.Dialogs
             _MainGrid.Children.Add(_DialogButtonsBar);
             _MainGrid.Children.Add(_DialogBackGround);
 
-            Child = _MainGrid;
+            Content = _MainGrid;
         }
     }
 }
