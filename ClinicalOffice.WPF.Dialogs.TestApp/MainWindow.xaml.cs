@@ -31,7 +31,7 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
             //w.SetTheme(new SolidColorBrush(Colors.Red));
             await w.ShowDialogAsync(this);
             MessageBox.Show("This message is called directly after showing the dialog.");
-            await DialogHelper.ShowMessage(this, "Test message", "Title test", DialogMessageType.Question);
+            await DialogHelper.ShowMessageAsync(this, "Test message", "Title test", DialogMessageType.Question);
         }
     }
 }

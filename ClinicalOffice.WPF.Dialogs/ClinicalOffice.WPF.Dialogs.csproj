@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="DialogMessageBrushes.cs" />
     <Compile Include="DialogMessageIcons.cs" />
+    <Compile Include="DialogMessageType.cs" />
     <Compile Include="DialogPartsControl.cs" />
     <Compile Include="DialogTitleControl.cs" />
     <Compile Include="DialogParameters.cs" />

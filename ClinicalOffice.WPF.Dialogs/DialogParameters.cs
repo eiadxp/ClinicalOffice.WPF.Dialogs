@@ -83,5 +83,77 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogBackgroundProperty =
             DependencyProperty.RegisterAttached("DialogBackground", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.LightBlue)));
         public static Brush DialogBackground { get => GetDialogBackground(null); set => SetDialogBackground(null, value); }
+
+        public static Color GetMessageErrorColor(Application obj)
+        {
+            return (Color)current.GetValue(MessageErrorColorProperty);
+        }
+        public static void SetMessageErrorColor(Application obj, Color value)
+        {
+            current.SetValue(MessageErrorColorProperty, value);
+        }
+        public static readonly DependencyProperty MessageErrorColorProperty =
+            DependencyProperty.RegisterAttached("MessageErrorColor", typeof(Color), typeof(DialogParameters), new PropertyMetadata(Colors.Red));
+        public static Color MessageErrorColor { get => GetMessageErrorColor(null); set => SetMessageErrorColor(null, value); }
+
+        public static Color GetMessageInfoColor(Application obj)
+        {
+            return (Color)current.GetValue(MessageInfoColorProperty);
+        }
+        public static void SetMessageInfoColor(Application obj, Color value)
+        {
+            current.SetValue(MessageInfoColorProperty, value);
+        }
+        public static readonly DependencyProperty MessageInfoColorProperty =
+            DependencyProperty.RegisterAttached("MessageInfoColor", typeof(Color), typeof(DialogParameters), new PropertyMetadata(Color.FromRgb(34, 100, 247)));
+        public static Color MessageInfoColor { get => GetMessageInfoColor(null); set => SetMessageInfoColor(null, value); }
+
+        public static Color GetMessageWarningColor(Application obj)
+        {
+            return (Color)current.GetValue(MessageWarningColorProperty);
+        }
+        public static void SetMessageWarningColor(Application obj, Color value)
+        {
+            current.SetValue(MessageWarningColorProperty, value);
+        }
+        public static readonly DependencyProperty MessageWarningColorProperty =
+            DependencyProperty.RegisterAttached("MessageWarningColor", typeof(Color), typeof(DialogParameters), new PropertyMetadata(Color.FromRgb(255, 195, 34)));
+        public static Color MessageWarningColor { get => GetMessageWarningColor(null); set => SetMessageWarningColor(null, value); }
+
+        public static Color GetMessageQuestionColor(Application obj)
+        {
+            return (Color)current.GetValue(MessageQuestionColorProperty);
+        }
+        public static void SetMessageQuestionColor(Application obj, Color value)
+        {
+            current.SetValue(MessageQuestionColorProperty, value);
+        }
+        public static readonly DependencyProperty MessageQuestionColorProperty =
+            DependencyProperty.RegisterAttached("MessageQuestionColor", typeof(Color), typeof(DialogParameters), new PropertyMetadata(Color.FromRgb(45, 187, 80)));
+        public static Color MessageQuestionColor { get => GetMessageQuestionColor(null); set => SetMessageQuestionColor(null, value); }
+
+        public static DialogAnimation GetDialogAnimationIn(Application obj)
+        {
+            return (DialogAnimation)current.GetValue(DialogAnimationInProperty);
+        }
+        public static void SetDialogAnimationIn(Application obj, DialogAnimation value)
+        {
+            current.SetValue(DialogAnimationInProperty, value);
+        }
+        public static readonly DependencyProperty DialogAnimationInProperty =
+            DependencyProperty.RegisterAttached("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.ZoomCenter));
+        public static DialogAnimation DialogAnimationIn { get => GetDialogAnimationIn(null); set => SetDialogAnimationIn(null, value); }
+
+        public static DialogAnimation GetDialogAnimationOut(Application obj)
+        {
+            return (DialogAnimation)current.GetValue(DialogAnimationOutProperty);
+        }
+        public static void SetDialogAnimationOut(Application obj, DialogAnimation value)
+        {
+            current.SetValue(DialogAnimationOutProperty, value);
+        }
+        public static readonly DependencyProperty DialogAnimationOutProperty =
+            DependencyProperty.RegisterAttached("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Zoom));
+        public static DialogAnimation DialogAnimationOut { get => GetDialogAnimationOut(null); set => SetDialogAnimationOut(null, value); }
     }
 }
