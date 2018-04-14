@@ -160,7 +160,7 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             return (Duration)current.GetValue(DialogAnimationDurationProperty);
         }
-        public static void SetDialogAnimationDuration(Application obj, DialogAnimation value)
+        public static void SetDialogAnimationDuration(Application obj, Duration value)
         {
             current.SetValue(DialogAnimationDurationProperty, value);
         }
