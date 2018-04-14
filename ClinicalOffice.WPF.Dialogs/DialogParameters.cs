@@ -155,5 +155,17 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationOutProperty =
             DependencyProperty.RegisterAttached("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Zoom));
         public static DialogAnimation DialogAnimationOut { get => GetDialogAnimationOut(null); set => SetDialogAnimationOut(null, value); }
+
+        public static Duration GetDialogAnimationDuration(Application obj)
+        {
+            return (Duration)current.GetValue(DialogAnimationDurationProperty);
+        }
+        public static void SetDialogAnimationDuration(Application obj, DialogAnimation value)
+        {
+            current.SetValue(DialogAnimationDurationProperty, value);
+        }
+        public static readonly DependencyProperty DialogAnimationDurationProperty =
+            DependencyProperty.RegisterAttached("DialogAnimationDuration", typeof(Duration), typeof(DialogParameters), new PropertyMetadata(new Duration(TimeSpan.FromMilliseconds(300))));
+        public static Duration DialogAnimationDuration { get => GetDialogAnimationDuration(null); set => SetDialogAnimationDuration(null, value); }
     }
 }

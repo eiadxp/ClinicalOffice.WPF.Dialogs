@@ -48,6 +48,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogAnimationHelper.cs" />
     <Compile Include="DialogBase.cs">
       <SubType>Code</SubType>
     </Compile>
