@@ -13,16 +13,47 @@ namespace ClinicalOffice.WPF.Dialogs
     public static class DialogHelper
     {
         static Dispatcher Dispatcher { get => Application.Current.Dispatcher; }
+        static T Invoke<T>(Func<T> function)
+        {
+            if (Dispatcher.CheckAccess()) return function();
+            return Dispatcher.Invoke(() => function());
+        }
+        static void Invoke(Action action)
+        {
+            if (Dispatcher.CheckAccess()) action();
+            Dispatcher.Invoke(() => action());
+        }
+
+        public static DialogBase CreateDialog(object content, string title = null, DialogButtons buttons = DialogButtons.None)
+        {
+            return Invoke(() => new DialogBase() { DialogTitle = title, DialogButtons = buttons, DialogContent = content });
+        }
+
+        public static DialogBase ShowDialog(ContentControl parent, object content, string title = null, DialogButtons buttons = DialogButtons.None)
+        {
+            var w = CreateDialog(content, title, buttons);
+            Invoke(() => w.ShowDialog(parent));
+            return w;
+        }
+        public static DialogBase ShowDialog(object content, string title = null, DialogButtons buttons = DialogButtons.None)
+        {
+            return ShowDialog(Application.Current.MainWindow, content, title, buttons);
+        }
+
         public static Task<DialogResult> ShowMessageAsync(ContentControl parent, string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
         {
-            if (!Dispatcher.CheckAccess()) return Dispatcher.Invoke(() => ShowMessageAsync(parent, text, caption, icon, theme, buttons));
-            var w = new DialogMessage();
-            w.DialogButtons = buttons;
-            w.Text = text;
-            w.DialogTitle = caption;
-            if (theme != null) w.DialogBackGround = theme;
-            if (icon != null) w.Icon = icon;
-            return w.ShowDialogAsync(parent);
+            return Invoke(() =>
+            {
+                var w = new DialogMessage
+                {
+                    DialogButtons = buttons,
+                    Text = text,
+                    DialogTitle = caption
+                };
+                if (theme != null) w.DialogBackGround = theme;
+                if (icon != null) w.Icon = icon;
+                return w.ShowDialogAsync(parent);
+            });
         }
         public static Task<DialogResult> ShowMessageAsync(string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
         {
@@ -60,15 +91,19 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static DialogMessage ShowMessage(ContentControl parent, string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
         {
-            if (!Dispatcher.CheckAccess()) return Dispatcher.Invoke(() => ShowMessage(parent, text, caption, icon, theme, buttons));
-            var w = new DialogMessage();
-            w.DialogButtons = buttons;
-            w.Text = text;
-            w.DialogTitle = caption;
-            if (theme != null) w.DialogBackGround = theme;
-            if (icon != null) w.Icon = icon;
-            w.ShowDialog(parent);
-            return w;
+            return Invoke(() =>
+            {
+                var w = new DialogMessage
+                {
+                    DialogButtons = buttons,
+                    Text = text,
+                    DialogTitle = caption
+                };
+                if (theme != null) w.DialogBackGround = theme;
+                if (icon != null) w.Icon = icon;
+                w.ShowDialog(parent);
+                return w;
+            });
         }
         public static DialogMessage ShowMessage(string text, string caption, DialogMessageType type)
         {
@@ -85,17 +120,64 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static DialogMessage ShowMessage(ContentControl parent, string text, string caption, DialogMessageType type, DialogButtons buttons)
         {
-            if (!Dispatcher.CheckAccess()) return Dispatcher.Invoke(() => ShowMessage(parent, text, caption, type, buttons));
-            var w = new DialogMessage();
-            w.DialogButtons = buttons;
-            w.Text = text;
-            w.DialogTitle = caption;
-            var theme = (Brush)w.TryFindResource(type.ToString() + "Brush");
-            if (theme != null) w.DialogBackGround = theme;
-            var icon = (UIElement)w.FindResource(type.ToString() + "Icon");
-            if (icon != null) w.Icon = icon;
-            w.ShowDialog(parent);
-            return w;
+            return Invoke(() =>
+            {
+                var w = new DialogMessage
+                {
+                    DialogButtons = buttons,
+                    Text = text,
+                    DialogTitle = caption
+                };
+                var theme = (Brush)w.TryFindResource(type.ToString() + "Brush");
+                if (theme != null) w.DialogBackGround = theme;
+                var icon = (UIElement)w.FindResource(type.ToString() + "Icon");
+                if (icon != null) w.Icon = icon;
+                w.ShowDialog(parent);
+                return w;
+            });
+        }
+
+        public static DialogBase ShowWait(ContentControl parent, UIElement waitControl, string text, DialogButtons buttons = DialogButtons.None)
+        {
+            return Invoke(() => ShowDialog(parent, waitControl, text, buttons));
+        }
+        public static DialogBase ShowWait(string text, UIElement waitControl, DialogButtons buttons = DialogButtons.None)
+        {
+            return ShowWait(Application.Current.MainWindow, waitControl, text, buttons);
+        }
+        public static DialogBase ShowWait(ContentControl parent, string text, DialogButtons buttons = DialogButtons.None)
+        {
+            return ShowWait(parent, Invoke(() => new ProgressBar() { IsIndeterminate = true, MinHeight = 24 }), text, buttons);
+        }
+        public static DialogBase ShowWait(string text, DialogButtons buttons = DialogButtons.None)
+        {
+            return ShowWait(Application.Current.MainWindow, text, buttons);
+        }
+        public static void ShowWait(ContentControl parent, UIElement waitControl, string text, Action waitingAction, DialogButtons buttons = DialogButtons.None)
+        {
+            Invoke(() =>
+            {
+                var w = ShowDialog(parent, waitControl, text, buttons);
+                waitingAction();
+                w.Close();
+            });
+        }
+        public static void ShowWait(UIElement waitControl, string text, Action waitingAction, DialogButtons buttons = DialogButtons.None)
+        {
+            ShowWait(Application.Current.MainWindow, waitControl, text, waitingAction, buttons);
+        }
+        public static void ShowWait(ContentControl parent, string text, Action waitingAction, DialogButtons buttons = DialogButtons.None)
+        {
+            Invoke(() =>
+            {
+                var w = ShowWait(parent, text, buttons);
+                waitingAction();
+                w.Close();
+            });
+        }
+        public static void ShowWait(string text, Action waitingAction, DialogButtons buttons = DialogButtons.None)
+        {
+            ShowWait(Application.Current.MainWindow, text, waitingAction, buttons);
         }
     }
 }
