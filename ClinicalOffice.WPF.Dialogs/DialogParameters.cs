@@ -141,7 +141,7 @@ namespace ClinicalOffice.WPF.Dialogs
             current.SetValue(DialogAnimationInProperty, value);
         }
         public static readonly DependencyProperty DialogAnimationInProperty =
-            DependencyProperty.RegisterAttached("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.ZoomCenter));
+            DependencyProperty.RegisterAttached("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Fade));
         public static DialogAnimation DialogAnimationIn { get => GetDialogAnimationIn(null); set => SetDialogAnimationIn(null, value); }
 
         public static DialogAnimation GetDialogAnimationOut(Application obj)
@@ -153,7 +153,7 @@ namespace ClinicalOffice.WPF.Dialogs
             current.SetValue(DialogAnimationOutProperty, value);
         }
         public static readonly DependencyProperty DialogAnimationOutProperty =
-            DependencyProperty.RegisterAttached("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Zoom));
+            DependencyProperty.RegisterAttached("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Fade));
         public static DialogAnimation DialogAnimationOut { get => GetDialogAnimationOut(null); set => SetDialogAnimationOut(null, value); }
 
         public static Duration GetDialogAnimationDuration(Application obj)
@@ -165,7 +165,7 @@ namespace ClinicalOffice.WPF.Dialogs
             current.SetValue(DialogAnimationDurationProperty, value);
         }
         public static readonly DependencyProperty DialogAnimationDurationProperty =
-            DependencyProperty.RegisterAttached("DialogAnimationDuration", typeof(Duration), typeof(DialogParameters), new PropertyMetadata(new Duration(TimeSpan.FromMilliseconds(300))));
+            DependencyProperty.RegisterAttached("DialogAnimationDuration", typeof(Duration), typeof(DialogParameters), new PropertyMetadata(new Duration(TimeSpan.FromMilliseconds(500))));
         public static Duration DialogAnimationDuration { get => GetDialogAnimationDuration(null); set => SetDialogAnimationDuration(null, value); }
     }
 }

@@ -81,13 +81,13 @@ namespace ClinicalOffice.WPF.Dialogs
 
         static void InFade(DialogBase dialog, Action completeAction, Duration duration)
         {
-            var fade = new DoubleAnimation() { To = 0, From = 1, Duration = duration };
+            var fade = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
             var fadeClock = CreateClock(dialog, fade, completeAction);
             dialog.ApplyAnimationClock(DialogBase.OpacityProperty, fadeClock);
         }
         static void OutFade(DialogBase dialog, Action completeAction, Duration duration)
         {
-            var fade = new DoubleAnimation() { To = 1, From = 0, Duration = duration };
+            var fade = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
             var fadeClock = CreateClock(dialog, fade, completeAction);
             dialog.ApplyAnimationClock(DialogBase.OpacityProperty, fadeClock);
         }

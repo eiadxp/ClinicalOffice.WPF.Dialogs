@@ -21,7 +21,7 @@ namespace ClinicalOffice.WPF.Dialogs
         static void Invoke(Action action)
         {
             if (Dispatcher.CheckAccess()) action();
-            Dispatcher.Invoke(() => action());
+            else Dispatcher.Invoke(() => action());
         }
 
         public static DialogBase CreateDialog(object content, string title = null, DialogButtons buttons = DialogButtons.None)
@@ -137,6 +137,7 @@ namespace ClinicalOffice.WPF.Dialogs
             });
         }
 
+        static ProgressBar CreateWaitControl() => Invoke(() => new ProgressBar() { IsIndeterminate = true, MinHeight = 24, MinWidth = 200 });
         public static DialogBase ShowWait(ContentControl parent, UIElement waitControl, string text, DialogButtons buttons = DialogButtons.None)
         {
             return Invoke(() => ShowDialog(parent, waitControl, text, buttons));
@@ -147,7 +148,7 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static DialogBase ShowWait(ContentControl parent, string text, DialogButtons buttons = DialogButtons.None)
         {
-            return ShowWait(parent, Invoke(() => new ProgressBar() { IsIndeterminate = true, MinHeight = 24 }), text, buttons);
+            return ShowWait(parent, CreateWaitControl(), text, buttons);
         }
         public static DialogBase ShowWait(string text, DialogButtons buttons = DialogButtons.None)
         {
