@@ -180,5 +180,40 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             ShowWait(Application.Current.MainWindow, text, waitingAction, buttons);
         }
+        public static void ShowWait(ContentControl parent, UIElement waitControl, string text, Task waitingTask, DialogButtons buttons = DialogButtons.None)
+        {
+            switch (waitingTask.Status)
+            {
+                case TaskStatus.Created:
+                case TaskStatus.WaitingForActivation:
+                case TaskStatus.WaitingToRun:
+                case TaskStatus.Running:
+                case TaskStatus.WaitingForChildrenToComplete:
+                    var w = ShowDialog(parent, waitControl, text, buttons);
+                    waitingTask.ContinueWith((a) => Invoke(() => w.Close()));
+                    if (waitingTask.Status == TaskStatus.Created || 
+                        waitingTask.Status == TaskStatus.WaitingForActivation || 
+                        waitingTask.Status == TaskStatus.WaitingToRun)
+                            waitingTask.Start();
+                    break;
+                case TaskStatus.RanToCompletion:
+                case TaskStatus.Canceled:
+                case TaskStatus.Faulted:
+                default:
+                    break;
+            }
+        }
+        public static void ShowWait(UIElement waitControl, string text, Task waitingTask, DialogButtons buttons = DialogButtons.None)
+        {
+            ShowWait(Application.Current.MainWindow, waitControl, text, waitingTask, buttons);
+        }
+        public static void ShowWait(ContentControl parent, string text, Task waitingTask, DialogButtons buttons = DialogButtons.None)
+        {
+            ShowWait(parent, CreateWaitControl(), text, waitingTask, buttons);
+        }
+        public static void ShowWait(string text, Task waitingTask, DialogButtons buttons = DialogButtons.None)
+        {
+            ShowWait(Application.Current.MainWindow, text, waitingTask, buttons);
+        }
     }
 }
