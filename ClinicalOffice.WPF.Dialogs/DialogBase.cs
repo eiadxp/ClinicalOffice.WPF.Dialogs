@@ -433,6 +433,7 @@ namespace ClinicalOffice.WPF.Dialogs
         #region Public Methods
         public void ShowDialog(ContentControl parent)
         {
+            if (parent == null) parent = Application.Current.MainWindow;
             _DialogCloseResetEvent.Reset();
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;

@@ -30,8 +30,8 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
             var w = new CustomDialog();
             await w.ShowDialogAsync(this);
             MessageBox.Show("This message is called directly after showing the dialog.");
-            await DialogHelper.ShowMessageAsync(this, "Test message", "Title test", DialogMessageType.Question);
-            DialogHelper.ShowWait("Loading", Task.Run(() => System.Threading.Thread.Sleep(3000)), DialogButtons.Ok);
+            await DialogHelper.ShowMessageAsync("Test message", "Title test", DialogMessageType.Question, this);
+            DialogHelper.ShowWait(Task.Run(() => System.Threading.Thread.Sleep(3000)), null, "Loading", null, DialogButtons.Ok);
         }
     }
 }
