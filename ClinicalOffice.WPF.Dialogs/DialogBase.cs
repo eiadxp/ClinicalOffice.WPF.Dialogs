@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 
 namespace ClinicalOffice.WPF.Dialogs
 {
@@ -51,6 +42,9 @@ namespace ClinicalOffice.WPF.Dialogs
     public class DialogBase : UserControl
     {
         #region Fields
+        /// <summary>
+        /// This will be reset on ShowDialog and will be set on Close to notify waiting thread that the dialog is closed.
+        /// </summary>
         ManualResetEvent _DialogCloseResetEvent;
         /// <summary>
         /// This grid has three rows for: top margins, dialog parts control, and lower margins
@@ -79,12 +73,11 @@ namespace ClinicalOffice.WPF.Dialogs
         #endregion
         static DialogBase()
         {
-            DefaultStyleKeyProperty.
-                OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(typeof(DialogBase)));
-            HorizontalContentAlignmentProperty.
-                OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
-            VerticalContentAlignmentProperty.
-                OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(VerticalAlignment.Center));
+            /// To enable theming in Theme/Generic.xaml file.
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(typeof(DialogBase)));
+            HorizontalContentAlignmentProperty.OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
+            VerticalContentAlignmentProperty.OverrideMetadata(typeof(DialogBase), new FrameworkPropertyMetadata(VerticalAlignment.Center));
+
         }
         public DialogBase()
         {
@@ -217,13 +210,22 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogButtonStyle", typeof(Style), typeof(DialogBase), new PropertyMetadata(null));
 
         [Category("Dialog")]
-        public Brush DialogParentOverlay
+        public Brush DialogOverlay
         {
-            get { return (Brush)GetValue(DialogParentOverlayProperty); }
-            set { SetValue(DialogParentOverlayProperty, value); }
+            get { return (Brush)GetValue(DialogOverlayProperty); }
+            set { SetValue(DialogOverlayProperty, value); }
         }
-        public static readonly DependencyProperty DialogParentOverlayProperty =
-            DependencyProperty.Register("DialogParentOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(new SolidColorBrush(Colors.Black) { Opacity = .2 }));
+        public static readonly DependencyProperty DialogOverlayProperty =
+            DependencyProperty.Register("DialogOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(Brushes.Black));
+
+        [Category("Dialog")]
+        public double DialogOverlayOpacity
+        {
+            get { return (double)GetValue(DialogOverlayOpacityProperty); }
+            set { SetValue(DialogOverlayOpacityProperty, value); }
+        }
+        public static readonly DependencyProperty DialogOverlayOpacityProperty =
+            DependencyProperty.Register("DialogOverlayOpacity", typeof(double), typeof(DialogBase), new PropertyMetadata(0.2));
 
         [Category("Dialog")]
         public Effect DialogParentEffect
@@ -297,6 +299,7 @@ namespace ClinicalOffice.WPF.Dialogs
         virtual protected bool OnDialogNo() => OnClosing(DialogResult.No);
         virtual protected bool OnClosing(DialogResult result) => true;
         #endregion
+        #region Overrides
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
@@ -306,23 +309,23 @@ namespace ClinicalOffice.WPF.Dialogs
             _OldContentContainer.Arrange(new Rect(_OldContentContainer.DesiredSize));
             SetBackgroundBrush(_OldContentContainer);
         }
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        #endregion
+        #region Internal methods
+        internal void OkCommandExecuted() { if (OnDialogOk()) Close(); }
+        internal void CancelCommandExecuted() { if (OnDialogCancel()) Close(); }
+        internal void YesCommandExecuted() { if (OnDialogYes()) Close(); }
+        internal void NoCommandExecuted() { if (OnDialogNo()) Close(); }
+        internal void ReturnKeyCommandExecuted()
         {
-            e.Handled = true;
-            if (e.Key == Key.Return)
-            {
-                if (_OkButton != null) _OkButton.Command?.Execute(null);
-                else if (_YesButton != null) _YesButton.Command?.Execute(null);
-                else e.Handled = false;
-            }
-            else if (e.Key == Key.Escape)
-            {
-                if (_CancelButton != null) _CancelButton.Command?.Execute(null);
-                else if (_NoButton != null) _NoButton.Command?.Execute(null);
-                else e.Handled = false;
-            }
-            base.OnPreviewKeyDown(e);
+            if (DialogButtons == DialogButtons.Ok || DialogButtons == DialogButtons.OkCancel) OkCommandExecuted();
+            else if (DialogButtons == DialogButtons.YesNo || DialogButtons == DialogButtons.YesNoCancel) YesCommandExecuted();
         }
+        internal void EscapeKeyCommandExecuted()
+        {
+            if (DialogButtons == DialogButtons.YesNoCancel || DialogButtons == DialogButtons.OkCancel) CancelCommandExecuted();
+
+        }
+        #endregion
         #region Private methods
         void CreateControls()
         {
@@ -334,13 +337,15 @@ namespace ClinicalOffice.WPF.Dialogs
 
             _ParentBackgroundOverlayColor = new Border();
             BindingOperations.SetBinding(_ParentBackgroundOverlayColor, BackgroundProperty,
-                                         new Binding(nameof(DialogParentOverlay)) { Source = this });
+                                         new Binding(nameof(DialogOverlay)) { Source = this });
+            BindingOperations.SetBinding(_ParentBackgroundOverlayColor, OpacityProperty,
+                                         new Binding(nameof(DialogOverlayOpacity)) { Source = this });
             Grid.SetRowSpan(_ParentBackgroundOverlayColor, 5);
             Panel.SetZIndex(_ParentBackgroundOverlayColor, 1);
 
             _OldContentContainer = new ContentControl();
 
-            _DialogPartsControl = new DialogPartsControl();
+            _DialogPartsControl = new DialogPartsControl(this);
             Grid.SetRow(_DialogPartsControl, 1);
             Panel.SetZIndex(_DialogPartsControl, 3);
             BindingOperations.SetBinding(_DialogPartsControl.DialogTitleControl, DialogTitleControl.ContentProperty,
@@ -363,10 +368,6 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogGrid.Children.Add(_DialogPartsControl);
             base.Content = _DialogGrid;
 
-            CommandBindings.Add(new CommandBinding(DialogCommands.Ok, OkCommandExecuted));
-            CommandBindings.Add(new CommandBinding(DialogCommands.Cancel, CancelCommandExecuted));
-            CommandBindings.Add(new CommandBinding(DialogCommands.Yes, YesCommandExecuted));
-            CommandBindings.Add(new CommandBinding(DialogCommands.No, NoCommandExecuted));
         }
         void CreateButtons()
         {
@@ -412,10 +413,6 @@ namespace ClinicalOffice.WPF.Dialogs
             return b;
         }
 
-        void OkCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogOk()) Close(); }
-        void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogCancel()) Close(); }
-        void YesCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogYes()) Close(); }
-        void NoCommandExecuted(object sender, ExecutedRoutedEventArgs e) { if (OnDialogNo()) Close(); }
         public void KeyEventHandler(Object sender, KeyEventArgs e) { }
         void SetBackgroundBrush(ContentControl parent)
         {
@@ -438,8 +435,7 @@ namespace ClinicalOffice.WPF.Dialogs
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;
             parent.Content = this;
-            this.CreateInAnimation();
-            FocusManager.SetFocusedElement(this, _DialogPartsControl);
+            this.CreateInAnimation(() => FocusManager.SetFocusedElement(this, _DialogPartsControl));
         }
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
         {

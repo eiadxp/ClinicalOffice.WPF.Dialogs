@@ -81,8 +81,32 @@ namespace ClinicalOffice.WPF.Dialogs
             current.SetValue(DialogBackgroundProperty, value);
         }
         public static readonly DependencyProperty DialogBackgroundProperty =
-            DependencyProperty.RegisterAttached("DialogBackground", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.LightBlue)));
+            DependencyProperty.RegisterAttached("DialogBackground", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(Brushes.LightBlue));
         public static Brush DialogBackground { get => GetDialogBackground(null); set => SetDialogBackground(null, value); }
+
+        public static Brush GetDialogOverlay(Application obj)
+        {
+            return (Brush)current.GetValue(DialogOverlayProperty);
+        }
+        public static void SetDialogOverlay(Application obj, Brush value)
+        {
+            current.SetValue(DialogOverlayProperty, value);
+        }
+        public static readonly DependencyProperty DialogOverlayProperty =
+            DependencyProperty.RegisterAttached("DialogOverlay", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(Brushes.Black));
+        public static Brush DialogOverlay { get => GetDialogOverlay(null); set => SetDialogOverlay(null, value); }
+
+        public static double GetDialogOverlayOpacity(Application obj)
+        {
+            return (double)current.GetValue(DialogOverlayOpacityProperty);
+        }
+        public static void SetDialogOverlayOpacity(Application obj, double value)
+        {
+            current.SetValue(DialogOverlayOpacityProperty, value);
+        }
+        public static readonly DependencyProperty DialogOverlayOpacityProperty =
+            DependencyProperty.RegisterAttached("DialogOverlayOpacity", typeof(double), typeof(DialogParameters), new PropertyMetadata(0.2));
+        public static double DialogOverlayOpacity { get => GetDialogOverlayOpacity(null); set => SetDialogOverlayOpacity(null, value); }
 
         public static Color GetMessageErrorColor(Application obj)
         {

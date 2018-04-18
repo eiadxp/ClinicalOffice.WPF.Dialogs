@@ -13,5 +13,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public static RoutedUICommand Cancel { get; } = new RoutedUICommand();
         public static RoutedUICommand Yes { get; } = new RoutedUICommand();
         public static RoutedUICommand No { get; } = new RoutedUICommand();
+        public static RoutedUICommand ReturnKey { get; } = new RoutedUICommand();
+        public static RoutedUICommand EscapeKey { get; } = new RoutedUICommand();
     }
 }

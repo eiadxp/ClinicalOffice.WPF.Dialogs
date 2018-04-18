@@ -23,6 +23,8 @@
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="DialogBackGround" Value="{x:Static dialogs:DialogParameters.DialogBackground}"/>
         <Setter Property="DialogEffect" Value="{StaticResource DropShadowEffect}"/>
+        <Setter Property="DialogOverlay" Value="{x:Static dialogs:DialogParameters.DialogOverlay}"/>
+        <Setter Property="DialogOverlayOpacity" Value="{x:Static dialogs:DialogParameters.DialogOverlayOpacity}"/>
     </Style>
     <Style x:Key="{x:Type dialogs:DialogTitleControl}" TargetType="dialogs:DialogTitleControl">
         <Setter Property="Background" Value="{x:Static dialogs:DialogParameters.TitleBackground}"/>

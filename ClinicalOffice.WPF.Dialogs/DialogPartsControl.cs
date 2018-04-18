@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ClinicalOffice.WPF.Dialogs
@@ -29,20 +31,20 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         Border _DialogBackGround;
         public Border DialogBackground { get => _DialogBackGround; }
+        public DialogBase Dialog { get; set; }
 
         static DialogPartsControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DialogPartsControl),
-                new FrameworkPropertyMetadata(typeof(DialogPartsControl)));
-            VerticalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl),
-                new FrameworkPropertyMetadata(VerticalAlignment.Center));
-            HorizontalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl),
-                new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
-            MarginProperty.OverrideMetadata(typeof(DialogPartsControl),
-                new FrameworkPropertyMetadata(new Thickness(15)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DialogPartsControl), new FrameworkPropertyMetadata(typeof(DialogPartsControl)));
+            VerticalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl), new FrameworkPropertyMetadata(VerticalAlignment.Center));
+            HorizontalAlignmentProperty.OverrideMetadata(typeof(DialogPartsControl), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
+            MarginProperty.OverrideMetadata(typeof(DialogPartsControl), new FrameworkPropertyMetadata(new Thickness(15)));
+            FocusableProperty.OverrideMetadata(typeof(DialogPartsControl), new FrameworkPropertyMetadata(true));
         }
-        public DialogPartsControl()
+        public DialogPartsControl(DialogBase dialog)
         {
+            Dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
+
             _MainGrid = new Grid() { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch };
             _MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
             _MainGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
@@ -77,6 +79,21 @@ namespace ClinicalOffice.WPF.Dialogs
             _MainGrid.Children.Add(_DialogBackGround);
 
             Content = _MainGrid;
+
+            CommandBindings.Add(new CommandBinding(DialogCommands.Ok, OkCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.Cancel, CancelCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.Yes, YesCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.No, NoCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.ReturnKey, ReturnExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.EscapeKey, EscapeExecuted));
+            InputBindings.Add(new KeyBinding(DialogCommands.ReturnKey, Key.Return, ModifierKeys.None));
+            InputBindings.Add(new KeyBinding(DialogCommands.EscapeKey, Key.Escape, ModifierKeys.None));
         }
+        void OkCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.OkCommandExecuted(); }
+        void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.CancelCommandExecuted(); }
+        void YesCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.YesCommandExecuted(); }
+        void NoCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.NoCommandExecuted(); }
+        void ReturnExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.ReturnKeyCommandExecuted(); }
+        void EscapeExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.EscapeKeyCommandExecuted(); }
     }
 }

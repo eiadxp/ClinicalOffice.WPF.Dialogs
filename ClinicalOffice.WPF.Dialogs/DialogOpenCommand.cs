@@ -29,6 +29,7 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public DialogBase Dialog { get; set; }
         public ContentControl Parent { get; set; }
+        public bool ParameterAsDataContext { get; set; } = true;
         #region ICommand
         public event EventHandler CanExecuteChanged;
         public bool CanExecute(object parameter)
@@ -40,7 +41,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (DialogType == null && Dialog == null) throw new NullReferenceException("You should set dialog or dialog type.");
             var w = Dialog ?? (Activator.CreateInstance(DialogType) as DialogBase);
             if (w == null) throw new InvalidOperationException("Can not create dialog.");
-            w.DataContext = parameter;
+            if(ParameterAsDataContext) w.DataContext = parameter;
             w.ShowDialog(Parent);
         }
         #endregion
