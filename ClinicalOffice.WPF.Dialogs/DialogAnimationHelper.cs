@@ -30,8 +30,10 @@ namespace ClinicalOffice.WPF.Dialogs
                 case DialogAnimation.ZoomCenter:
                     InZoomCenter(dialog, completeAction, duration);
                     break;
-                case DialogAnimation.None:
                 case DialogAnimation.Custom:
+                    CustomInAnimation(dialog, completeAction, duration);
+                    break;
+                case DialogAnimation.None:
                 default:
                     completeAction?.Invoke();
                     break;
@@ -57,6 +59,8 @@ namespace ClinicalOffice.WPF.Dialogs
                     OutZoomCenter(dialog, completeAction, duration);
                     break;
                 case DialogAnimation.Custom:
+                    CustomOutAnimation(dialog, completeAction, duration);
+                    break;
                 case DialogAnimation.None:
                 default:
                     completeAction?.Invoke();
@@ -77,6 +81,33 @@ namespace ClinicalOffice.WPF.Dialogs
                 completeAction?.Invoke();
             };
             return clock;
+        }
+
+        static void CustomInAnimation(DialogBase dialog, Action completeAction, Duration duration)
+        {
+            var animation = dialog.DialogCustomAnimationIn ?? DialogParameters.DialogCustomAnimationIn;
+            if (animation != null)
+            {
+                var clock = animation.CreateClock();
+                clock.Completed += (a, b) => completeAction?.Invoke();
+            }
+            else
+            {
+                completeAction?.Invoke();
+            }
+        }
+        static void CustomOutAnimation(DialogBase dialog, Action completeAction, Duration duration)
+        {
+            var animation = dialog.DialogCustomAnimationOut ?? DialogParameters.DialogCustomAnimationOut;
+            if (animation != null)
+            {
+                var clock = animation.CreateClock();
+                clock.Completed += (a, b) => completeAction?.Invoke();
+            }
+            else
+            {
+                completeAction?.Invoke();
+            }
         }
 
         static void InFade(DialogBase dialog, Action completeAction, Duration duration)

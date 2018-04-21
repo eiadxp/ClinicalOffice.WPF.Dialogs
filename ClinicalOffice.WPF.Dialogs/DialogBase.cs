@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 
 namespace ClinicalOffice.WPF.Dialogs
@@ -241,6 +242,15 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
 
         [Category("Dialog")]
+        public AnimationTimeline DialogCustomAnimationIn
+        {
+            get { return (AnimationTimeline)GetValue(DialogCustomAnimationInProperty); }
+            set { SetValue(DialogCustomAnimationInProperty, value); }
+        }
+        public static readonly DependencyProperty DialogCustomAnimationInProperty =
+            DependencyProperty.Register("DialogCustomAnimationIn", typeof(AnimationTimeline), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
         public DialogAnimation DialogAnimationOut
         {
             get { return (DialogAnimation)GetValue(DialogAnimationOutProperty); }
@@ -248,6 +258,15 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogAnimationOutProperty =
             DependencyProperty.Register("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
+
+        [Category("Dialog")]
+        public AnimationTimeline DialogCustomAnimationOut
+        {
+            get { return (AnimationTimeline)GetValue(DialogCustomAnimationOutProperty); }
+            set { SetValue(DialogCustomAnimationOutProperty, value); }
+        }
+        public static readonly DependencyProperty DialogCustomAnimationOutProperty =
+            DependencyProperty.Register("DialogCustomAnimationOut", typeof(AnimationTimeline), typeof(DialogBase), new PropertyMetadata(null));
 
         /// <summary>
         /// The duration of show and hide animations of the dialog.

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace ClinicalOffice.WPF.Dialogs
 {
@@ -168,6 +169,18 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.RegisterAttached("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Fade));
         public static DialogAnimation DialogAnimationIn { get => GetDialogAnimationIn(null); set => SetDialogAnimationIn(null, value); }
 
+        public static AnimationTimeline GetDialogCustomAnimationIn(Application obj)
+        {
+            return (AnimationTimeline)current.GetValue(DialogCustomAnimationInProperty);
+        }
+        public static void SetDialogCustomAnimationIn(Application obj, AnimationTimeline value)
+        {
+            current.SetValue(DialogCustomAnimationInProperty, value);
+        }
+        public static readonly DependencyProperty DialogCustomAnimationInProperty =
+            DependencyProperty.RegisterAttached("DialogCustomAnimationIn", typeof(AnimationTimeline), typeof(DialogParameters), new PropertyMetadata(null));
+        public static AnimationTimeline DialogCustomAnimationIn { get => GetDialogCustomAnimationIn(null); set => SetDialogCustomAnimationIn(null, value); }
+
         public static DialogAnimation GetDialogAnimationOut(Application obj)
         {
             return (DialogAnimation)current.GetValue(DialogAnimationOutProperty);
@@ -179,6 +192,18 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationOutProperty =
             DependencyProperty.RegisterAttached("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogParameters), new PropertyMetadata(DialogAnimation.Fade));
         public static DialogAnimation DialogAnimationOut { get => GetDialogAnimationOut(null); set => SetDialogAnimationOut(null, value); }
+
+        public static AnimationTimeline GetDialogCustomAnimationOut(Application obj)
+        {
+            return (AnimationTimeline)current.GetValue(DialogCustomAnimationOutProperty);
+        }
+        public static void SetDialogCustomAnimationOut(Application obj, AnimationTimeline value)
+        {
+            current.SetValue(DialogCustomAnimationOutProperty, value);
+        }
+        public static readonly DependencyProperty DialogCustomAnimationOutProperty =
+            DependencyProperty.RegisterAttached("DialogCustomAnimationOut", typeof(AnimationTimeline), typeof(DialogParameters), new PropertyMetadata(null));
+        public static AnimationTimeline DialogCustomAnimationOut { get => GetDialogCustomAnimationOut(null); set => SetDialogCustomAnimationOut(null, value); }
 
         public static Duration GetDialogAnimationDuration(Application obj)
         {
