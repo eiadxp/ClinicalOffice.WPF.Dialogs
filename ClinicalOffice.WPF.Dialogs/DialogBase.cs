@@ -13,31 +13,6 @@ using System.Windows.Media.Effects;
 
 namespace ClinicalOffice.WPF.Dialogs
 {
-    public enum DialogButtons
-    {
-        None,
-        Ok,
-        OkCancel,
-        YesNo,
-        YesNoCancel
-    }
-    public enum DialogResult
-    {
-        None,
-        Ok,
-        Cancel,
-        Yes,
-        No
-    }
-    public enum DialogAnimation
-    {
-        None,
-        Custom,
-        Global,
-        Fade,
-        Zoom,
-        ZoomCenter
-    }
     [ContentProperty(nameof(DialogContent))]
     public class DialogBase : UserControl
     {
@@ -85,6 +60,13 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogCloseResetEvent = new ManualResetEvent(false);
         }
         #region Properties
+        /// <summary>
+        /// This is a shadow property to map the content of this control to DialogContent property.
+        /// </summary>
+        /// <remarks>
+        /// NEVER USE THE base.Content OF THE DIALOG TO SET ITS CONTENT.
+        /// You can use either Content or DialogContent properties of DialogBase class to set the contents of the dialog.
+        /// </remarks>
         public new object Content { get => DialogContent; set => DialogContent = value; }
         public DialogPartsControl DialogPartsControl { get => _DialogPartsControl; }
 
@@ -246,6 +228,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogBackGroundProperty =
             DependencyProperty.Register("DialogBackGround", typeof(Brush), typeof(DialogBase), new PropertyMetadata(DialogParameters.BorderBackground));
 
+        /// <summary>
+        /// An enum that specify the in (show) animation of <see cref="DialogBase" /></summary>
+        /// <remarks>The library include some ready to use animation like <see cref="DialogAnimation.Fade" />.</remarks>
         [Category("Dialog")]
         public DialogAnimation DialogAnimationIn
         {
@@ -264,6 +249,13 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationOutProperty =
             DependencyProperty.Register("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
 
+        /// <summary>
+        /// The duration of show and hide animations of the dialog.
+        /// </summary>
+        /// <remarks>
+        /// The default value is <see cref="Duration.Automatic"/> static constant, which indicate that the value will be used from <see cref="DialogParameters.DialogAnimationDuration"/> static property.
+        /// However if the value of <see cref="DialogParameters.DialogAnimationDuration"/> static property is also <see cref="Duration.Automatic"/> static constant the value of 100 ms is used
+        /// </remarks>
         [Category("Dialog")]
         public Duration DialogAnimationDuration
         {
@@ -272,6 +264,98 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogAnimationDurationProperty =
             DependencyProperty.Register("DialogAnimationDuration", typeof(Duration), typeof(DialogBase), new PropertyMetadata(Duration.Automatic));
+
+        [Category("Dialog")]
+        public UIElement DialogFocusedElement
+        {
+            get { return (UIElement)GetValue(DialogFocusedElementProperty); }
+            set { SetValue(DialogFocusedElementProperty, value); }
+        }
+        public static readonly DependencyProperty DialogFocusedElementProperty =
+            DependencyProperty.Register("DialogFocusedElement", typeof(UIElement), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public bool DialogAutoClose
+        {
+            get { return (bool)GetValue(DialogAutoCloseProperty); }
+            set { SetValue(DialogAutoCloseProperty, value); }
+        }
+        public static readonly DependencyProperty DialogAutoCloseProperty =
+            DependencyProperty.Register("DialogAutoClose", typeof(bool), typeof(DialogBase), new PropertyMetadata(true));
+
+        [Category("Dialog")]
+        public ICommand DialogOkCommand
+        {
+            get { return (ICommand)GetValue(DialogOkCommandProperty); }
+            set { SetValue(DialogOkCommandProperty, value); }
+        }
+        public static readonly DependencyProperty DialogOkCommandProperty =
+            DependencyProperty.Register("DialogOkCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public object DialogOkCommandParameter
+        {
+            get { return (object)GetValue(DialogOkCommandParameterProperty); }
+            set { SetValue(DialogOkCommandParameterProperty, value); }
+        }
+        public static readonly DependencyProperty DialogOkCommandParameterProperty =
+            DependencyProperty.Register("DialogOkCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public ICommand DialogCancelCommand
+        {
+            get { return (ICommand)GetValue(DialogCancelCommandProperty); }
+            set { SetValue(DialogCancelCommandProperty, value); }
+        }
+        public static readonly DependencyProperty DialogCancelCommandProperty =
+            DependencyProperty.Register("DialogCancelCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public object DialogCancelCommandParameter
+        {
+            get { return (object)GetValue(DialogCancelCommandParameterProperty); }
+            set { SetValue(DialogCancelCommandParameterProperty, value); }
+        }
+        public static readonly DependencyProperty DialogCancelCommandParameterProperty =
+            DependencyProperty.Register("DialogCancelCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public ICommand DialogYesCommand
+        {
+            get { return (ICommand)GetValue(DialogYesCommandProperty); }
+            set { SetValue(DialogYesCommandProperty, value); }
+        }
+        public static readonly DependencyProperty DialogYesCommandProperty =
+            DependencyProperty.Register("DialogYesCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public object DialogYesCommandParameter
+        {
+            get { return (object)GetValue(DialogYesCommandParameterProperty); }
+            set { SetValue(DialogYesCommandParameterProperty, value); }
+        }
+        public static readonly DependencyProperty DialogYesCommandParameterProperty =
+            DependencyProperty.Register("DialogYesCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public ICommand DialogNoCommand
+        {
+            get { return (ICommand)GetValue(DialogNoCommandProperty); }
+            set { SetValue(DialogNoCommandProperty, value); }
+        }
+        public static readonly DependencyProperty DialogNoCommandProperty =
+            DependencyProperty.Register("DialogNoCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
+
+        [Category("Dialog")]
+        public object DialogNoCommandParameter
+        {
+            get { return (object)GetValue(DialogNoCommandParameterProperty); }
+            set { SetValue(DialogNoCommandParameterProperty, value); }
+        }
+        public static readonly DependencyProperty DialogNoCommandParameterProperty =
+            DependencyProperty.Register("DialogNoCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
+
+
         #endregion
         #region Virtsual methods
         virtual protected ButtonBase OnCreateButton(object content)
@@ -293,10 +377,10 @@ namespace ClinicalOffice.WPF.Dialogs
             }
             return new Button() { Content = content };
         }
-        virtual protected bool OnDialogOk() => OnClosing(DialogResult.Ok);
-        virtual protected bool OnDialogCancel() => OnClosing(DialogResult.Cancel);
-        virtual protected bool OnDialogYes() => OnClosing(DialogResult.Yes);
-        virtual protected bool OnDialogNo() => OnClosing(DialogResult.No);
+        virtual protected bool OnDialogOk() => true;
+        virtual protected bool OnDialogCancel() => true;
+        virtual protected bool OnDialogYes() => true;
+        virtual protected bool OnDialogNo() => true;
         virtual protected bool OnClosing(DialogResult result) => true;
         #endregion
         #region Overrides
@@ -311,15 +395,57 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         #endregion
         #region Internal methods
-        internal void OkCommandExecuted() { if (OnDialogOk()) Close(); }
-        internal void CancelCommandExecuted() { if (OnDialogCancel()) Close(); }
-        internal void YesCommandExecuted() { if (OnDialogYes()) Close(); }
-        internal void NoCommandExecuted() { if (OnDialogNo()) Close(); }
+        /// <summary>
+        /// This method is called from DialogPrtsControl when Ok button is clicked.
+        /// It is not related directly to DialogOkCommand in this class.
+        /// However the DialogOkCommand will be executed when this method is called through OnDialogOk method.
+        /// </summary>
+        internal void OkCommandExecuted()
+        {
+            DialogOkCommand?.Execute(DialogOkCommandParameter);
+            if (OnDialogOk() && DialogAutoClose && OnClosing(DialogResult.Ok)) Close();
+        }
+        /// <summary>
+        /// This method is called from DialogPrtsControl when Cancel button is clicked.
+        /// It is not related directly to DialogCancelCommand in this class.
+        /// However the DialogCancelCommand will be executed when this method is called through OnDialogCancel method.
+        /// </summary>
+        internal void CancelCommandExecuted()
+        {
+            DialogCancelCommand?.Execute(DialogCancelCommandParameter);
+            if (OnDialogCancel() && DialogAutoClose && OnClosing(DialogResult.Cancel)) Close();
+        }
+        /// <summary>
+        /// This method is called from DialogPrtsControl when Yes button is clicked.
+        /// It is not related directly to DialogYesCommand in this class.
+        /// However the DialogYesCommand will be executed when this method is called through OnDialogYes method.
+        /// </summary>
+        internal void YesCommandExecuted()
+        {
+            DialogYesCommand?.Execute(DialogYesCommandParameter);
+            if (OnDialogYes() && DialogAutoClose && OnClosing(DialogResult.Yes)) Close();
+        }
+        /// <summary>
+        /// This method is called from DialogPrtsControl when 'No' button is clicked.
+        /// It is not related directly to DialogNoCommand in this class.
+        /// However the DialogNoCommand will be executed when this method is called through OnDialogNo method.
+        /// </summary>
+        internal void NoCommandExecuted()
+        {
+            DialogNoCommand?.Execute(DialogNoCommandParameter);
+            if (OnDialogNo() && DialogAutoClose && OnClosing(DialogResult.No)) Close();
+        }
+        /// <summary>
+        /// This method is called from DialogPrtsControl when Return key is pressed and it will simulate the default button click.
+        /// </summary>
         internal void ReturnKeyCommandExecuted()
         {
             if (DialogButtons == DialogButtons.Ok || DialogButtons == DialogButtons.OkCancel) OkCommandExecuted();
             else if (DialogButtons == DialogButtons.YesNo || DialogButtons == DialogButtons.YesNoCancel) YesCommandExecuted();
         }
+        /// <summary>
+        /// This method is called from DialogPrtsControl when Escape key is pressed and it will simulate the cancel button click.
+        /// </summary>
         internal void EscapeKeyCommandExecuted()
         {
             if (DialogButtons == DialogButtons.YesNoCancel || DialogButtons == DialogButtons.OkCancel) CancelCommandExecuted();
@@ -435,7 +561,7 @@ namespace ClinicalOffice.WPF.Dialogs
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;
             parent.Content = this;
-            this.CreateInAnimation(() => FocusManager.SetFocusedElement(this, _DialogPartsControl));
+            this.CreateInAnimation(() => FocusManager.SetFocusedElement(this, DialogFocusedElement?? _DialogPartsControl));
         }
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
         {
@@ -450,6 +576,7 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             this.CreateOutAnimation(InternalClose);
         }
+        public void CloseCommandExecuted(object target, ExecutedRoutedEventArgs e) { Close(); }
         public void SetTheme(Brush themeBrush)
         {
             _DialogPartsControl.Background = themeBrush;

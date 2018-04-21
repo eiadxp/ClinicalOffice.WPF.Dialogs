@@ -18,7 +18,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (type == DialogAnimation.Global) type = DialogAnimation.None;
             var duration = dialog.DialogAnimationDuration;
             if (duration == Duration.Automatic) duration = DialogParameters.DialogAnimationDuration;
-            if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(300));
+            if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(100));
             switch (type)
             {
                 case DialogAnimation.Fade:
@@ -44,7 +44,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (type == DialogAnimation.Global) type = DialogAnimation.None;
             var duration = dialog.DialogAnimationDuration;
             if (duration == Duration.Automatic) duration = DialogParameters.DialogAnimationDuration;
-            if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(300));
+            if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(100));
             switch (type)
             {
                 case DialogAnimation.Fade:

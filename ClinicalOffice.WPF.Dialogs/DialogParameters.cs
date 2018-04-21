@@ -191,5 +191,17 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationDurationProperty =
             DependencyProperty.RegisterAttached("DialogAnimationDuration", typeof(Duration), typeof(DialogParameters), new PropertyMetadata(new Duration(TimeSpan.FromMilliseconds(100))));
         public static Duration DialogAnimationDuration { get => GetDialogAnimationDuration(null); set => SetDialogAnimationDuration(null, value); }
+
+        public static bool GetDialogAutoClose(Application obj)
+        {
+            return (bool)current.GetValue(DialogAutoCloseProperty);
+        }
+        public static void SetDialogAutoClose(Application obj, bool value)
+        {
+            current.SetValue(DialogAutoCloseProperty, value);
+        }
+        public static readonly DependencyProperty DialogAutoCloseProperty =
+            DependencyProperty.RegisterAttached("DialogAutoClose", typeof(bool), typeof(DialogParameters), new PropertyMetadata(true));
+        public static bool DialogAutoClose { get => GetDialogAutoClose(null); set => SetDialogAutoClose(null, value); }
     }
 }
