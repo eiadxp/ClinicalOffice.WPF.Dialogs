@@ -580,8 +580,12 @@ namespace ClinicalOffice.WPF.Dialogs
             var duration = DialogAnimationDuration;
             if (duration == Duration.Automatic) duration = DialogParameters.DialogAnimationDuration;
             if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(100));
+            var oldTransform = RenderTransform;
+            var oldOrigfin = RenderTransformOrigin;
+            var oldOpacity = Opacity;
             Storyboard story;
-            if(type== DialogAnimation.Custom)
+            story = null;
+            if(type == DialogAnimation.Custom)
             {
                 story = DialogCustomAnimationIn ?? DialogParameters.DialogCustomAnimationIn;
                 if (story == null) type = DialogAnimation.None;
@@ -599,27 +603,26 @@ namespace ClinicalOffice.WPF.Dialogs
                     story.Children.Add(fade);
                     break;
                 case DialogAnimation.Zoom:
-                    var trans = new ScaleTransform();
-                    RenderTransform = trans;
+                    RenderTransform = new ScaleTransform();
                     var zoom = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
-                    Storyboard.SetTarget(zoom, trans);
-                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    Storyboard.SetTarget(zoom, this);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleXProperty));
                     story.Children.Add(zoom);
                     zoom = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
-                    Storyboard.SetTarget(zoom, trans);
-                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    Storyboard.SetTarget(zoom, this);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleYProperty));
                     story.Children.Add(zoom);
                     break;
                 case DialogAnimation.ZoomCenter:
                     RenderTransformOrigin = new Point(.5, .5);
                     RenderTransform = new ScaleTransform();
                     var zoomCenter = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
-                    Storyboard.SetTarget(zoomCenter, RenderTransform);
-                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    Storyboard.SetTarget(zoomCenter, this);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleXProperty));
                     story.Children.Add(zoomCenter);
                     zoomCenter = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
-                    Storyboard.SetTarget(zoomCenter, RenderTransform);
-                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    Storyboard.SetTarget(zoomCenter, this);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleYProperty));
                     story.Children.Add(zoomCenter);
                     break;
                 case DialogAnimation.Custom:
@@ -629,7 +632,15 @@ namespace ClinicalOffice.WPF.Dialogs
                     return;
                     break;
             }
-            story.Begin(this);
+            void AnimationInCompleted(object sender, EventArgs e)
+            {
+                if (sender is Timeline a) a.Completed -= AnimationInCompleted;
+                RenderTransform = oldTransform;
+                RenderTransformOrigin = oldOrigfin;
+                Opacity = oldOpacity;
+            }
+            story.Completed += AnimationInCompleted;
+            story.Begin();
         }
         void CreateOutAnimation()
         {
@@ -643,7 +654,7 @@ namespace ClinicalOffice.WPF.Dialogs
             var oldOrigfin = RenderTransformOrigin;
             var oldOpacity = Opacity;
             Storyboard story;
-            if(type== DialogAnimation.Custom)
+            if (type== DialogAnimation.Custom)
             {
                 story = DialogCustomAnimationOut ?? DialogParameters.DialogCustomAnimationOut;
                 if (story == null) type = DialogAnimation.None;
@@ -663,32 +674,32 @@ namespace ClinicalOffice.WPF.Dialogs
                 case DialogAnimation.Zoom:
                     RenderTransform = new ScaleTransform();
                     var zoom = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
-                    Storyboard.SetTarget(zoom, RenderTransform);
-                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    Storyboard.SetTarget(zoom, this);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleXProperty));
                     story.Children.Add(zoom);
                     zoom = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
-                    Storyboard.SetTarget(zoom, RenderTransform);
-                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    Storyboard.SetTarget(zoom, this);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleYProperty));
                     story.Children.Add(zoom);
                     break;
                 case DialogAnimation.ZoomCenter:
                     RenderTransformOrigin = new Point(.5, .5);
                     RenderTransform = new ScaleTransform();
                     var zoomCenter = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
-                    Storyboard.SetTarget(zoomCenter, RenderTransform);
-                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    Storyboard.SetTarget(zoomCenter, this);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleXProperty));
                     story.Children.Add(zoomCenter);
                     zoomCenter = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
-                    Storyboard.SetTarget(zoomCenter, RenderTransform);
-                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    Storyboard.SetTarget(zoomCenter, this);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath("(0).(1)", RenderTransformProperty, ScaleTransform.ScaleYProperty));
                     story.Children.Add(zoomCenter);
                     break;
                 case DialogAnimation.Custom:
                     break;
                 case DialogAnimation.None:
                 default:
+                    InternalClose();
                     return;
-                    break;
             }
             void AnimationOutCompleted(object sender, EventArgs e)
             {
@@ -700,11 +711,6 @@ namespace ClinicalOffice.WPF.Dialogs
             }
             story.Completed += AnimationOutCompleted;
             story.Begin();
-        }
-        void AnimationInCompleted(object sender, EventArgs e)
-        {
-            var a = sender as Timeline;
-            a.Completed -= AnimationInCompleted;
         }
         #endregion
         #region Public Methods
