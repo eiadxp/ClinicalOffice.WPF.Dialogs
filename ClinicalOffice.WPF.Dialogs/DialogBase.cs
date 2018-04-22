@@ -242,13 +242,13 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
 
         [Category("Dialog")]
-        public AnimationTimeline DialogCustomAnimationIn
+        public Storyboard DialogCustomAnimationIn
         {
-            get { return (AnimationTimeline)GetValue(DialogCustomAnimationInProperty); }
+            get { return (Storyboard)GetValue(DialogCustomAnimationInProperty); }
             set { SetValue(DialogCustomAnimationInProperty, value); }
         }
         public static readonly DependencyProperty DialogCustomAnimationInProperty =
-            DependencyProperty.Register("DialogCustomAnimationIn", typeof(AnimationTimeline), typeof(DialogBase), new PropertyMetadata(null));
+            DependencyProperty.Register("DialogCustomAnimationIn", typeof(Storyboard), typeof(DialogBase), new PropertyMetadata(null));
 
         [Category("Dialog")]
         public DialogAnimation DialogAnimationOut
@@ -260,13 +260,13 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
 
         [Category("Dialog")]
-        public AnimationTimeline DialogCustomAnimationOut
+        public Storyboard DialogCustomAnimationOut
         {
-            get { return (AnimationTimeline)GetValue(DialogCustomAnimationOutProperty); }
+            get { return (Storyboard)GetValue(DialogCustomAnimationOutProperty); }
             set { SetValue(DialogCustomAnimationOutProperty, value); }
         }
         public static readonly DependencyProperty DialogCustomAnimationOutProperty =
-            DependencyProperty.Register("DialogCustomAnimationOut", typeof(AnimationTimeline), typeof(DialogBase), new PropertyMetadata(null));
+            DependencyProperty.Register("DialogCustomAnimationOut", typeof(Storyboard), typeof(DialogBase), new PropertyMetadata(null));
 
         /// <summary>
         /// The duration of show and hide animations of the dialog.
@@ -470,6 +470,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (DialogButtons == DialogButtons.YesNoCancel || DialogButtons == DialogButtons.OkCancel) CancelCommandExecuted();
 
         }
+
         #endregion
         #region Private methods
         void CreateControls()
@@ -558,7 +559,6 @@ namespace ClinicalOffice.WPF.Dialogs
             return b;
         }
 
-        public void KeyEventHandler(Object sender, KeyEventArgs e) { }
         void SetBackgroundBrush(ContentControl parent)
         {
             var element = parent?.Content as UIElement;
@@ -571,6 +571,141 @@ namespace ClinicalOffice.WPF.Dialogs
             if (c != null) c.Content = _OldContentContainer.Content;
             _DialogCloseResetEvent.Set();
         }
+
+        void CreateInAnimation()
+        {
+            var type = DialogAnimationIn;
+            if (type == DialogAnimation.Global) type = DialogParameters.DialogAnimationIn;
+            if (type == DialogAnimation.Global) type = DialogAnimation.None;
+            var duration = DialogAnimationDuration;
+            if (duration == Duration.Automatic) duration = DialogParameters.DialogAnimationDuration;
+            if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(100));
+            Storyboard story;
+            if(type== DialogAnimation.Custom)
+            {
+                story = DialogCustomAnimationIn ?? DialogParameters.DialogCustomAnimationIn;
+                if (story == null) type = DialogAnimation.None;
+            }
+            else
+            {
+                story = new Storyboard();
+            }
+            switch (type)
+            {
+                case DialogAnimation.Fade:
+                    var fade = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
+                    Storyboard.SetTarget(fade, this);
+                    Storyboard.SetTargetProperty(fade, new PropertyPath(OpacityProperty));
+                    story.Children.Add(fade);
+                    break;
+                case DialogAnimation.Zoom:
+                    var trans = new ScaleTransform();
+                    RenderTransform = trans;
+                    var zoom = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
+                    Storyboard.SetTarget(zoom, trans);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    story.Children.Add(zoom);
+                    zoom = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
+                    Storyboard.SetTarget(zoom, trans);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    story.Children.Add(zoom);
+                    break;
+                case DialogAnimation.ZoomCenter:
+                    RenderTransformOrigin = new Point(.5, .5);
+                    RenderTransform = new ScaleTransform();
+                    var zoomCenter = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
+                    Storyboard.SetTarget(zoomCenter, RenderTransform);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    story.Children.Add(zoomCenter);
+                    zoomCenter = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
+                    Storyboard.SetTarget(zoomCenter, RenderTransform);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    story.Children.Add(zoomCenter);
+                    break;
+                case DialogAnimation.Custom:
+                    break;
+                case DialogAnimation.None:
+                default:
+                    return;
+                    break;
+            }
+            story.Begin(this);
+        }
+        void CreateOutAnimation()
+        {
+            var type = DialogAnimationOut;
+            if (type == DialogAnimation.Global) type = DialogParameters.DialogAnimationOut;
+            if (type == DialogAnimation.Global) type = DialogAnimation.None;
+            var duration = DialogAnimationDuration;
+            if (duration == Duration.Automatic) duration = DialogParameters.DialogAnimationDuration;
+            if (duration == Duration.Automatic) duration = new Duration(TimeSpan.FromMilliseconds(100));
+            var oldTransform = RenderTransform;
+            var oldOrigfin = RenderTransformOrigin;
+            var oldOpacity = Opacity;
+            Storyboard story;
+            if(type== DialogAnimation.Custom)
+            {
+                story = DialogCustomAnimationOut ?? DialogParameters.DialogCustomAnimationOut;
+                if (story == null) type = DialogAnimation.None;
+            }
+            else
+            {
+                story = new Storyboard();
+            }
+            switch (type)
+            {
+                case DialogAnimation.Fade:
+                    var fade = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
+                    Storyboard.SetTarget(fade, this);
+                    Storyboard.SetTargetProperty(fade, new PropertyPath(OpacityProperty));
+                    story.Children.Add(fade);
+                    break;
+                case DialogAnimation.Zoom:
+                    RenderTransform = new ScaleTransform();
+                    var zoom = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
+                    Storyboard.SetTarget(zoom, RenderTransform);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    story.Children.Add(zoom);
+                    zoom = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
+                    Storyboard.SetTarget(zoom, RenderTransform);
+                    Storyboard.SetTargetProperty(zoom, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    story.Children.Add(zoom);
+                    break;
+                case DialogAnimation.ZoomCenter:
+                    RenderTransformOrigin = new Point(.5, .5);
+                    RenderTransform = new ScaleTransform();
+                    var zoomCenter = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
+                    Storyboard.SetTarget(zoomCenter, RenderTransform);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleXProperty));
+                    story.Children.Add(zoomCenter);
+                    zoomCenter = new DoubleAnimation() { From = 1, To = 0, Duration = duration };
+                    Storyboard.SetTarget(zoomCenter, RenderTransform);
+                    Storyboard.SetTargetProperty(zoomCenter, new PropertyPath(ScaleTransform.ScaleYProperty));
+                    story.Children.Add(zoomCenter);
+                    break;
+                case DialogAnimation.Custom:
+                    break;
+                case DialogAnimation.None:
+                default:
+                    return;
+                    break;
+            }
+            void AnimationOutCompleted(object sender, EventArgs e)
+            {
+                if (sender is Timeline a) a.Completed -= AnimationOutCompleted;
+                RenderTransform = oldTransform;
+                RenderTransformOrigin = oldOrigfin;
+                Opacity = oldOpacity;
+                InternalClose();
+            }
+            story.Completed += AnimationOutCompleted;
+            story.Begin();
+        }
+        void AnimationInCompleted(object sender, EventArgs e)
+        {
+            var a = sender as Timeline;
+            a.Completed -= AnimationInCompleted;
+        }
         #endregion
         #region Public Methods
         public void ShowDialog(ContentControl parent)
@@ -580,7 +715,7 @@ namespace ClinicalOffice.WPF.Dialogs
             SetBackgroundBrush(parent);
             _OldContentContainer.Content = parent.Content;
             parent.Content = this;
-            this.CreateInAnimation(() => FocusManager.SetFocusedElement(this, DialogFocusedElement?? _DialogPartsControl));
+            CreateInAnimation();
         }
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
         {
@@ -593,7 +728,7 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public void Close()
         {
-            this.CreateOutAnimation(InternalClose);
+            CreateOutAnimation();
         }
         public void CloseCommandExecuted(object target, ExecutedRoutedEventArgs e) { Close(); }
         public void SetTheme(Brush themeBrush)
