@@ -41,12 +41,15 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// This is the displayed dialog which has a title, buttons, and contents.
         /// </summary>
-        DialogPartsControl _DialogPartsControl;
+        DialogPartsControl _DialogParts;
         /// <summary>
         /// These will hold the buttons.
         /// </summary>
         ButtonBase _OkButton, _CancelButton, _YesButton, _NoButton;
         #endregion
+        /// <summary>
+        /// Changes default values of some properties.
+        /// </summary>
         static DialogBase()
         {
             /// To enable theming in Theme/Generic.xaml file.
@@ -69,8 +72,15 @@ namespace ClinicalOffice.WPF.Dialogs
         /// You can use either Content or DialogContent properties of DialogBase class to set the contents of the dialog.
         /// </remarks>
         public new object Content { get => DialogContent; set => DialogContent = value; }
-        public DialogPartsControl DialogPartsControl { get => _DialogPartsControl; }
+        public DialogPartsControl DialogParts { get => _DialogParts; }
 
+        /// <summary>
+        /// Type used to create dialog buttons.
+        /// </summary>
+        /// <remarks>
+        /// The buttons are created in <see cref="OnCreateButton" /> virtual method.
+        /// If the value is not derived from <see cref="ButtonBase" /> of the type does not have a parameterless constractor, the dialog will create a normal <see cref="Button" />.
+        /// </remarks>
         [Category("Dialog")]
         public Type DialogButtonType
         {
@@ -80,6 +90,13 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogButtonTypeProperty =
             DependencyProperty.Register("DialogButtonType", typeof(Type), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Effect applied to the dialog.
+        /// </summary>
+        /// <remarks>
+        /// This effect is applied to the dialog parts togather (title, content, and buttons bar).
+        /// The default value in code is <c>null</c>, but an effect of <see cref="DropShadowEffect" /> is applied in the theme file Generic.xaml.
+        /// </remarks>
         [Category("Dialog")]
         public Effect DialogEffect
         {
@@ -89,6 +106,13 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogEffectProperty =
             DependencyProperty.Register("DialogEffect", typeof(Effect), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// The content of title bar.
+        /// </summary>
+        /// <remarks>
+        /// If the value is <c>null</c> the title bar visibility will be changed to <see cref="Visibility.Collapsed" />.
+        /// Use empty string (<see cref="String.Empty" />) if you want an empty title bar.
+        /// </remarks>
         [Category("Dialog")]
         public object DialogTitle
         {
@@ -98,6 +122,10 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogTitleProperty =
             DependencyProperty.Register("DialogTitle", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// The acutal content of the dialog.
+        /// </summary>
+        /// <remarks>Content is displayed between the Title and Buttons bars od the dialog.</remarks>
         [Category("Dialog")]
         public object DialogContent
         {
@@ -107,6 +135,10 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogContentProperty =
             DependencyProperty.Register("DialogContent", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// An enum that specify the visibile buttons in the dialog buttons bar
+        /// </summary>
+        /// <remarks>If set to <see cref="DialogButtons.None" /> the buttons bar will be hidden by setting its visibility to <see cref="Visibility.Collapsed" /></remarks>
         [Category("Dialog")]
         public DialogButtons DialogButtons
         {
@@ -116,8 +148,14 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogButtonsProperty =
             DependencyProperty.Register("DialogButtons", typeof(DialogButtons), typeof(DialogBase),
                 new FrameworkPropertyMetadata(DialogButtons.None, FrameworkPropertyMetadataOptions.AffectsArrange, DialogButtonsChangedCallback));
+        /// <summary>
+        /// This method is called when <see cref="DialogBase.DialogButtons" /> property is changed to create new buttons.
+        /// </summary>
         static void DialogButtonsChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e) => (d as DialogBase)?.CreateButtons();
 
+        /// <summary>
+        /// Result of dialog.
+        /// </summary>
         [Category("Dialog")]
         public DialogResult DialogResult
         {
@@ -127,6 +165,10 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogResultProperty =
             DependencyProperty.Register("DialogResult", typeof(DialogResult), typeof(DialogBase), new PropertyMetadata(DialogResult.None));
 
+        /// <summary>
+        /// Ok button content.
+        /// </summary>
+        /// <value>Default value is string "Ok".</value>
         [Category("Dialog")]
         public object DialogOkContent
         {
@@ -135,12 +177,19 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogOkContentProperty =
             DependencyProperty.Register("DialogOkContent", typeof(object), typeof(DialogBase), new PropertyMetadata("Ok"));
+        /// <summary>
+        /// This method is called when <see cref="DialogBase.DialogOkContent" /> property is changed to create new buttons.
+        /// </summary>
         static void DialogOkContentChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dialog = d as DialogBase;
             if (dialog?._OkButton != null) dialog._OkButton.Content = e.NewValue;
         }
 
+        /// <summary>
+        /// Cancel button content.
+        /// </summary>
+        /// <value>Default value is string "No".</value>
         [Category("Dialog")]
         public object DialogCancelContent
         {
@@ -149,12 +198,19 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogCancelContentProperty =
             DependencyProperty.Register("DialogCancelContent", typeof(object), typeof(DialogBase), new PropertyMetadata("Cancel"));
+        /// <summary>
+        /// This method is called when <see cref="DialogBase.DialogCancelContent" /> property is changed to create new buttons.
+        /// </summary>
         static void DialogCancelContentChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dialog = d as DialogBase;
             if (dialog?._CancelButton != null) dialog._CancelButton.Content = e.NewValue;
         }
 
+        /// <summary>
+        /// Yes button content.
+        /// </summary>
+        /// <value>Default value is string "Yes".</value>
         [Category("Dialog")]
         public object DialogYesContent
         {
@@ -163,12 +219,19 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogYesContentProperty =
             DependencyProperty.Register("DialogYesContent", typeof(object), typeof(DialogBase), new PropertyMetadata("Yes"));
+        /// <summary>
+        /// This method is called when <see cref="DialogBase.DialogYesContent" /> property is changed to create new buttons.
+        /// </summary>
         static void DialogYesContentChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dialog = d as DialogBase;
             if (dialog?._YesButton != null) dialog._YesButton.Content = e.NewValue;
         }
 
+        /// <summary>
+        /// No button content.
+        /// </summary>
+        /// <value>Default value is string "No".</value>
         [Category("Dialog")]
         public object DialogNoContent
         {
@@ -177,12 +240,18 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static readonly DependencyProperty DialogNoContentProperty =
             DependencyProperty.Register("DialogNoContent", typeof(object), typeof(DialogBase), new PropertyMetadata("No"));
+        /// <summary>
+        /// This method is called when <see cref="DialogBase.DialogNoContent" /> property is changed to create new buttons.
+        /// </summary>
         static void DialogNoContentChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dialog = d as DialogBase;
             if (dialog?._NoButton != null) dialog._NoButton.Content = e.NewValue;
         }
 
+        /// <summary>
+        /// A style that is applied to dialog buttons to give a custom universal look.
+        /// </summary>
         [Category("Dialog")]
         public Style DialogButtonStyle
         {
@@ -192,6 +261,11 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogButtonStyleProperty =
             DependencyProperty.Register("DialogButtonStyle", typeof(Style), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Brush used to paint over the parent content.
+        /// </summary>
+        /// <remarks>Use this property with <see cref="DialogOverlayOpacity" /> property to control the overlay that cover the parent content.</remarks>
+        /// <value>Default value is <see cref="Brushes.Black" />.</value>
         [Category("Dialog")]
         public Brush DialogOverlay
         {
@@ -201,6 +275,11 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogOverlayProperty =
             DependencyProperty.Register("DialogOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(Brushes.Black));
 
+        /// <summary>
+        /// Opacity ov overlay that cover the parent content.
+        /// </summary>
+        /// <remarks>Use this property with <see cref="DialogOverlay" /> property to control the overlay that cover the parent content.</remarks>
+        /// <value>Default value is 0.2</value>
         [Category("Dialog")]
         public double DialogOverlayOpacity
         {
@@ -210,6 +289,11 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogOverlayOpacityProperty =
             DependencyProperty.Register("DialogOverlayOpacity", typeof(double), typeof(DialogBase), new PropertyMetadata(0.2));
 
+        /// <summary>
+        /// Effects applied to parent content.
+        /// </summary>
+        /// <remarks>The effect is not applied directly to the parent control content, it is applied to a control that will hold the render result of parent content.</remarks>
+        /// <value>Default value is <see cref="BlureEffect" />.</value>
         [Category("Dialog")]
         public Effect DialogParentEffect
         {
@@ -220,6 +304,13 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogParentEffect", typeof(Effect), typeof(DialogBase), new PropertyMetadata(new BlurEffect()));
 
 
+        /// <summary>
+        /// Brush used to paint the dialog background
+        /// </summary>
+        /// <remarks>
+        /// The dialog background cover the area under: dialog title, dialog content, and dialog buttons bar.
+        /// It is very common to use this property to set the theme of the dialog and set the remainig dialog parts (title, contents, buttons bar) to semi transparent brushes to give a look of a theme.
+        /// </remarks>
         [Category("Dialog")]
         public Brush DialogBackGround
         {
@@ -241,6 +332,10 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationInProperty =
             DependencyProperty.Register("DialogAnimationIn", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
 
+        /// <summary>
+        /// Storyboard used to play in (show) animation when the dialog is shown.
+        /// </summary>
+        /// <remarks>You do not need to start this storyboard. It will be played automaticly after showing the dialog</remarks>
         [Category("Dialog")]
         public Storyboard DialogCustomAnimationIn
         {
@@ -250,6 +345,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogCustomAnimationInProperty =
             DependencyProperty.Register("DialogCustomAnimationIn", typeof(Storyboard), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// An enum that specify the out (hide)animation of <see cref="DialogBase" /></summary>
+        /// <remarks>The library include some ready to use animation like <see cref="DialogAnimation.Fade" />.</remarks>
         [Category("Dialog")]
         public DialogAnimation DialogAnimationOut
         {
@@ -259,6 +357,10 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationOutProperty =
             DependencyProperty.Register("DialogAnimationOut", typeof(DialogAnimation), typeof(DialogBase), new PropertyMetadata(DialogAnimation.Global));
 
+        /// <summary>
+        /// Storyboard used to play out (hide) animation when the dialog is about to close.
+        /// </summary>
+        /// <remarks>You do not need to start this storyboard. It will be played automaticly before hiding the dialog</remarks>
         [Category("Dialog")]
         public Storyboard DialogCustomAnimationOut
         {
@@ -284,6 +386,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAnimationDurationProperty =
             DependencyProperty.Register("DialogAnimationDuration", typeof(Duration), typeof(DialogBase), new PropertyMetadata(Duration.Automatic));
 
+        /// <summary>
+        /// The element that will got focus when the dialog is first shown.
+        /// </summary>
         [Category("Dialog")]
         public UIElement DialogFocusedElement
         {
@@ -293,6 +398,14 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogFocusedElementProperty =
             DependencyProperty.Register("DialogFocusedElement", typeof(UIElement), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Indicate weather this dialog will be closed when any of its buuton clicked.
+        /// </summary>
+        /// <remarks>Set this property to <c>false</c> if you want to verify dialog content and closed only if it is valid.</remarks>
+        /// <value>
+        /// if <c>true</c> the dialog will be closed after any of its button is clicked.
+        /// If <c>false</c> the dialog will be closed manualy only.
+        /// </value>
         [Category("Dialog")]
         public bool DialogAutoClose
         {
@@ -302,6 +415,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAutoCloseProperty =
             DependencyProperty.Register("DialogAutoClose", typeof(bool), typeof(DialogBase), new PropertyMetadata(true));
 
+        /// <summary>
+        /// Command that will be executed when ok button is pressed.
+        /// </summary>
         [Category("Dialog")]
         public ICommand DialogOkCommand
         {
@@ -311,6 +427,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogOkCommandProperty =
             DependencyProperty.Register("DialogOkCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Parameter passed to <see cref="DialogOkCommand" /> when executed.
+        /// </summary>
         [Category("Dialog")]
         public object DialogOkCommandParameter
         {
@@ -320,6 +439,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogOkCommandParameterProperty =
             DependencyProperty.Register("DialogOkCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Command that will be executed when cancel button is pressed.
+        /// </summary>
         [Category("Dialog")]
         public ICommand DialogCancelCommand
         {
@@ -329,6 +451,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogCancelCommandProperty =
             DependencyProperty.Register("DialogCancelCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Parameter passed to <see cref="DialogCancelCommand" /> when executed.
+        /// </summary>
         [Category("Dialog")]
         public object DialogCancelCommandParameter
         {
@@ -338,6 +463,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogCancelCommandParameterProperty =
             DependencyProperty.Register("DialogCancelCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Command that will be executed when yes button is pressed.
+        /// </summary>
         [Category("Dialog")]
         public ICommand DialogYesCommand
         {
@@ -347,6 +475,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogYesCommandProperty =
             DependencyProperty.Register("DialogYesCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Parameter passed to <see cref="DialogYesCommand" /> when executed.
+        /// </summary>
         [Category("Dialog")]
         public object DialogYesCommandParameter
         {
@@ -356,6 +487,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogYesCommandParameterProperty =
             DependencyProperty.Register("DialogYesCommandParameter", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Command that will be executed when no button is pressed.
+        /// </summary>
         [Category("Dialog")]
         public ICommand DialogNoCommand
         {
@@ -365,6 +499,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogNoCommandProperty =
             DependencyProperty.Register("DialogNoCommand", typeof(ICommand), typeof(DialogBase), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Parameter passed to <see cref="DialogNoCommand" /> when executed.
+        /// </summary>
         [Category("Dialog")]
         public object DialogNoCommandParameter
         {
@@ -415,7 +552,7 @@ namespace ClinicalOffice.WPF.Dialogs
         #endregion
         #region Internal methods
         /// <summary>
-        /// This method is called from DialogPrtsControl when Ok button is clicked.
+        /// This method is called from <see cref="DialogParts"/> when Ok button is clicked.
         /// It is not related directly to DialogOkCommand in this class.
         /// However the DialogOkCommand will be executed when this method is called through OnDialogOk method.
         /// </summary>
@@ -425,7 +562,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (OnDialogOk() && DialogAutoClose && OnClosing(DialogResult.Ok)) Close();
         }
         /// <summary>
-        /// This method is called from DialogPrtsControl when Cancel button is clicked.
+        /// This method is called from <see cref="DialogParts" /> when Cancel button is clicked.
         /// It is not related directly to DialogCancelCommand in this class.
         /// However the DialogCancelCommand will be executed when this method is called through OnDialogCancel method.
         /// </summary>
@@ -435,7 +572,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (OnDialogCancel() && DialogAutoClose && OnClosing(DialogResult.Cancel)) Close();
         }
         /// <summary>
-        /// This method is called from DialogPrtsControl when Yes button is clicked.
+        /// This method is called from <see cref="DialogParts"/> when Yes button is clicked.
         /// It is not related directly to DialogYesCommand in this class.
         /// However the DialogYesCommand will be executed when this method is called through OnDialogYes method.
         /// </summary>
@@ -445,7 +582,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (OnDialogYes() && DialogAutoClose && OnClosing(DialogResult.Yes)) Close();
         }
         /// <summary>
-        /// This method is called from DialogPrtsControl when 'No' button is clicked.
+        /// This method is called from <see cref="DialogParts"/> when 'No' button is clicked.
         /// It is not related directly to DialogNoCommand in this class.
         /// However the DialogNoCommand will be executed when this method is called through OnDialogNo method.
         /// </summary>
@@ -455,7 +592,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (OnDialogNo() && DialogAutoClose && OnClosing(DialogResult.No)) Close();
         }
         /// <summary>
-        /// This method is called from DialogPrtsControl when Return key is pressed and it will simulate the default button click.
+        /// This method is called from <see cref="DialogParts"/> when Return key is pressed and it will simulate the default button click.
         /// </summary>
         internal void ReturnKeyCommandExecuted()
         {
@@ -463,7 +600,7 @@ namespace ClinicalOffice.WPF.Dialogs
             else if (DialogButtons == DialogButtons.YesNo || DialogButtons == DialogButtons.YesNoCancel) YesCommandExecuted();
         }
         /// <summary>
-        /// This method is called from DialogPrtsControl when Escape key is pressed and it will simulate the cancel button click.
+        /// This method is called from <see cref="DialogParts"/> when Escape key is pressed and it will simulate the cancel button click.
         /// </summary>
         internal void EscapeKeyCommandExecuted()
         {
@@ -473,6 +610,9 @@ namespace ClinicalOffice.WPF.Dialogs
 
         #endregion
         #region Private methods
+        /// <summary>
+        /// Create dialog main controls.
+        /// </summary>
         void CreateControls()
         {
             _ParentBackground = new Border();
@@ -491,18 +631,17 @@ namespace ClinicalOffice.WPF.Dialogs
 
             _OldContentContainer = new ContentControl();
 
-            _DialogPartsControl = new DialogPartsControl(this);
-            Grid.SetRow(_DialogPartsControl, 1);
-            Panel.SetZIndex(_DialogPartsControl, 3);
-            BindingOperations.SetBinding(_DialogPartsControl.DialogTitleControl, DialogTitleControl.ContentProperty,
+            _DialogParts = new DialogPartsControl(this);
+            Grid.SetRow(_DialogParts, 1);
+            Panel.SetZIndex(_DialogParts, 3);
+            BindingOperations.SetBinding(_DialogParts.DialogTitleControl, DialogTitleControl.ContentProperty,
                                          new Binding(nameof(DialogTitle)) { Source = this });
-            BindingOperations.SetBinding(_DialogPartsControl.DialogContentControl, ContentProperty,
+            BindingOperations.SetBinding(_DialogParts.DialogContentControl, ContentProperty,
                                          new Binding(nameof(DialogContent)) { Source = this });
-            BindingOperations.SetBinding(_DialogPartsControl.DialogBackground, EffectProperty,
+            BindingOperations.SetBinding(_DialogParts.DialogBackground, EffectProperty,
                                          new Binding(nameof(DialogEffect)) { Source = this });
-            BindingOperations.SetBinding(_DialogPartsControl.DialogBackground, BackgroundProperty,
+            BindingOperations.SetBinding(_DialogParts.DialogBackground, BackgroundProperty,
                                          new Binding(nameof(DialogBackGround)) { Source = this });
-
             CreateButtons();
 
             _DialogGrid = new Grid();
@@ -511,23 +650,36 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.Children.Add(_ParentBackground);
             _DialogGrid.Children.Add(_ParentBackgroundOverlayColor);
-            _DialogGrid.Children.Add(_DialogPartsControl);
+            _DialogGrid.Children.Add(_DialogParts);
             base.Content = _DialogGrid;
 
+            RegisterNames();
         }
+        void RegisterNames()
+        {
+            NameScope.SetNameScope(this, new NameScope());
+            _DialogParts.Name = nameof(DialogParts);
+            RegisterName(_DialogParts.Name, _DialogParts);
+
+        }
+        /// <summary>
+        /// Create Dialogs buttons according to the value of <see cref="DialogBase.DialogButtons" />.
+        /// </summary>
         void CreateButtons()
         {
-            foreach (var button in _DialogPartsControl.DialogButtonsControl.GetButtons())
+            foreach (var button in _DialogParts.DialogButtonsControl.GetButtons())
                 BindingOperations.ClearBinding(button, StyleProperty);
-            _DialogPartsControl.DialogButtonsControl.ClearButtons();
+            _DialogParts.DialogButtonsControl.ClearButtons();
             _OkButton = null;
             _CancelButton = null;
             _YesButton = null;
             _NoButton = null;
             InputBindings.Clear();
+            DialogParts.DialogButtonsControl.Visibility = Visibility.Visible;
             switch (DialogButtons)
             {
                 case DialogButtons.None:
+                    DialogParts.DialogButtonsControl.Visibility = Visibility.Collapsed;
                     break;
                 case DialogButtons.Ok:
                     _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok);
@@ -549,22 +701,31 @@ namespace ClinicalOffice.WPF.Dialogs
                     break;
             }
         }
+        /// <summary>
+        /// Create a dialog button and associate it with its internal command and bind its style property to <see cref="DialogBase.DialogButtonStyle" />.
+        /// </summary>
         ButtonBase CreateButton(object content, ICommand command)
         {
             var b = OnCreateButton(content);
             b.Command = command;
             BindingOperations.SetBinding(b, StyleProperty,
                 new Binding(nameof(DialogButtonStyle)) { Source = this, Mode = BindingMode.OneWay });
-            _DialogPartsControl.DialogButtonsControl.AddButton(b);
+            _DialogParts.DialogButtonsControl.AddButton(b);
             return b;
         }
 
+        /// <summary>
+        /// Creates a visual brush of old content of the parent control, and set it for dialog.
+        /// </summary>
         void SetBackgroundBrush(ContentControl parent)
         {
             var element = parent?.Content as UIElement;
             if (element == null) return;
             _ParentBackground.Background = new VisualBrush(element) { Stretch = Stretch.Uniform, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top };
         }
+        /// <summary>
+        /// This methos actually closes the dialog. It also Set an internal <see cref="System.Threading.ManualResetEvent" /> to inform other threads that its closed.
+        /// </summary>
         void InternalClose()
         {
             var c = Parent as ContentControl;
@@ -572,6 +733,9 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogCloseResetEvent.Set();
         }
 
+        /// <summary>
+        /// Create animation when dialog is shown.
+        /// </summary>
         void CreateInAnimation()
         {
             var type = DialogAnimationIn;
@@ -585,7 +749,7 @@ namespace ClinicalOffice.WPF.Dialogs
             var oldOpacity = Opacity;
             Storyboard story;
             story = null;
-            if(type == DialogAnimation.Custom)
+            if (type == DialogAnimation.Custom)
             {
                 story = DialogCustomAnimationIn ?? DialogParameters.DialogCustomAnimationIn;
                 if (story == null) type = DialogAnimation.None;
@@ -594,15 +758,26 @@ namespace ClinicalOffice.WPF.Dialogs
             {
                 story = new Storyboard();
             }
+            EventHandler AnimationInCompleted = null;
             switch (type)
             {
                 case DialogAnimation.Fade:
+                    AnimationInCompleted = (sender, e) =>
+                    {
+                        if (sender is Timeline a) a.Completed -= AnimationInCompleted;
+                        Opacity = oldOpacity;
+                    };
                     var fade = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
                     Storyboard.SetTarget(fade, this);
                     Storyboard.SetTargetProperty(fade, new PropertyPath(OpacityProperty));
                     story.Children.Add(fade);
                     break;
                 case DialogAnimation.Zoom:
+                    AnimationInCompleted = (sender, e) =>
+                    {
+                        if (sender is Timeline a) a.Completed -= AnimationInCompleted;
+                        RenderTransform = oldTransform;
+                    };
                     RenderTransform = new ScaleTransform();
                     var zoom = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
                     Storyboard.SetTarget(zoom, this);
@@ -614,6 +789,12 @@ namespace ClinicalOffice.WPF.Dialogs
                     story.Children.Add(zoom);
                     break;
                 case DialogAnimation.ZoomCenter:
+                    AnimationInCompleted = (sender, e) =>
+                    {
+                        if (sender is Timeline a) a.Completed -= AnimationInCompleted;
+                        RenderTransform = oldTransform;
+                        RenderTransformOrigin = oldOrigfin;
+                    };
                     RenderTransformOrigin = new Point(.5, .5);
                     RenderTransform = new ScaleTransform();
                     var zoomCenter = new DoubleAnimation() { From = 0, To = 1, Duration = duration };
@@ -626,22 +807,21 @@ namespace ClinicalOffice.WPF.Dialogs
                     story.Children.Add(zoomCenter);
                     break;
                 case DialogAnimation.Custom:
+                    AnimationInCompleted = (sender, e) =>
+                    {
+                        if (sender is Timeline a) a.Completed -= AnimationInCompleted;
+                    };
                     break;
                 case DialogAnimation.None:
                 default:
                     return;
-                    break;
-            }
-            void AnimationInCompleted(object sender, EventArgs e)
-            {
-                if (sender is Timeline a) a.Completed -= AnimationInCompleted;
-                RenderTransform = oldTransform;
-                RenderTransformOrigin = oldOrigfin;
-                Opacity = oldOpacity;
             }
             story.Completed += AnimationInCompleted;
             story.Begin();
         }
+        /// <summary>
+        /// Create animation  before closing the dialog, then it calls <see cref="DialogBase.InternalClose" /> to close the dialog.
+        /// </summary>
         void CreateOutAnimation()
         {
             var type = DialogAnimationOut;
@@ -654,7 +834,7 @@ namespace ClinicalOffice.WPF.Dialogs
             var oldOrigfin = RenderTransformOrigin;
             var oldOpacity = Opacity;
             Storyboard story;
-            if (type== DialogAnimation.Custom)
+            if (type == DialogAnimation.Custom)
             {
                 story = DialogCustomAnimationOut ?? DialogParameters.DialogCustomAnimationOut;
                 if (story == null) type = DialogAnimation.None;
@@ -714,6 +894,10 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         #endregion
         #region Public Methods
+        /// <summary>
+        /// Show dialog in the parent control and return before closing the dialog.
+        /// </summary>
+        /// <remarks>This method should be called only from UI thread.</remarks>
         public void ShowDialog(ContentControl parent)
         {
             if (parent == null) parent = Application.Current.MainWindow;
@@ -723,32 +907,60 @@ namespace ClinicalOffice.WPF.Dialogs
             parent.Content = this;
             CreateInAnimation();
         }
+        /// <summary>
+        /// Show the dialog and retrurn a task that will end only when the dialog is closed.
+        /// </summary>
+        /// <remarks>
+        /// The returnd task will wait for the dialog to be closed. This is useful if used with <c>await</c>.
+        /// It is safe to call this method from any thread.
+        /// </remarks>
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
         {
+            Dispatcher.Invoke(() => ShowDialog(parent));
             return Task.Run(() =>
             {
-                Dispatcher.Invoke(() => ShowDialog(parent));
                 _DialogCloseResetEvent.WaitOne();
                 return Dispatcher.Invoke(() => DialogResult);
             });
         }
+        /// <summary>
+        /// Close an opened dialog.
+        /// </summary>
         public void Close()
         {
             CreateOutAnimation();
         }
+        /// <summary>
+        /// Close an opened dialog
+        /// </summary>
+        /// <remarks>
+        /// This method is usefull for binding a custom command to close the dialog.
+        /// </remarks>
+        /// <param name="target"></param>
+        /// <param name="e"></param>
         public void CloseCommandExecuted(object target, ExecutedRoutedEventArgs e) { Close(); }
+        /// <summary>
+        /// Set a theme brush to the dialog.
+        /// </summary>
+        /// <param name="themeBrush"> The theme brush</param>
+        /// <remarks>
+        /// This will set all dialog parts background to themeBrush,
+        /// title bar will have a white brush with opacity of 0.6, 
+        /// buttons bar will have a white brush with opacity of 0.4., 
+        /// and dialog content will have a white brush with opacity of 0.8.
+        /// </remarks>
         public void SetTheme(Brush themeBrush)
         {
-            _DialogPartsControl.Background = themeBrush;
+            _DialogParts.Background = themeBrush;
 
-            _DialogPartsControl.DialogButtonsControl.Background = new SolidColorBrush(Colors.White) { Opacity = .4 };
-            _DialogPartsControl.DialogButtonsControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            _DialogParts.DialogButtonsControl.Background = new SolidColorBrush(Colors.White) { Opacity = .4 };
+            _DialogParts.DialogButtonsControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
 
-            _DialogPartsControl.DialogTitleControl.Background = new SolidColorBrush(Colors.White) { Opacity = .6 };
-            _DialogPartsControl.DialogTitleControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            _DialogParts.DialogTitleControl.Background = new SolidColorBrush(Colors.White) { Opacity = .6 };
+            _DialogParts.DialogTitleControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
 
-            _DialogPartsControl.DialogContentControl.Background = new SolidColorBrush(Colors.White) { Opacity = .8 };
-            _DialogPartsControl.DialogContentControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            _DialogParts.DialogContentControl.Background = new SolidColorBrush(Colors.White) { Opacity = .8 };
+            _DialogParts.DialogContentControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
         }
         #endregion
     }

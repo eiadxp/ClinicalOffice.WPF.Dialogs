@@ -27,12 +27,7 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
 
         private async void ShowCustomDialog(object sender, RoutedEventArgs e)
         {
-            var w = new CustomDialog()
-            {
-                DialogAnimationIn = DialogAnimation.ZoomCenter,
-                DialogAnimationOut = DialogAnimation.Zoom,
-                DialogAnimationDuration = new Duration(TimeSpan.FromMilliseconds(500))
-            };
+            var w = new CustomDialog();
             await w.ShowDialogAsync(this);
             MessageBox.Show("This message is called directly after showing the dialog.");
             await DialogHelper.ShowMessageAsync("Test message", "Title test", DialogMessageType.Question, this);

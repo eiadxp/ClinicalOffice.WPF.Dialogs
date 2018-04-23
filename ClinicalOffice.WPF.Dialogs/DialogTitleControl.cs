@@ -12,6 +12,10 @@ namespace ClinicalOffice.WPF.Dialogs
             DefaultStyleKeyProperty.
                 OverrideMetadata(typeof(DialogTitleControl), new FrameworkPropertyMetadata(typeof(DialogTitleControl)));
         }
-
+        protected override void OnContentChanged(object oldContent, object newContent)
+        {
+            base.OnContentChanged(oldContent, newContent);
+            Visibility = (newContent == null) ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 }
