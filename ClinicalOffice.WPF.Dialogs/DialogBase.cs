@@ -79,7 +79,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         /// <remarks>
         /// The buttons are created in <see cref="OnCreateButton" /> virtual method.
-        /// If the value is not derived from <see cref="ButtonBase" /> of the type does not have a parameterless constractor, the dialog will create a normal <see cref="Button" />.
+        /// If the value is not derived from <see cref="ButtonBase" /> of the type does not have a parameterless constructor, the dialog will create a normal <see cref="Button" />.
         /// </remarks>
         [Category("Dialog")]
         public Type DialogButtonType
@@ -94,7 +94,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// Effect applied to the dialog.
         /// </summary>
         /// <remarks>
-        /// This effect is applied to the dialog parts togather (title, content, and buttons bar).
+        /// This effect is applied to the dialog parts together (title, content, and buttons bar).
         /// The default value in code is <c>null</c>, but an effect of <see cref="DropShadowEffect" /> is applied in the theme file Generic.xaml.
         /// </remarks>
         [Category("Dialog")]
@@ -123,9 +123,9 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogTitle", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
         /// <summary>
-        /// The acutal content of the dialog.
+        /// The actual content of the dialog.
         /// </summary>
-        /// <remarks>Content is displayed between the Title and Buttons bars od the dialog.</remarks>
+        /// <remarks>Content is displayed between the Title and Buttons bars of the dialog.</remarks>
         [Category("Dialog")]
         public object DialogContent
         {
@@ -136,7 +136,7 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogContent", typeof(object), typeof(DialogBase), new PropertyMetadata(null));
 
         /// <summary>
-        /// An enum that specify the visibile buttons in the dialog buttons bar
+        /// An enum that specify the visible buttons in the dialog buttons bar
         /// </summary>
         /// <remarks>If set to <see cref="DialogButtons.None" /> the buttons bar will be hidden by setting its visibility to <see cref="Visibility.Collapsed" /></remarks>
         [Category("Dialog")]
@@ -166,9 +166,9 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogResult", typeof(DialogResult), typeof(DialogBase), new PropertyMetadata(DialogResult.None));
 
         /// <summary>
-        /// Ok button content.
+        /// OK button content.
         /// </summary>
-        /// <value>Default value is string "Ok".</value>
+        /// <value>Default value is string "OK".</value>
         [Category("Dialog")]
         public object DialogOkContent
         {
@@ -176,7 +176,7 @@ namespace ClinicalOffice.WPF.Dialogs
             set { SetValue(DialogOkContentProperty, value); }
         }
         public static readonly DependencyProperty DialogOkContentProperty =
-            DependencyProperty.Register("DialogOkContent", typeof(object), typeof(DialogBase), new PropertyMetadata("Ok"));
+            DependencyProperty.Register("DialogOkContent", typeof(object), typeof(DialogBase), new PropertyMetadata("OK"));
         /// <summary>
         /// This method is called when <see cref="DialogBase.DialogOkContent" /> property is changed to create new buttons.
         /// </summary>
@@ -276,7 +276,7 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(Brushes.Black));
 
         /// <summary>
-        /// Opacity ov overlay that cover the parent content.
+        /// Opacity of overlay that cover the parent content.
         /// </summary>
         /// <remarks>Use this property with <see cref="DialogOverlay" /> property to control the overlay that cover the parent content.</remarks>
         /// <value>Default value is 0.2</value>
@@ -309,7 +309,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         /// <remarks>
         /// The dialog background cover the area under: dialog title, dialog content, and dialog buttons bar.
-        /// It is very common to use this property to set the theme of the dialog and set the remainig dialog parts (title, contents, buttons bar) to semi transparent brushes to give a look of a theme.
+        /// It is very common to use this property to set the theme of the dialog and set the remaining dialog parts (title, contents, buttons bar) to semi transparent brushes to give a look of a theme.
         /// </remarks>
         [Category("Dialog")]
         public Brush DialogBackGround
@@ -335,7 +335,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// Storyboard used to play in (show) animation when the dialog is shown.
         /// </summary>
-        /// <remarks>You do not need to start this storyboard. It will be played automaticly after showing the dialog</remarks>
+        /// <remarks>You do not need to start this storyboard. It will be played automatically after showing the dialog</remarks>
         [Category("Dialog")]
         public Storyboard DialogCustomAnimationIn
         {
@@ -360,7 +360,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// Storyboard used to play out (hide) animation when the dialog is about to close.
         /// </summary>
-        /// <remarks>You do not need to start this storyboard. It will be played automaticly before hiding the dialog</remarks>
+        /// <remarks>You do not need to start this storyboard. It will be played automatically before hiding the dialog</remarks>
         [Category("Dialog")]
         public Storyboard DialogCustomAnimationOut
         {
@@ -399,12 +399,12 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogFocusedElement", typeof(UIElement), typeof(DialogBase), new PropertyMetadata(null));
 
         /// <summary>
-        /// Indicate weather this dialog will be closed when any of its buuton clicked.
+        /// Indicate weather this dialog will be closed when any of its button clicked.
         /// </summary>
         /// <remarks>Set this property to <c>false</c> if you want to verify dialog content and closed only if it is valid.</remarks>
         /// <value>
         /// if <c>true</c> the dialog will be closed after any of its button is clicked.
-        /// If <c>false</c> the dialog will be closed manualy only.
+        /// If <c>false</c> the dialog will be closed manually only.
         /// </value>
         [Category("Dialog")]
         public bool DialogAutoClose
@@ -416,7 +416,7 @@ namespace ClinicalOffice.WPF.Dialogs
             DependencyProperty.Register("DialogAutoClose", typeof(bool), typeof(DialogBase), new PropertyMetadata(true));
 
         /// <summary>
-        /// Command that will be executed when ok button is pressed.
+        /// Command that will be executed when OK button is pressed.
         /// </summary>
         [Category("Dialog")]
         public ICommand DialogOkCommand
@@ -513,7 +513,10 @@ namespace ClinicalOffice.WPF.Dialogs
 
 
         #endregion
-        #region Virtsual methods
+        #region Virtual methods
+        /// <summary>
+        /// Creates a dialog button.
+        /// </summary>
         virtual protected ButtonBase OnCreateButton(object content)
         {
             if (DialogButtonType != null && DialogButtonType.IsAssignableFrom(typeof(ButtonBase)))
@@ -533,10 +536,72 @@ namespace ClinicalOffice.WPF.Dialogs
             }
             return new Button() { Content = content };
         }
+        /// <summary>
+        /// Called when OK button is clicked (even via Return button or return command <see cref="DialogCommands.ReturnKey"/>) or OK command is executed via <see cref="DialogCommands.Ok"/>.
+        /// </summary>
+        /// <remarks>
+        ///   <p>If this method returned <c>False</c>, the <see cref="OnClosing(DialogResult)" /> will not called.</p>
+        ///   <p>If this method returned <c>True</c>, the <see cref="OnClosing(DialogResult)" /> will be called.</p>
+        ///   <p>Basic implantation of this method is to return <c>True</c> only. It is not necessary to call the base method if you override it.</p>
+        /// </remarks>
+        /// <returns>
+        ///   <c>True</c> continue closing.
+        ///   <c>False</c> cancel closing.
+        /// </returns>
         virtual protected bool OnDialogOk() => true;
+        /// <summary>
+        /// Called when cancel button is clicked (even via Escape button or return command <see cref="DialogCommands.EscapeKey"/>) or cancel command is executed via <see cref="DialogCommands.Cancel"/>.
+        /// </summary>
+        /// <remarks>
+        ///   <p>If this method returned <c>False</c>, the <see cref="OnClosing(DialogResult)" /> will not called.</p>
+        ///   <p>If this method returned <c>True</c>, the <see cref="OnClosing(DialogResult)" /> will be called.</p>
+        ///   <p>Basic implantation of this method is to return <c>True</c> only. It is not necessary to call the base method if you override it.</p>
+        /// </remarks>
+        /// <returns>
+        ///   <c>True</c> continue closing.
+        ///   <c>False</c> cancel closing.
+        /// </returns>
         virtual protected bool OnDialogCancel() => true;
+        /// <summary>
+        /// Called when yes button is clicked (even via Return button or return command <see cref="DialogCommands.ReturnKey"/>) or yes command is executed via <see cref="DialogCommands.Yes"/>.
+        /// </summary>
+        /// <remarks>
+        ///   <p>If this method returned <c>False</c>, the <see cref="OnClosing(DialogResult)" /> will not called.</p>
+        ///   <p>If this method returned <c>True</c>, the <see cref="OnClosing(DialogResult)" /> will be called.</p>
+        ///   <p>Basic implantation of this method is to return <c>True</c> only. It is not necessary to call the base method if you override it.</p>
+        /// </remarks>
+        /// <returns>
+        ///   <c>True</c> continue closing.
+        ///   <c>False</c> cancel closing.
+        /// </returns>
         virtual protected bool OnDialogYes() => true;
+        /// <summary>
+        /// Called when "no" button is clicked or "no" command is executed via <see cref="DialogCommands.No"/>.
+        /// </summary>
+        /// <remarks>
+        ///   <p>If this method returned <c>False</c>, the <see cref="OnClosing(DialogResult)" /> will not called.</p>
+        ///   <p>If this method returned <c>True</c>, the <see cref="OnClosing(DialogResult)" /> will be called.</p>
+        ///   <p>Basic implantation of this method is to return <c>True</c> only. It is not necessary to call the base method if you override it.</p>
+        /// </remarks>
+        /// <returns>
+        ///   <c>True</c> continue closing.
+        ///   <c>False</c> cancel closing.
+        /// </returns>
         virtual protected bool OnDialogNo() => true;
+        /// <summary>
+        /// Called before closing the dialog to determine weather to close or not.
+        /// </summary>
+        /// <remarks>
+        ///   <p>This method is called if a dialog button is pressed, a key board (Return/Escape) is pressed, or if a dialog command from <see cref="DialogCommands" /> is executed.</p>
+        ///   <p>Using <see cref="DialogBase.Close" /> will close the dialog without calling this method</p>
+        ///   <p>Use <see cref="DialogBase.TryClose" /> if you want to call this method before closing.</p>
+        ///   <p>The method will never called if a button is pressed and <see cref="DialogAutoClose" /> if <c>False</c>, but it will be called always when you use <see cref="TryClose()" />.</p>
+        /// </remarks>
+        /// <param name="result">The button that was clicked to close the dialog, otherwise it will be <see cref="DialogResult.None" /> (Like when calling <see cref="TryClose()" />.</param>
+        /// <returns>
+        /// If <c>True</c> the dialog the dialog will be closed.
+        /// If <c>False</c> the close action will be canceled.
+        /// </returns>
         virtual protected bool OnClosing(DialogResult result) => true;
         #endregion
         #region Overrides
@@ -552,7 +617,7 @@ namespace ClinicalOffice.WPF.Dialogs
         #endregion
         #region Internal methods
         /// <summary>
-        /// This method is called from <see cref="DialogParts"/> when Ok button is clicked.
+        /// This method is called from <see cref="DialogParts"/> when OK button is clicked.
         /// It is not related directly to DialogOkCommand in this class.
         /// However the DialogOkCommand will be executed when this method is called through OnDialogOk method.
         /// </summary>
@@ -605,7 +670,6 @@ namespace ClinicalOffice.WPF.Dialogs
         internal void EscapeKeyCommandExecuted()
         {
             if (DialogButtons == DialogButtons.YesNoCancel || DialogButtons == DialogButtons.OkCancel) CancelCommandExecuted();
-
         }
 
         #endregion
@@ -724,7 +788,7 @@ namespace ClinicalOffice.WPF.Dialogs
             _ParentBackground.Background = new VisualBrush(element) { Stretch = Stretch.Uniform, AlignmentX = AlignmentX.Left, AlignmentY = AlignmentY.Top };
         }
         /// <summary>
-        /// This methos actually closes the dialog. It also Set an internal <see cref="System.Threading.ManualResetEvent" /> to inform other threads that its closed.
+        /// This method actually closes the dialog. It also Set an internal <see cref="System.Threading.ManualResetEvent" /> to inform other threads that its closed.
         /// </summary>
         void InternalClose()
         {
@@ -908,10 +972,10 @@ namespace ClinicalOffice.WPF.Dialogs
             CreateInAnimation();
         }
         /// <summary>
-        /// Show the dialog and retrurn a task that will end only when the dialog is closed.
+        /// Show the dialog and return a task that will end only when the dialog is closed.
         /// </summary>
         /// <remarks>
-        /// The returnd task will wait for the dialog to be closed. This is useful if used with <c>await</c>.
+        /// The returned task will wait for the dialog to be closed. This is useful if used with <c>await</c>.
         /// It is safe to call this method from any thread.
         /// </remarks>
         public Task<DialogResult> ShowDialogAsync(ContentControl parent)
@@ -931,10 +995,20 @@ namespace ClinicalOffice.WPF.Dialogs
             CreateOutAnimation();
         }
         /// <summary>
+        /// Try to close an opened dialog.
+        /// </summary>
+        /// <remarks>
+        /// This method will call <see cref="OnClosing(DialogResult)"/>, and then closes the dialog if the return value is <c>True</c>.
+        /// </remarks>
+        public void TryClose()
+        {
+            if (OnClosing(DialogResult.None)) Close();
+        }
+        /// <summary>
         /// Close an opened dialog
         /// </summary>
         /// <remarks>
-        /// This method is usefull for binding a custom command to close the dialog.
+        /// This method is useful for binding a custom command to close the dialog.
         /// </remarks>
         /// <param name="target"></param>
         /// <param name="e"></param>
