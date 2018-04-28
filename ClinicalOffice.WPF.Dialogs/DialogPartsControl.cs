@@ -16,7 +16,7 @@ namespace ClinicalOffice.WPF.Dialogs
         DialogTitleControl _DialogTitleContent;
         public DialogTitleControl DialogTitleControl { get => _DialogTitleContent; }
         /// <summary>
-        /// This will hold the buutons grid and will allow styling and templating.
+        /// This will hold the buttons grid and will allow styling and templating.
         /// </summary>
         DialogButtonsControl _DialogButtonsBar;
         public DialogButtonsControl DialogButtonsControl { get => _DialogButtonsBar; }
@@ -27,7 +27,7 @@ namespace ClinicalOffice.WPF.Dialogs
         public DialogContentControl DialogContentControl { get => _DialogContent; }
         /// <summary>
         /// This is used to create a background for the dialog.
-        /// usefull for back ground color and effects like DropShadowEffect.
+        /// useful for back ground color and effects like DropShadowEffect.
         /// </summary>
         Border _DialogBackGround;
         public Border DialogBackground { get => _DialogBackGround; }
@@ -84,6 +84,7 @@ namespace ClinicalOffice.WPF.Dialogs
             CommandBindings.Add(new CommandBinding(DialogCommands.Cancel, CancelCommandExecuted));
             CommandBindings.Add(new CommandBinding(DialogCommands.Yes, YesCommandExecuted));
             CommandBindings.Add(new CommandBinding(DialogCommands.No, NoCommandExecuted));
+            CommandBindings.Add(new CommandBinding(DialogCommands.Close, CloseCommandExecuted));
             CommandBindings.Add(new CommandBinding(DialogCommands.ReturnKey, ReturnExecuted));
             CommandBindings.Add(new CommandBinding(DialogCommands.EscapeKey, EscapeExecuted));
             InputBindings.Add(new KeyBinding(DialogCommands.ReturnKey, Key.Return, ModifierKeys.None));
@@ -93,6 +94,7 @@ namespace ClinicalOffice.WPF.Dialogs
         void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.CancelCommandExecuted(); }
         void YesCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.YesCommandExecuted(); }
         void NoCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.NoCommandExecuted(); }
+        void CloseCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.CloseCommandExecuted(); }
         void ReturnExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.ReturnKeyCommandExecuted(); }
         void EscapeExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.EscapeKeyCommandExecuted(); }
     }

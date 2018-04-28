@@ -5,7 +5,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
                     xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
-                    mc:Ignorable="d" d:DesignHeight="219.263" d:DesignWidth="400" 
+                    mc:Ignorable="d" d:DesignHeight="219.263" d:DesignWidth="400"
                     DialogTitle="Title" DialogButtons="OkCancel" DialogAnimationIn="Custom" DialogAnimationOut="ZoomCenter" 
                     RenderTransformOrigin="0.5,0.5">
     <dialogs:DialogBase.Resources>
@@ -23,14 +23,20 @@
     </dialogs:DialogBase.Resources>
     <dialogs:DialogBase.DialogCustomAnimationIn>
         <Storyboard>
-            <DoubleAnimation From="0" To="1" Duration="0:0:.8"
-                             Storyboard.TargetName="LoginDialog" Storyboard.TargetProperty="Opacity"/>
-            <DoubleAnimation From="0" To="1" Duration="0:0:1"
-                             Storyboard.TargetName="DialogParts" Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX"/>
-            <DoubleAnimation From="0" To="1" Duration="0:0:1"
-                             Storyboard.TargetName="DialogParts" Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY"/>
-            <DoubleAnimation From="0" To="360" Duration="0:0:.7"
-                             Storyboard.TargetName="DialogParts" Storyboard.TargetProperty="RenderTransform.Children[1].Angle"/>
+            <DoubleAnimation From="0" To="5" Duration="0:0:1"
+                             Storyboard.TargetName="LoginDialog" Storyboard.TargetProperty="DialogParentEffect.Radius"/>
+            <DoubleAnimation From="0" To="0.5" Duration="0:0:3"
+                             Storyboard.TargetName="LoginDialog" 
+                             Storyboard.TargetProperty="DialogOverlayOpacity"/>
+            <DoubleAnimation From="0" To="1" Duration="0:0:3"
+                             Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
+                             Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX"/>
+            <DoubleAnimation From="0" To="1" Duration="0:0:3" 
+                             Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
+                             Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY"/>
+            <DoubleAnimation From="0" To="360" Duration="0:0:1.7"
+                             Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
+                             Storyboard.TargetProperty="RenderTransform.Children[1].Angle"/>
         </Storyboard>
     </dialogs:DialogBase.DialogCustomAnimationIn>
     <Grid>

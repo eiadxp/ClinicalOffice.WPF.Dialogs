@@ -131,9 +131,9 @@ namespace ClinicalOffice.WPF.Dialogs
             switch (waitingTask.Status)
             {
                 case TaskStatus.Created:
+                case TaskStatus.Running:
                 case TaskStatus.WaitingForActivation:
                 case TaskStatus.WaitingToRun:
-                case TaskStatus.Running:
                 case TaskStatus.WaitingForChildrenToComplete:
                     var w = ShowDialog(waitControl, text, parent, buttons);
                     waitingTask.ContinueWith((a) => Invoke(() => w.Close()));

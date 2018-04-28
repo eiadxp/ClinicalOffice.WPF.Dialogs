@@ -228,5 +228,9 @@ namespace ClinicalOffice.WPF.Dialogs
         public static readonly DependencyProperty DialogAutoCloseProperty =
             DependencyProperty.RegisterAttached("DialogAutoClose", typeof(bool), typeof(DialogParameters), new PropertyMetadata(true));
         public static bool DialogAutoClose { get => GetDialogAutoClose(null); set => SetDialogAutoClose(null, value); }
+
+        public static string DialogPartsName { get; } = "DialogParts";
+        public static string DialogOverlayName { get; } = "DialogOverlay";
+        public static string DialogParentName { get; } = "DialogParent";
     }
 }
