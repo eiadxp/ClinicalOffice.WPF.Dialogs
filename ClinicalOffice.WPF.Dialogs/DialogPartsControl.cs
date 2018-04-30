@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,7 +17,7 @@ namespace ClinicalOffice.WPF.Dialogs
         DialogTitleControl _DialogTitleContent;
         public DialogTitleControl DialogTitleControl { get => _DialogTitleContent; }
         /// <summary>
-        /// This will hold the buttons grid and will allow styling and templating.
+        /// This will hold the buttons grid and will allow styling and template.
         /// </summary>
         DialogButtonsControl _DialogButtonsBar;
         public DialogButtonsControl DialogButtonsControl { get => _DialogButtonsBar; }
@@ -89,6 +90,13 @@ namespace ClinicalOffice.WPF.Dialogs
             CommandBindings.Add(new CommandBinding(DialogCommands.EscapeKey, EscapeExecuted));
             InputBindings.Add(new KeyBinding(DialogCommands.ReturnKey, Key.Return, ModifierKeys.None));
             InputBindings.Add(new KeyBinding(DialogCommands.EscapeKey, Key.Escape, ModifierKeys.None));
+        }
+        public void AddCloseButton(ButtonBase button)
+        {
+            Grid.SetRow(button, 0);
+            Panel.SetZIndex(button, int.MaxValue);
+            button.Command = DialogCommands.Close;
+            _MainGrid.Children.Add(button);
         }
         void OkCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.OkCommandExecuted(); }
         void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.CancelCommandExecuted(); }
