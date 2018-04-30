@@ -10,6 +10,10 @@
     <StackPanel>
         <ToolBar>
             <Button Content="Show custom dialog" Click="ShowCustomDialog"/>
+            <Separator/>
+            <Button Content="Show Info Message" Click="ShowInfoMessage"/>
+            <Separator/>
+            <Button Content="Show Wait Message" Click="ShowWaitMessage"/>
         </ToolBar>
         <ProgressBar IsIndeterminate="True" Height="24" />
     </StackPanel>

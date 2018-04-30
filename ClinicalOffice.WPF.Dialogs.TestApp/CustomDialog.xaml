@@ -5,7 +5,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
                     xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
-                    mc:Ignorable="d" d:DesignHeight="219.263" d:DesignWidth="400"
+                    mc:Ignorable="d" d:DesignHeight="388.534" d:DesignWidth="606.567"
                     DialogTitle="Custome Dialog" DialogButtons="OkCancel" DialogAnimationIn="Custom" DialogAnimationOut="ZoomCenter" 
                     RenderTransformOrigin="0.5,0.5">
     <dialogs:DialogBase.Resources>
@@ -40,6 +40,11 @@
         </Storyboard>
     </dialogs:DialogBase.DialogCustomAnimationIn>
     <StackPanel>
+        <TextBlock TextWrapping="Wrap" Margin="3" Foreground="#FFB60000">
+            This is a custom dialog shown with custom in animation.<LineBreak/>
+            You can change the buttons contents also.<LineBreak/>
+            <Hyperlink Command="{x:Static dialogs:DialogCommands.Close}"> Close link!!</Hyperlink>
+        </TextBlock>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -55,7 +60,7 @@
             <TextBlock Grid.Row="1" Text="Cancel Content:" Margin="3,6"/>
             <TextBox Text="{Binding DialogCancelContent, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dialogs:DialogBase}}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="3,6" MinWidth="150" Padding="2"/>
             <TextBlock Grid.Row="2" Text="Close Content:" Margin="3,6"/>
-            <TextBox Text="{Binding DialogCloseContent, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dialogs:DialogBase}}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="3,6" MinWidth="150" Padding="2"/>
+            <TextBox Text="{Binding DialogCloseContent, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dialogs:DialogBase}}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="3,6" MinWidth="150" Padding="2" MaxLength="1"/>
         </Grid>
     </StackPanel>
 </dialogs:DialogBase>
