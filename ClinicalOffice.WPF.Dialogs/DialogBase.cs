@@ -686,18 +686,19 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// Called before closing the dialog to determine weather to close or not.
         /// </summary>
-        /// <remarks>
-        ///   <p>This method is called if a dialog button is pressed, a key board (Return/Escape) is pressed, or if a dialog command from <see cref="DialogCommands" /> is executed.</p>
-        ///   <p>Using <see cref="DialogBase.Close" /> will close the dialog without calling this method</p>
-        ///   <p>Use <see cref="DialogBase.TryClose" /> if you want to call this method before closing.</p>
-        ///   <p>The method will never called if a button is pressed and <see cref="DialogAutoClose" /> if <c>False</c>, but it will be called always when you use <see cref="TryClose()" />.</p>
-        /// </remarks>
         /// <param name="result">The button that was clicked to close the dialog, otherwise it will be <see cref="DialogResult.None" /> (Like when calling <see cref="TryClose()" />.</param>
+        /// <remarks>
+        ///   <Para>This method is called if a dialog button is pressed, a keyboard (Return/Escape) is pressed, or if a dialog command from <see cref="DialogCommands" /> is executed.</Para>
+        ///   <Para>Using <see cref="DialogBase.Close" /> will close the dialog without calling this method</Para>
+        ///   <Para>Use <see cref="DialogBase.TryClose" /> if you want to call this method before closing.</Para>
+        ///   <Para>The method will never called if a button is pressed and <see cref="DialogAutoClose" /> if <c>False</c>, but it will be called always when you use <see cref="TryClose()" />.</Para>
+        ///   <para>When you override this method, it is important to call the base implantation to set <see cref="DialogResult"/> value, otherwise you should set it in your implantation.</para>
+        /// </remarks>
         /// <returns>
         /// If <c>True</c> the dialog the dialog will be closed.
         /// If <c>False</c> the close action will be canceled.
         /// </returns>
-        virtual protected bool OnClosing(DialogResult result) => true;
+        virtual protected bool OnClosing(DialogResult result) { DialogResult = result; return true; }
         #endregion
         #region Overrides
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
