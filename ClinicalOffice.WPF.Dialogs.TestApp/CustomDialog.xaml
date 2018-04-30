@@ -6,7 +6,7 @@
                     xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
                     xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
                     mc:Ignorable="d" d:DesignHeight="219.263" d:DesignWidth="400"
-                    DialogTitle="Title" DialogButtons="OkCancel" DialogAnimationIn="Custom" DialogAnimationOut="ZoomCenter" 
+                    DialogTitle="Custome Dialog" DialogButtons="OkCancel" DialogAnimationIn="Custom" DialogAnimationOut="ZoomCenter" 
                     RenderTransformOrigin="0.5,0.5">
     <dialogs:DialogBase.Resources>
         <Style TargetType="dialogs:DialogPartsControl">
@@ -39,18 +39,23 @@
                              Storyboard.TargetProperty="RenderTransform.Children[1].Angle"/>
         </Storyboard>
     </dialogs:DialogBase.DialogCustomAnimationIn>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Text="Name:" Margin="3,6"/>
-        <TextBox Grid.Column="1" Margin="3,6" MinWidth="150"/>
-        <TextBlock Grid.Row="1" Text="Password:" Margin="3,6"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="3,6" MinWidth="150"/>
-    </Grid>
+    <StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="OK Content:" Margin="3,6"/>
+            <TextBox Text="{Binding DialogOkContent, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dialogs:DialogBase}}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Margin="3,6" MinWidth="150" Padding="2"/>
+            <TextBlock Grid.Row="1" Text="Cancel Content:" Margin="3,6"/>
+            <TextBox Text="{Binding DialogCancelContent, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dialogs:DialogBase}}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="3,6" MinWidth="150" Padding="2"/>
+            <TextBlock Grid.Row="2" Text="Close Content:" Margin="3,6"/>
+            <TextBox Text="{Binding DialogCloseContent, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dialogs:DialogBase}}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="3,6" MinWidth="150" Padding="2"/>
+        </Grid>
+    </StackPanel>
 </dialogs:DialogBase>
