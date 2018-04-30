@@ -94,7 +94,7 @@ namespace ClinicalOffice.WPF.Dialogs
             current.SetValue(DialogOverlayProperty, value);
         }
         public static readonly DependencyProperty DialogOverlayProperty =
-            DependencyProperty.RegisterAttached("DialogOverlay", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.RegisterAttached("DialogOverlay", typeof(Brush), typeof(DialogParameters), new PropertyMetadata(new SolidColorBrush(Colors.Black) { Opacity = 0.2 }));
         public static Brush DialogOverlay { get => GetDialogOverlay(null); set => SetDialogOverlay(null, value); }
 
         public static double GetDialogOverlayOpacity(Application obj)
@@ -106,7 +106,7 @@ namespace ClinicalOffice.WPF.Dialogs
             current.SetValue(DialogOverlayOpacityProperty, value);
         }
         public static readonly DependencyProperty DialogOverlayOpacityProperty =
-            DependencyProperty.RegisterAttached("DialogOverlayOpacity", typeof(double), typeof(DialogParameters), new PropertyMetadata(0.2));
+            DependencyProperty.RegisterAttached("DialogOverlayOpacity", typeof(double), typeof(DialogParameters), new PropertyMetadata(1.0));
         public static double DialogOverlayOpacity { get => GetDialogOverlayOpacity(null); set => SetDialogOverlayOpacity(null, value); }
 
         public static Color GetMessageErrorColor(Application obj)

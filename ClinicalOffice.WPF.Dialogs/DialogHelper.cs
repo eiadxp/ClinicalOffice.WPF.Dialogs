@@ -35,6 +35,19 @@ namespace ClinicalOffice.WPF.Dialogs
             Invoke(() => w.ShowDialog(parent));
             return w;
         }
+        public static DialogBase ShowDialog<TContent>(string title = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None) where TContent : new()
+        {
+            return ShowDialog(new TContent(), title, parent, buttons);
+        }
+        public static Task<DialogResult> ShowDialogAsync(object content, string title = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
+        {
+            var w = CreateDialog(content, title, buttons);
+            return w.ShowDialogAsync(parent);
+        }
+        public static Task<DialogResult> ShowDialogAsync<TContent>(string title = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None) where TContent : new()
+        {
+            return ShowDialogAsync(new TContent(), title, parent, buttons);
+        }
 
         public static Task<DialogResult> ShowMessageAsync(string text, string caption, ContentControl parent = null, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
         {
@@ -109,25 +122,37 @@ namespace ClinicalOffice.WPF.Dialogs
             });
         }
 
-        static ProgressBar CreateWaitControl() => Invoke(() => new ProgressBar() { IsIndeterminate = true, MinHeight = 24, MinWidth = 200 });
-        public static DialogBase ShowWait(UIElement waitControl = null, string text = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
+        static UIElement CreateWaitControl(object content)
         {
-            if (waitControl == null) waitControl = CreateWaitControl();
-            return Invoke(() => ShowDialog(waitControl, text, parent, buttons));
+            return Invoke(() => 
+            {
+                var wait = new ProgressBar() { IsIndeterminate = true, MinHeight = 24, MinWidth = 200 };
+                var cont = new ContentControl() { Content = content, Margin = new Thickness(5) };
+                var pnl = new StackPanel();
+                pnl.Children.Add(cont);
+                pnl.Children.Add(wait);
+                return pnl;
+            });
         }
-        public static void ShowWait(Action waitingAction, UIElement waitControl = null, string text = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
+
+        public static DialogBase ShowWait(UIElement waitControl = null, string title = null, object content = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
+        {
+            if (waitControl == null) waitControl = CreateWaitControl(content);
+            return Invoke(() => ShowDialog(waitControl, title, parent, buttons));
+        }
+        public static void ShowWait(Action waitingAction, UIElement waitControl = null, string title = null, object content = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
         {
             Invoke(() =>
             {
-                if (waitControl == null) waitControl = CreateWaitControl();
-                var w = ShowDialog(waitControl, text, parent, buttons);
+                if (waitControl == null) waitControl = CreateWaitControl(content);
+                var w = ShowDialog(waitControl, title, parent, buttons);
                 waitingAction();
                 w.Close();
             });
         }
-        public static void ShowWait(Task waitingTask, UIElement waitControl = null, string text = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
+        public static void ShowWait(Task waitingTask, UIElement waitControl = null, string title = null, object content = null, ContentControl parent = null, DialogButtons buttons = DialogButtons.None)
         {
-            if (waitControl == null) waitControl = CreateWaitControl();
+            if (waitControl == null) waitControl = CreateWaitControl(content);
             switch (waitingTask.Status)
             {
                 case TaskStatus.Created:
@@ -135,7 +160,7 @@ namespace ClinicalOffice.WPF.Dialogs
                 case TaskStatus.WaitingForActivation:
                 case TaskStatus.WaitingToRun:
                 case TaskStatus.WaitingForChildrenToComplete:
-                    var w = ShowDialog(waitControl, text, parent, buttons);
+                    var w = ShowDialog(waitControl, title, parent, buttons);
                     waitingTask.ContinueWith((a) => Invoke(() => w.Close()));
                     if (waitingTask.Status == TaskStatus.Created || 
                         waitingTask.Status == TaskStatus.WaitingForActivation || 

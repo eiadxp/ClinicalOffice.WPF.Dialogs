@@ -27,7 +27,7 @@
                              Storyboard.TargetName="LoginDialog" Storyboard.TargetProperty="DialogParentEffect.Radius"/>
             <DoubleAnimation From="0" To="0.5" Duration="0:0:3"
                              Storyboard.TargetName="LoginDialog" 
-                             Storyboard.TargetProperty="DialogOverlayOpacity"/>
+                             Storyboard.TargetProperty="DialogOverlay.Opacity"/>
             <DoubleAnimation From="0" To="1" Duration="0:0:3"
                              Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
                              Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX"/>
@@ -52,7 +52,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="OK Content:" Margin="3,6"/>

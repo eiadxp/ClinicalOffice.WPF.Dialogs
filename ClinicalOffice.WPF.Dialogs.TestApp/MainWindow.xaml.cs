@@ -25,22 +25,49 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
             InitializeComponent();
         }
 
-        private async void ShowCustomDialog(object sender, RoutedEventArgs e)
+        private void ShowCustomDialog(object sender, RoutedEventArgs e)
         {
-            var result = await (new CustomDialog()).ShowDialogAsync(this);
+            (new CustomDialog()).ShowDialog(this);
+            MessageBox.Show("This message is called directly after showing the dialog.");
+        }
+        private async void ShowCustomDialogAsync(object sender, RoutedEventArgs e)
+        {
+            var result = await(new CustomDialog()).ShowDialogAsync(this);
+            MessageBox.Show("This message is called directly after showing the dialog.\nDialog result is:\n\n" + result.ToString());
+        }
+        private void ShowUserControlDialog(object sender, RoutedEventArgs e)
+        {
+            DialogHelper.ShowDialog<CustomControl>("User Control Dialog", this);
+            MessageBox.Show("This message is called directly after showing the dialog.");
+        }
+        private async void ShowUserControlDialogAsync(object sender, RoutedEventArgs e)
+        {
+            var result = await DialogHelper.ShowDialogAsync<CustomControl>("User Control Dialog", this);
             MessageBox.Show("This message is called directly after showing the dialog.\nDialog result is:\n\n" + result.ToString());
         }
 
         private async void ShowInfoMessage(object sender, RoutedEventArgs e)
         {
-            await DialogHelper.ShowMessageAsync("Test message", "Title test", DialogMessageType.Question, this);
+            await DialogHelper.ShowMessageAsync("Info message default style.", "Info test", DialogMessageType.Info, this);
+        }
+        private async void ShowWarningMessage(object sender, RoutedEventArgs e)
+        {
+            await DialogHelper.ShowMessageAsync("Warning message default style.", "Title test", DialogMessageType.Warning, this);
+        }
+        private async void ShowQuestionMessage(object sender, RoutedEventArgs e)
+        {
+            await DialogHelper.ShowMessageAsync("Question message default style.", "Title test", DialogMessageType.Question, this);
+        }
+        private async void ShowErrorMessage(object sender, RoutedEventArgs e)
+        {
+            await DialogHelper.ShowMessageAsync("Error message default style.", "Title test", DialogMessageType.Error, this);
         }
 
         private void ShowWaitMessage(object sender, RoutedEventArgs e)
         {
             DialogHelper.ShowWait(Task.Run(() => System.Threading.Thread.Sleep(10000)),
                 null,
-                "This message will close automatically when underlaying task finish (10 seconds).", null, DialogButtons.Ok);
+                "Waiting...", "This message will close automatically when underlaying task finish (10 seconds).", null, DialogButtons.Ok);
         }
     }
 }

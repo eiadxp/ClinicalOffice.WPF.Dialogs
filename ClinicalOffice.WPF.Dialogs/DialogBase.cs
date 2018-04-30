@@ -322,7 +322,7 @@ namespace ClinicalOffice.WPF.Dialogs
             set { SetValue(DialogOverlayProperty, value); }
         }
         public static readonly DependencyProperty DialogOverlayProperty =
-            DependencyProperty.Register("DialogOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("DialogOverlay", typeof(Brush), typeof(DialogBase), new PropertyMetadata(new SolidColorBrush(Colors.Black) { Opacity = 0.2 }));
 
         /// <summary>
         /// Opacity of overlay that cover the parent content.
@@ -336,7 +336,7 @@ namespace ClinicalOffice.WPF.Dialogs
             set { SetValue(DialogOverlayOpacityProperty, value); }
         }
         public static readonly DependencyProperty DialogOverlayOpacityProperty =
-            DependencyProperty.Register("DialogOverlayOpacity", typeof(double), typeof(DialogBase), new PropertyMetadata(0.2));
+            DependencyProperty.Register("DialogOverlayOpacity", typeof(double), typeof(DialogBase), new PropertyMetadata(1.0));
 
         /// <summary>
         /// Effects applied to parent content.
@@ -1105,7 +1105,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// Show dialog in the parent control and return before closing the dialog.
         /// </summary>
         /// <remarks>This method should be called only from UI thread.</remarks>
-        public void ShowDialog(ContentControl parent)
+        public void ShowDialog(ContentControl parent = null)
         {
             if (parent == null) parent = Application.Current.MainWindow;
             _DialogCloseResetEvent.Reset();
@@ -1121,7 +1121,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// The returned task will wait for the dialog to be closed. This is useful if used with <c>await</c>.
         /// It is safe to call this method from any thread.
         /// </remarks>
-        public Task<DialogResult> ShowDialogAsync(ContentControl parent)
+        public Task<DialogResult> ShowDialogAsync(ContentControl parent = null)
         {
             Dispatcher.Invoke(() => ShowDialog(parent));
             return Task.Run(() =>

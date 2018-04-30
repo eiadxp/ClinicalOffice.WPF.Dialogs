@@ -11,9 +11,24 @@
         <ToolBar>
             <Button Content="Show custom dialog" Click="ShowCustomDialog"/>
             <Separator/>
+            <Button Content="Show custom dialog Async" Click="ShowCustomDialogAsync"/>
+            <Separator/>
+            <Button Content="Show user control dialog" Click="ShowUserControlDialog"/>
+            <Separator/>
+            <Button Content="Show user control dialog Async" Click="ShowUserControlDialogAsync"/>
+            <Separator/>
+        </ToolBar>
+        <ToolBar>
             <Button Content="Show Info Message" Click="ShowInfoMessage"/>
             <Separator/>
+            <Button Content="Show Warning Message" Click="ShowWarningMessage"/>
+            <Separator/>
+            <Button Content="Show Question Message" Click="ShowQuestionMessage"/>
+            <Separator/>
+            <Button Content="Show Error Message" Click="ShowErrorMessage"/>
+            <Separator/>
             <Button Content="Show Wait Message" Click="ShowWaitMessage"/>
+            
         </ToolBar>
         <ProgressBar IsIndeterminate="True" Height="24" />
     </StackPanel>

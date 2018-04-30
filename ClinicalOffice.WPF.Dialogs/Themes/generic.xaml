@@ -8,6 +8,7 @@
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Foreground" Value="Red"/>
         <Setter Property="Focusable" Value="False"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="Margin" Value="5"/>
