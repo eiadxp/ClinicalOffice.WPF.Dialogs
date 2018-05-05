@@ -16,6 +16,8 @@ A small library to allow developer to create dialogs and show them within WPF Co
  - Customizable back ground effects. the default is to blur parent content with a dark overlay and a shadow under the dialog.
  - Built in `MessageBox` functionality using `DialogHelper.ShowMessage, DialogHelper.ShowMessageAsync` methods, with different theme color for each of (Info, Warning, Error , and Question messages).
  - You can set most of the dialog properties for all your dialogs in your `App.xaml` file using styles, or attached properties of `DialogParameters`.
+ 
+ More details on [wiki](https://github.com/eiadxp/ClinicalOffice.WPF.Dialogs/wiki)
 
 ## Todo:
 
