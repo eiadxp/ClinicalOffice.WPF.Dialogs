@@ -82,7 +82,7 @@
                 </Style>
             </Setter.Value>
         </Setter>
-        <Setter Property="DialogCloseButonStyle" Value="{StaticResource CloseStyle}"/>
+        <Setter Property="DialogCloseButtonStyle" Value="{StaticResource CloseStyle}"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="DialogBackGround" Value="{x:Static dialogs:DialogParameters.DialogBackground}"/>

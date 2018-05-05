@@ -232,5 +232,8 @@ namespace ClinicalOffice.WPF.Dialogs
         public static string DialogPartsName { get; } = "DialogParts";
         public static string DialogOverlayName { get; } = "DialogOverlay";
         public static string DialogParentName { get; } = "DialogParent";
+        public static string DialogTitleName { get; } = "DialogTitle";
+        public static string DialogContentName { get; } = "DialogContent";
+        public static string DialogButtonsName { get; } = "DialogButtons";
     }
 }
