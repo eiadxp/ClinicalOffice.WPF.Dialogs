@@ -27,12 +27,14 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
 
         private void ShowCustomDialog(object sender, RoutedEventArgs e)
         {
-            (new CustomDialog()).ShowDialog(this);
+            var w = new CustomDialog();
+            w.ShowDialog(this);
             MessageBox.Show("This message is called directly after showing the dialog.");
         }
         private async void ShowCustomDialogAsync(object sender, RoutedEventArgs e)
         {
-            var result = await(new CustomDialog()).ShowDialogAsync(this);
+            var w = new CustomDialog();
+            var result = await w.ShowDialogAsync(this);
             MessageBox.Show("This message is called directly after showing the dialog.\nDialog result is:\n\n" + result.ToString());
         }
         private void ShowUserControlDialog(object sender, RoutedEventArgs e)
