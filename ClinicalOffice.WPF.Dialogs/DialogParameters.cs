@@ -235,5 +235,10 @@ namespace ClinicalOffice.WPF.Dialogs
         public static string DialogTitleName { get; } = "DialogTitle";
         public static string DialogContentName { get; } = "DialogContent";
         public static string DialogButtonsName { get; } = "DialogButtons";
+        public static string DialogOKButtonName { get; } = "DialogOKButton";
+        public static string DialogCancelButtonName { get; } = "DialogCancelButton";
+        public static string DialogYesButtonName { get; } = "DialogYesButton";
+        public static string DialogNoButtonName { get; } = "DialogNoButton";
+        public static string DialogCloseButtonName { get; } = "DialogCloseButton";
     }
 }

@@ -119,7 +119,7 @@ namespace ClinicalOffice.WPF.Dialogs
         static void DialogCloseButtonTypeChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dialog = d as DialogBase;
-           dialog?._DialogParts?.SetCloseButton(dialog.OnCreateCloseButton(dialog.DialogCloseContent, dialog.DialogCloseButtonType));
+           dialog?.CreateCloseButton();
         }
 
         /// <summary>
@@ -636,13 +636,13 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// Creates a dialog button.
         /// </summary>
-        virtual protected ButtonBase OnCreateCloseButton(object content, Type buttonType)
+        virtual protected ButtonBase OnCreateCloseButton(object content)
         {
-            if (buttonType != null && buttonType.IsAssignableFrom(typeof(ButtonBase)))
+            if (DialogCloseButtonType != null && DialogCloseButtonType.IsAssignableFrom(typeof(ButtonBase)))
             {
                 try
                 {
-                    var b = Activator.CreateInstance(buttonType) as ButtonBase;
+                    var b = Activator.CreateInstance(DialogCloseButtonType) as ButtonBase;
                     if (b != null)
                     {
                         b.Content = content;
@@ -654,13 +654,6 @@ namespace ClinicalOffice.WPF.Dialogs
                 }
             }
             return new Button() { Content = content };
-        }
-        /// <summary>
-        /// Creates a dialog button.
-        /// </summary>
-        virtual protected ButtonBase OnCreateCloseButton(object content)
-        {
-            return OnCreateCloseButton(content, DialogCloseButtonType);
         }
         /// <summary>
         /// Called when OK button is clicked (even via Return button or return command <see cref="DialogCommands.ReturnKey"/>) or OK command is executed via <see cref="DialogCommands.Ok"/>.
@@ -843,9 +836,12 @@ namespace ClinicalOffice.WPF.Dialogs
                                          new Binding(nameof(DialogEffect)) { Source = this });
             BindingOperations.SetBinding(_DialogParts.DialogBackground, BackgroundProperty,
                                          new Binding(nameof(DialogBackGround)) { Source = this });
+
+            RegisterNames();
+
             CreateButtons();
 
-            _DialogParts.SetCloseButton(OnCreateCloseButton(DialogCloseContent));
+            CreateCloseButton();
 
             _DialogGrid = new Grid();
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
@@ -855,8 +851,6 @@ namespace ClinicalOffice.WPF.Dialogs
             _DialogGrid.Children.Add(_Overlay);
             _DialogGrid.Children.Add(_DialogParts);
             base.Content = _DialogGrid;
-
-            RegisterNames();
         }
         /// <summary>
         /// Create names for dialog parts to allow animations using target name.
@@ -880,6 +874,11 @@ namespace ClinicalOffice.WPF.Dialogs
             RegisterName(_DialogParts.DialogContentControl, DialogParameters.DialogContentName);
             RegisterName(_DialogParts.DialogButtonsControl, DialogParameters.DialogButtonsName);
         }
+        /// <summary>
+        /// Used to register a <see cref="FrameworkElement"/> name in name scope, and set its Name property to the same value.
+        /// </summary>
+        /// <param name="e">A <see cref="FrameworkElement"/> to register</param>
+        /// <param name="name"> Registration name.</param>
         void RegisterName(FrameworkElement e, string name)
         {
             e.Name = name;
@@ -891,7 +890,7 @@ namespace ClinicalOffice.WPF.Dialogs
         void CreateButtons()
         {
             foreach (var button in _DialogParts.DialogButtonsControl.GetButtons())
-                BindingOperations.ClearBinding(button, StyleProperty);
+                UnregisterName(button.Name);
             _DialogParts.DialogButtonsControl.ClearButtons();
             _OkButton = null;
             _CancelButton = null;
@@ -905,20 +904,20 @@ namespace ClinicalOffice.WPF.Dialogs
                     DialogParts.DialogButtonsControl.Visibility = Visibility.Collapsed;
                     break;
                 case DialogButtons.Ok:
-                    _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok);
+                    _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok, DialogParameters.DialogOKButtonName);
                     break;
                 case DialogButtons.OkCancel:
-                    _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok);
-                    _CancelButton = CreateButton(DialogCancelContent, DialogCommands.Cancel);
+                    _OkButton = CreateButton(DialogOkContent, DialogCommands.Ok, DialogParameters.DialogOKButtonName);
+                    _CancelButton = CreateButton(DialogCancelContent, DialogCommands.Cancel, DialogParameters.DialogCancelButtonName);
                     break;
                 case DialogButtons.YesNo:
-                    _YesButton = CreateButton(DialogYesContent, DialogCommands.Yes);
-                    _NoButton = CreateButton(DialogNoContent, DialogCommands.No);
+                    _YesButton = CreateButton(DialogYesContent, DialogCommands.Yes, DialogParameters.DialogYesButtonName);
+                    _NoButton = CreateButton(DialogNoContent, DialogCommands.No, DialogParameters.DialogNoButtonName);
                     break;
                 case DialogButtons.YesNoCancel:
-                    _YesButton = CreateButton(DialogYesContent, DialogCommands.Yes);
-                    _NoButton = CreateButton(DialogNoContent, DialogCommands.No);
-                    _CancelButton = CreateButton(DialogCancelContent, DialogCommands.Cancel);
+                    _YesButton = CreateButton(DialogYesContent, DialogCommands.Yes, DialogParameters.DialogYesButtonName);
+                    _NoButton = CreateButton(DialogNoContent, DialogCommands.No, DialogParameters.DialogNoButtonName);
+                    _CancelButton = CreateButton(DialogCancelContent, DialogCommands.Cancel, DialogParameters.DialogCancelButtonName);
                     break;
                 default:
                     break;
@@ -927,14 +926,24 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <summary>
         /// Create a dialog button and associate it with its internal command and bind its style property to <see cref="DialogBase.DialogButtonStyle" />.
         /// </summary>
-        ButtonBase CreateButton(object content, ICommand command)
+        ButtonBase CreateButton(object content, ICommand command, string name)
         {
             var b = OnCreateButton(content);
             b.Command = command;
             BindingOperations.SetBinding(b, StyleProperty,
                 new Binding(nameof(DialogButtonStyle)) { Source = this, Mode = BindingMode.OneWay });
             _DialogParts.DialogButtonsControl.AddButton(b);
+            RegisterName(b, name);
             return b;
+        }
+        /// <summary>
+        /// Create close button and register its name under <see cref="DialogParameters.DialogCloseButtonName"/>.
+        /// </summary>
+        void CreateCloseButton()
+        {
+            if(DialogParts?.DialogCloseButton != null) UnregisterName(DialogParameters.DialogCloseButtonName);
+            _DialogParts.SetCloseButton(OnCreateCloseButton(DialogCloseContent));
+            RegisterName(_DialogParts.DialogCloseButton, DialogParameters.DialogCloseButtonName);
         }
 
         /// <summary>
