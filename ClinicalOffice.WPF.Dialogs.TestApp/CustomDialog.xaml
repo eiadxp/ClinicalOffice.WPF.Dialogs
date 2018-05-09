@@ -37,11 +37,44 @@
             <DoubleAnimation From="0" To="360" Duration="0:0:1.7"
                              Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
                              Storyboard.TargetProperty="RenderTransform.Children[1].Angle"/>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogOKButtonName}"
+                                           Storyboard.TargetProperty="RenderTransform.X">
+                <LinearDoubleKeyFrame Value="-300" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="-300" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogOKButtonName}"
+                                           Storyboard.TargetProperty="Opacity">
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogCancelButtonName}"
+                                           Storyboard.TargetProperty="RenderTransform.X">
+                <LinearDoubleKeyFrame Value="300" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="300" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogCancelButtonName}"
+                                           Storyboard.TargetProperty="Opacity">
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </dialogs:DialogBase.DialogCustomAnimationIn>
     <dialogs:DialogBase.DialogButtonStyle>
         <Style TargetType="ButtonBase">
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ButtonBase">
