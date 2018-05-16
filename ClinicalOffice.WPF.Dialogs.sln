@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalOffice.WPF.Dialogs"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicalOffice.WPF.Dialogs.TestApp", "ClinicalOffice.WPF.Dialogs.TestApp\ClinicalOffice.WPF.Dialogs.TestApp.csproj", "{4E7B8BD8-EFFA-4D9D-82D0-940C4665F168}"
 EndProject
+Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "ClinicalOffice.WPF.Dialogs.Nuget", "ClinicalOffice.WPF.Dialogs.Nuget\ClinicalOffice.WPF.Dialogs.Nuget.nuproj", "{591027D4-B143-40F5-A6F1-554C014045A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4E7B8BD8-EFFA-4D9D-82D0-940C4665F168}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E7B8BD8-EFFA-4D9D-82D0-940C4665F168}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E7B8BD8-EFFA-4D9D-82D0-940C4665F168}.Release|Any CPU.Build.0 = Release|Any CPU
+		{591027D4-B143-40F5-A6F1-554C014045A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{591027D4-B143-40F5-A6F1-554C014045A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{591027D4-B143-40F5-A6F1-554C014045A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{591027D4-B143-40F5-A6F1-554C014045A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
