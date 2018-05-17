@@ -186,13 +186,10 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static void ShowWait(this ContentControl parent, Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
-            Invoke(() =>
-            {
-                if (waitControl == null) waitControl = CreateWaitControl(content);
-                var w = ShowDialog(parent, waitControl, title, buttons);
-                waitingAction();
-                w.Close();
-            });
+            if (waitControl == null) waitControl = CreateWaitControl(content);
+            var w = ShowDialog(parent, waitControl, title, buttons);
+            waitingAction();
+            Invoke(() => w.Close());
         }
         public static void ShowWait(Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {

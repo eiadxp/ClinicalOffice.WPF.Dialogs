@@ -6,7 +6,7 @@
         xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
         xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="905.807">
     <StackPanel>
         <ToolBar>
             <Button Content="Show custom dialog" Click="ShowCustomDialog"/>
@@ -27,8 +27,9 @@
             <Separator/>
             <Button Content="Show Error Message" Click="ShowErrorMessage"/>
             <Separator/>
-            <Button Content="Show Wait Message" Click="ShowWaitMessage"/>
-            
+            <Button Content="Show Wait Message/Task" Click="ShowWaitTaskMessage"/>
+            <Separator/>
+            <Button Content="Show Wait Message/Action" Click="ShowWaitActionMessage"/>
         </ToolBar>
         <ProgressBar IsIndeterminate="True" Height="24" />
     </StackPanel>

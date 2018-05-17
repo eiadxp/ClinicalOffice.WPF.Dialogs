@@ -66,7 +66,7 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
             await this.ShowMessageAsync("Error message default style.", "Title test", DialogMessageType.Error);
         }
 
-        private void ShowWaitMessage(object sender, RoutedEventArgs e)
+        private void ShowWaitTaskMessage(object sender, RoutedEventArgs e)
         {
             this.ShowWait(
                 Task.Run(() => System.Threading.Thread.Sleep(10000)),
@@ -74,6 +74,17 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
                 "This message will close automatically when underlaying task finish (10 seconds).", 
                 null,
                 DialogButtons.Ok);
+        }
+
+        private void ShowWaitActionMessage(object sender, RoutedEventArgs e)
+        {
+            Task.Run(() =>
+                this.ShowWait(() => System.Threading.Thread.Sleep(10000), 
+                              "Waiting...", 
+                              "This message will close automatically when underlaying task finish (10 seconds).", 
+                              null, 
+                              DialogButtons.Ok)
+            );
         }
     }
 }
