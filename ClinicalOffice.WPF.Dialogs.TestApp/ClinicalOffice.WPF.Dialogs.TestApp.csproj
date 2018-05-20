@@ -59,6 +59,10 @@
     <Page Include="CustomDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomWaitControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -72,6 +76,9 @@
     </Compile>
     <Compile Include="CustomDialog.xaml.cs">
       <DependentUpon>CustomDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomWaitControl.xaml.cs">
+      <DependentUpon>CustomWaitControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

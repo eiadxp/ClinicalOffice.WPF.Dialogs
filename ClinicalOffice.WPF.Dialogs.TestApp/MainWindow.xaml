@@ -27,9 +27,13 @@
             <Separator/>
             <Button Content="Show Error Message" Click="ShowErrorMessage"/>
             <Separator/>
+        </ToolBar>
+        <ToolBar>
             <Button Content="Show Wait Message/Task" Click="ShowWaitTaskMessage"/>
             <Separator/>
             <Button Content="Show Wait Message/Action" Click="ShowWaitActionMessage"/>
+            <Separator/>
+            <Button Content="Show Custom Wait Message/Task" Click="ShowCustomWaitTaskMessage"/>
         </ToolBar>
         <ProgressBar IsIndeterminate="True" Height="24" />
     </StackPanel>

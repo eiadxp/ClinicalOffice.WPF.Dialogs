@@ -86,5 +86,15 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
                               DialogButtons.Ok)
             );
         }
+
+        private void ShowCustomWaitTaskMessage(object sender, RoutedEventArgs e)
+        {
+            this.ShowWait(
+                Task.Run(() => System.Threading.Thread.Sleep(10000)),
+                "Waiting...",
+                "This message will close automatically when underlaying task finish (10 seconds).",
+                new CustomWaitControl (),
+                DialogButtons.Ok);
+        }
     }
 }

@@ -8,21 +8,21 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>HCiyJkAcAwQDEClJIggBjJmh4LAaQRwIemwBSKKCMlg=</HashCode>
+      <HashCode>HSqzLkAcAwQrFGlJKwpBzJmh4LIaQwwIemwBSaKCMlw=</HashCode>
       <FileName>DialogBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ClinicalOffice.WPF.Dialogs.DialogHelper" Collapsed="true">
-    <Position X="5.25" Y="0.5" Width="1.5" />
+    <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAQAgAAAAIAAAAAAAAAQEAAACAAAAAAAABAAAABAA=</HashCode>
+      <HashCode>AAAAAAgAAAAIEAAAAAABAQEAAACAAAAAAAABAAAABAA=</HashCode>
       <FileName>DialogHelper.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ClinicalOffice.WPF.Dialogs.DialogParameters" Collapsed="true">
-    <Position X="2.25" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>TLEEDEElDnRwQCUQICgGAFEAwQRCITQQEgEAAJAANUI=</HashCode>
+      <HashCode>TLEEjEU1DnRwQCUQICgWAFEAwQRSITwQEhMAAJQANUI=</HashCode>
       <FileName>DialogParameters.cs</FileName>
     </TypeIdentifier>
   </Class>
