@@ -162,11 +162,11 @@ namespace ClinicalOffice.WPF.Dialogs
             return ShowMessage(Application.Current.MainWindow, text, caption, type, buttons);
         }
 
-        static UIElement CreateWaitControl(object content)
+        static UIElement CreateWaitControlPanel(object content, UIElement waitControl = null)
         {
             return Invoke(() => 
             {
-                var wait = new ProgressBar() { IsIndeterminate = true, MinHeight = 24, MinWidth = 200 };
+                var wait = waitControl ?? new ProgressBar() { IsIndeterminate = true, MinHeight = 24, MinWidth = 200 };
                 var cont = new ContentControl() { Content = content, Margin = new Thickness(5) };
                 var pnl = new StackPanel();
                 pnl.Children.Add(cont);
@@ -177,8 +177,7 @@ namespace ClinicalOffice.WPF.Dialogs
 
         public static DialogBase ShowWait(this ContentControl parent, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
-            if (waitControl == null) waitControl = CreateWaitControl(content);
-            return Invoke(() => ShowDialog(parent, waitControl, title, buttons));
+            return Invoke(() => ShowDialog(parent, CreateWaitControlPanel(content, waitControl), title, buttons));
         }
         public static DialogBase ShowWait(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
@@ -186,8 +185,7 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static void ShowWait(this ContentControl parent, Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
-            if (waitControl == null) waitControl = CreateWaitControl(content);
-            var w = ShowDialog(parent, waitControl, title, buttons);
+            var w = ShowDialog(parent, CreateWaitControlPanel(content, waitControl), title, buttons);
             waitingAction();
             Invoke(() => w.Close());
         }
@@ -197,26 +195,14 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         public static void ShowWait(this ContentControl parent, Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
-            if (waitControl == null) waitControl = CreateWaitControl(content);
-            switch (waitingTask.Status)
+            var w = ShowDialog(parent, CreateWaitControlPanel(content, waitControl), title, buttons);
+            waitingTask.ContinueWith((a) => Invoke(() => w.Close()));
+            try
             {
-                case TaskStatus.Created:
-                case TaskStatus.Running:
-                case TaskStatus.WaitingForActivation:
-                case TaskStatus.WaitingToRun:
-                case TaskStatus.WaitingForChildrenToComplete:
-                    var w = ShowDialog(parent, waitControl, title, buttons);
-                    waitingTask.ContinueWith((a) => Invoke(() => w.Close()));
-                    if (waitingTask.Status == TaskStatus.Created || 
-                        waitingTask.Status == TaskStatus.WaitingForActivation || 
-                        waitingTask.Status == TaskStatus.WaitingToRun)
-                            waitingTask.Start();
-                    break;
-                case TaskStatus.RanToCompletion:
-                case TaskStatus.Canceled:
-                case TaskStatus.Faulted:
-                default:
-                    break;
+                waitingTask.Start();
+            }
+            catch (Exception)
+            {
             }
         }
         public static void ShowWait(Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
