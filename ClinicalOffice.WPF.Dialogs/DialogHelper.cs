@@ -28,12 +28,25 @@ namespace ClinicalOffice.WPF.Dialogs
     /// </remarks>
     public static class DialogHelper
     {
+        /// <summary>
+        /// UI dispatcher used for thread safe access of UI element
+        /// </summary>
         static Dispatcher Dispatcher { get => Application.Current.Dispatcher; }
+        /// <summary>
+        /// Invokes a function in the UI thread to keep thread safe access of UI element, and returns its result.
+        /// </summary>
+        /// <typeparam name="T">Generic type returned by the function.</typeparam>
+        /// <param name="function">Function to be accessed in the UI thread.</param>
+        /// <returns>It will returns the result from function.</returns>
         static T Invoke<T>(Func<T> function)
         {
             if (Dispatcher.CheckAccess()) return function();
             return Dispatcher.Invoke(() => function());
         }
+        /// <summary>
+        /// Invokes a method in the UI thread to keep thread safe access of UI element.
+        /// </summary>
+        /// <param name="action">Method to be accessed in the UI thread.</param>
         static void Invoke(Action action)
         {
             if (Dispatcher.CheckAccess()) action();
@@ -41,25 +54,62 @@ namespace ClinicalOffice.WPF.Dialogs
         }
 
         #region Dialog Functions
+        /// <summary>
+        /// Create a <see cref="DialogBase"/> object to represent your content.
+        /// </summary>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>A <see cref="DialogBase"/> to display the content (the dialog is not visible yet).</returns>
         public static DialogBase CreateDialog(object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             return Invoke(() => new DialogBase() { DialogTitle = title, DialogButtons = buttons, DialogContent = content });
         }
 
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> object to represent your content. The main application window is used as parent.
+        /// </summary>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>A <see cref="DialogBase"/> that displays the content (the dialog is visible).</returns>
         public static DialogBase ShowDialog(object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             return ShowDialog(Application.Current?.MainWindow, content, title, buttons);
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> object to represent your content inside <see cref="ContentControl"/>.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the dialog inside it.</param>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>A <see cref="DialogBase"/> that displays the content (the dialog is visible).</returns>
         public static DialogBase ShowDialog(this ContentControl parent, object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             var w = CreateDialog(content, title, buttons);
             Invoke(() => w.ShowDialog(parent));
             return w;
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> object to represent your content inside another <see cref="ContentControl"/>.
+        /// </summary>
+        /// <typeparam name="TContent">Generic type of your content (should has a parameterless constructor).</typeparam>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the dialog inside it.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>A <see cref="DialogBase"/> that displays the content (the dialog is visible).</returns>
         public static DialogBase ShowDialog<TContent>(this ContentControl parent, object title = null, DialogButtons buttons = DialogButtons.None) where TContent : new()
         {
             return ShowDialog(parent, new TContent(), title, buttons);
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> object to represent your content. The main application window is used as parent.
+        /// </summary>
+        /// <typeparam name="TContent">Generic type of your content (should has a parameterless constructor).</typeparam>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>A <see cref="DialogBase"/> that displays the content (the dialog is visible).</returns>
         public static DialogBase ShowDialog<TContent>(object title = null, DialogButtons buttons = DialogButtons.None) where TContent : new()
         {
             return ShowDialog(Application.Current.MainWindow, new TContent(), title, buttons);
