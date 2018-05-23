@@ -52,7 +52,15 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="CustomControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomWaitControl.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
@@ -63,8 +71,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomControl.xaml.cs">
+      <DependentUpon>CustomControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomDialog.xaml.cs">
       <DependentUpon>CustomDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomWaitControl.xaml.cs">
+      <DependentUpon>CustomWaitControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

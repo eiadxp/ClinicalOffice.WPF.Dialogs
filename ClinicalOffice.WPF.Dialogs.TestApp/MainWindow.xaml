@@ -6,14 +6,34 @@
         xmlns:dialogs="clr-namespace:ClinicalOffice.WPF.Dialogs;assembly=ClinicalOffice.WPF.Dialogs"
         xmlns:local="clr-namespace:ClinicalOffice.WPF.Dialogs.TestApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="905.807">
     <StackPanel>
         <ToolBar>
             <Button Content="Show custom dialog" Click="ShowCustomDialog"/>
             <Separator/>
+            <Button Content="Show custom dialog Async" Click="ShowCustomDialogAsync"/>
+            <Separator/>
+            <Button Content="Show user control dialog" Click="ShowUserControlDialog"/>
+            <Separator/>
+            <Button Content="Show user control dialog Async" Click="ShowUserControlDialogAsync"/>
+            <Separator/>
+        </ToolBar>
+        <ToolBar>
             <Button Content="Show Info Message" Click="ShowInfoMessage"/>
             <Separator/>
-            <Button Content="Show Wait Message" Click="ShowWaitMessage"/>
+            <Button Content="Show Warning Message" Click="ShowWarningMessage"/>
+            <Separator/>
+            <Button Content="Show Question Message" Click="ShowQuestionMessage"/>
+            <Separator/>
+            <Button Content="Show Error Message" Click="ShowErrorMessage"/>
+            <Separator/>
+        </ToolBar>
+        <ToolBar>
+            <Button Content="Show Wait Message/Task" Click="ShowWaitTaskMessage"/>
+            <Separator/>
+            <Button Content="Show Wait Message/Action" Click="ShowWaitActionMessage"/>
+            <Separator/>
+            <Button Content="Show Custom Wait Message/Task" Click="ShowCustomWaitTaskMessage"/>
         </ToolBar>
         <ProgressBar IsIndeterminate="True" Height="24" />
     </StackPanel>

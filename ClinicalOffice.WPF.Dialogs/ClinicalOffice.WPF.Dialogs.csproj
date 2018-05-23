@@ -62,8 +62,6 @@
     <Compile Include="DialogMessage.xaml.cs">
       <DependentUpon>DialogMessage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DialogMessageBrushes.cs" />
-    <Compile Include="DialogMessageIcons.cs" />
     <Compile Include="DialogMessageType.cs" />
     <Compile Include="DialogOpenCommand.cs" />
     <Compile Include="DialogPartsControl.cs" />

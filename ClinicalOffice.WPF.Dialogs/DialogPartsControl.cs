@@ -32,6 +32,11 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         Border _DialogBackGround;
         public Border DialogBackground { get => _DialogBackGround; }
+        /// <summary>
+        /// The close button of the dialog.
+        /// </summary>
+        ButtonBase _DialogCloseButton;
+        public ButtonBase DialogCloseButton { get => _DialogCloseButton; }
         public DialogBase Dialog { get; set; }
 
         static DialogPartsControl()
@@ -91,12 +96,18 @@ namespace ClinicalOffice.WPF.Dialogs
             InputBindings.Add(new KeyBinding(DialogCommands.ReturnKey, Key.Return, ModifierKeys.None));
             InputBindings.Add(new KeyBinding(DialogCommands.EscapeKey, Key.Escape, ModifierKeys.None));
         }
-        public void AddCloseButton(ButtonBase button)
+        internal void SetCloseButton(ButtonBase button)
         {
-            Grid.SetRow(button, 0);
-            Panel.SetZIndex(button, int.MaxValue);
-            button.Command = DialogCommands.Close;
-            _MainGrid.Children.Add(button);
+            if (_DialogCloseButton != null)
+            {
+                _MainGrid.Children.Remove(_DialogCloseButton);
+            }
+            _DialogCloseButton = button;
+            if (_DialogCloseButton == null) return;
+            Grid.SetRow(_DialogCloseButton, 0);
+            Panel.SetZIndex(_DialogCloseButton, int.MaxValue);
+            _DialogCloseButton.Command = DialogCommands.Close;
+            _MainGrid.Children.Add(_DialogCloseButton);
         }
         void OkCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.OkCommandExecuted(); }
         void CancelCommandExecuted(object sender, ExecutedRoutedEventArgs e) { Dialog.CancelCommandExecuted(); }

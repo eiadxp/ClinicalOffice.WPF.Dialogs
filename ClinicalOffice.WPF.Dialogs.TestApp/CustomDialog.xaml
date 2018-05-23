@@ -27,7 +27,7 @@
                              Storyboard.TargetName="LoginDialog" Storyboard.TargetProperty="DialogParentEffect.Radius"/>
             <DoubleAnimation From="0" To="0.5" Duration="0:0:3"
                              Storyboard.TargetName="LoginDialog" 
-                             Storyboard.TargetProperty="DialogOverlayOpacity"/>
+                             Storyboard.TargetProperty="DialogOverlay.Opacity"/>
             <DoubleAnimation From="0" To="1" Duration="0:0:3"
                              Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
                              Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX"/>
@@ -37,8 +37,74 @@
             <DoubleAnimation From="0" To="360" Duration="0:0:1.7"
                              Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogPartsName}" 
                              Storyboard.TargetProperty="RenderTransform.Children[1].Angle"/>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogOKButtonName}"
+                                           Storyboard.TargetProperty="RenderTransform.X">
+                <LinearDoubleKeyFrame Value="-300" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="-300" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogOKButtonName}"
+                                           Storyboard.TargetProperty="Opacity">
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogCancelButtonName}"
+                                           Storyboard.TargetProperty="RenderTransform.X">
+                <LinearDoubleKeyFrame Value="300" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="300" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Duration="0:0:4"
+                                           Storyboard.TargetName="{x:Static dialogs:DialogParameters.DialogCancelButtonName}"
+                                           Storyboard.TargetProperty="Opacity">
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                <LinearDoubleKeyFrame Value="0" KeyTime="0:0:3"/>
+                <LinearDoubleKeyFrame Value="1" KeyTime="0:0:4"/>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </dialogs:DialogBase.DialogCustomAnimationIn>
+    <dialogs:DialogBase.DialogButtonStyle>
+        <Style TargetType="ButtonBase">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ButtonBase">
+                        <Border x:Name="Border" BorderBrush="#7F000000" BorderThickness="3" CornerRadius="20" Padding="5" Background="#7FFFFFFF">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState Name="Normal"/>
+                                    <VisualState Name="MouseOver">
+                                        <Storyboard Duration="0:0:0.1">
+                                            <ColorAnimation To="#DFFFFFFF" Duration="0:0:0.1"
+                                                        Storyboard.TargetProperty="Background.Color"
+                                                        Storyboard.TargetName="Border"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState Name="Pressed">
+                                        <Storyboard Duration="0:0:0.1">
+                                            <ColorAnimation To="#4F000000" Duration="0:0:0.1"
+                                                        Storyboard.TargetProperty="Background.Color"
+                                                        Storyboard.TargetName="Border"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </dialogs:DialogBase.DialogButtonStyle>
     <StackPanel>
         <TextBlock TextWrapping="Wrap" Margin="3" Foreground="#FFB60000">
             This is a custom dialog shown with custom in animation.<LineBreak/>
@@ -52,7 +118,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="OK Content:" Margin="3,6"/>
