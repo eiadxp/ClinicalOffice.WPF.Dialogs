@@ -28,6 +28,7 @@ namespace ClinicalOffice.WPF.Dialogs
     /// </remarks>
     public static class DialogHelper
     {
+        #region private methods
         /// <summary>
         /// UI dispatcher used for thread safe access of UI element
         /// </summary>
@@ -52,6 +53,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (Dispatcher.CheckAccess()) action();
             else Dispatcher.Invoke(() => action());
         }
+        #endregion
 
         #region Dialog Functions
         /// <summary>
@@ -114,71 +116,78 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             return ShowDialog(Application.Current.MainWindow, new TContent(), title, buttons);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog(ContentControl, object, object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the dialog inside it.</param>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync(this ContentControl parent, object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             var w = CreateDialog(content, title, buttons);
             return w.ShowDialogAsync(parent);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog(object, object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync(object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             return ShowDialogAsync(Application.Current.MainWindow, content, title, buttons);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog{TContent}(ContentControl, object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <typeparam name="TContent">Generic type of your content (should has a parameterless constructor).</typeparam>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the dialog inside it.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync<TConent>(this ContentControl parent, object title = null, DialogButtons buttons = DialogButtons.None) where TConent : new()
         {
             return ShowDialogAsync(parent, new TConent(), title, buttons);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog{TContent}(object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <typeparam name="TContent">Generic type of your content (should has a parameterless constructor).</typeparam>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync<TConent>(object title = null, DialogButtons buttons = DialogButtons.None) where TConent : new()
         {
             return ShowDialogAsync(Application.Current.MainWindow, new TConent(), title, buttons);
         }
         #endregion
         #region MessageBox Functions
-        public static Task<DialogResult> ShowMessageAsync(this ContentControl parent, string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
-        {
-            return Invoke(() =>
-            {
-                var w = new DialogMessage
-                {
-                    DialogButtons = buttons,
-                    Text = text,
-                    DialogTitle = caption
-                };
-                if (theme != null) w.DialogBackGround = theme;
-                if (icon != null) w.Icon = icon;
-                return w.ShowDialogAsync(parent);
-            });
-        }
-        public static Task<DialogResult> ShowMessageAsync(string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
-        {
-            return ShowMessageAsync(Application.Current.MainWindow, text, caption, icon, theme, buttons);
-        }
-        public static Task<DialogResult> ShowMessageAsync(this ContentControl parent, string text, string caption, DialogMessageType type)
-        {
-            DialogButtons b = (type == DialogMessageType.Question) ? DialogButtons.YesNo : DialogButtons.Ok;
-            return ShowMessageAsync(parent, text, caption, type, b);
-        }
-        public static Task<DialogResult> ShowMessageAsync(string text, string caption, DialogMessageType type)
-        {
-            return ShowMessageAsync(Application.Current.MainWindow, text, caption, type);
-        }
-        public static Task<DialogResult> ShowMessageAsync(this ContentControl parent, string text, string caption, DialogMessageType type, DialogButtons buttons)
-        {
-            if (!Dispatcher.CheckAccess()) return Dispatcher.Invoke(() => ShowMessageAsync(parent, text, caption, type, buttons));
-            var w = new DialogMessage();
-            w.DialogButtons = buttons;
-            w.Text = text;
-            w.DialogTitle = caption;
-            var theme = (Brush)w.TryFindResource(type.ToString() + "Brush");
-            if (theme != null) w.DialogBackGround = theme;
-            var icon = (UIElement)w.FindResource(type.ToString() + "Icon");
-            if (icon != null) w.Icon = icon;
-            return w.ShowDialogAsync(parent);
-        }
-        public static Task<DialogResult> ShowMessageAsync(string text, string caption, DialogMessageType type, DialogButtons buttons)
-        {
-            return ShowMessageAsync(Application.Current.MainWindow, text, caption, type, buttons);
-        }
-        public static DialogMessage ShowMessage(this ContentControl parent, string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
+        /// <summary>
+        /// Display a message box inside a parent <see cref="ContentControl"/>, and returns immediately before closing the message.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the message box inside it.</param>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="icon">Optional icon to be displayed before the text.</param>
+        /// <param name="theme">Optional theme brush to be used for dialog painting.</param>
+        /// <param name="buttons">Optional, buttons displayed for the message box(default is OK button).</param>
+        /// <returns>A <see cref="DialogMessage"/> that represent the displayed message box.</returns>
+        public static DialogMessage ShowMessage(this ContentControl parent, string text, string caption = "", UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
         {
             return Invoke(() =>
             {
@@ -194,19 +203,52 @@ namespace ClinicalOffice.WPF.Dialogs
                 return w;
             });
         }
-        public static DialogMessage ShowMessage(string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
+        /// <summary>
+        /// Display a message box inside the application main window, and returns immediately before closing the message.
+        /// </summary>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="icon">Optional icon to be displayed before the text.</param>
+        /// <param name="theme">Optional theme brush to be used for dialog painting.</param>
+        /// <param name="buttons">Optional, buttons displayed for the message box(default is OK button).</param>
+        /// <returns>A <see cref="DialogMessage"/> that represent the displayed message box.</returns>
+        public static DialogMessage ShowMessage(string text, string caption = "", UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
         {
             return ShowMessage(Application.Current.MainWindow, text, caption, icon, theme, buttons);
         }
-        public static DialogMessage ShowMessage(this ContentControl parent, string text, string caption, DialogMessageType type)
+        /// <summary>
+        /// Display a message box inside a parent <see cref="ContentControl"/>, and returns immediately before closing the message.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the message box inside it.</param>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon, them brush, and buttons of the message.</param>
+        /// <returns>A <see cref="DialogMessage"/> that represent the displayed message box.</returns>
+        public static DialogMessage ShowMessage(this ContentControl parent, string text, string caption = "", DialogMessageType type = DialogMessageType.Info)
         {
             DialogButtons b = (type == DialogMessageType.Question) ? DialogButtons.YesNo : DialogButtons.Ok;
             return ShowMessage(parent, text, caption, type, b);
         }
-        public static DialogMessage ShowMessage(string text, string caption, DialogMessageType type)
+        /// <summary>
+        /// Display a message box inside the application main window, and returns immediately before closing the message.
+        /// </summary>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon, them brush, and buttons of the message.</param>
+        /// <returns>A <see cref="DialogMessage"/> that represent the displayed message box.</returns>
+        public static DialogMessage ShowMessage(string text, string caption = "", DialogMessageType type = DialogMessageType.Info)
         {
             return ShowMessage(Application.Current.MainWindow, text, caption, type);
         }
+        /// <summary>
+        /// Display a message box inside a parent <see cref="ContentControl"/>, and returns immediately before closing the message.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the message box inside it.</param>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon and them brush of the message.</param>
+        /// <param name="buttons">Optional, buttons displayed for the message box(default is OK button).</param>
+        /// <returns>A <see cref="DialogMessage"/> that represent the displayed message box.</returns>
         public static DialogMessage ShowMessage(this ContentControl parent, string text, string caption, DialogMessageType type, DialogButtons buttons)
         {
             return Invoke(() =>
@@ -225,9 +267,125 @@ namespace ClinicalOffice.WPF.Dialogs
                 return w;
             });
         }
+        /// <summary>
+        /// Display a message box inside the application main window, and returns immediately before closing the message.
+        /// </summary>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon and them brush of the message.</param>
+        /// <param name="buttons">Optional, buttons displayed for the message box(default is OK button).</param>
+        /// <returns>A <see cref="DialogMessage"/> that represent the displayed message box.</returns>
         public static DialogMessage ShowMessage(string text, string caption, DialogMessageType type, DialogButtons buttons)
         {
             return ShowMessage(Application.Current.MainWindow, text, caption, type, buttons);
+        }
+        /// <summary>
+        /// Async version of <see cref="ShowMessage(ContentControl, string, string, UIElement, Brush, DialogButtons)"/>.
+        /// Display a message box inside a parent <see cref="ContentControl"/>, 
+        /// if used in await/async method it will return after closing the message box.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the message box inside it.</param>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="icon">Optional icon to be displayed before the text.</param>
+        /// <param name="theme">Optional theme brush to be used for dialog painting.</param>
+        /// <param name="buttons">Optional, buttons displayed for the message box(default is OK button).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the message result after closing.</returns>
+        public static Task<DialogResult> ShowMessageAsync(this ContentControl parent, string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
+        {
+            return Invoke(() =>
+            {
+                var w = new DialogMessage
+                {
+                    DialogButtons = buttons,
+                    Text = text,
+                    DialogTitle = caption
+                };
+                if (theme != null) w.DialogBackGround = theme;
+                if (icon != null) w.Icon = icon;
+                return w.ShowDialogAsync(parent);
+            });
+        }
+        /// <summary>
+        /// Async version of <see cref="ShowMessage(string, string, UIElement, Brush, DialogButtons)"/>.
+        /// Display a message box inside the application main window/>, 
+        /// if used in await/async method it will return after closing the message box.
+        /// </summary>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="icon">Optional icon to be displayed before the text.</param>
+        /// <param name="theme">Optional theme brush to be used for dialog painting.</param>
+        /// <param name="buttons">Optional, buttons displayed for the message box(default is OK button).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the message result after closing.</returns>
+        public static Task<DialogResult> ShowMessageAsync(string text, string caption, UIElement icon = null, Brush theme = null, DialogButtons buttons = DialogButtons.Ok)
+        {
+            return ShowMessageAsync(Application.Current.MainWindow, text, caption, icon, theme, buttons);
+        }
+        /// <summary>
+        /// Async version of <see cref="ShowMessage(ContentControl, string, string, DialogMessageType)"/>.
+        /// Display a message box inside a parent <see cref="ContentControl"/>, 
+        /// if used in await/async method it will return after closing the message box.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the message box inside it.</param>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon, them brush, and buttons of the message.</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the message result after closing.</returns>
+        public static Task<DialogResult> ShowMessageAsync(this ContentControl parent, string text, string caption, DialogMessageType type)
+        {
+            DialogButtons b = (type == DialogMessageType.Question) ? DialogButtons.YesNo : DialogButtons.Ok;
+            return ShowMessageAsync(parent, text, caption, type, b);
+        }
+        /// <summary>
+        /// Async version of <see cref="ShowMessage(string, string, UIElement, Brush, DialogButtons)"/>.
+        /// Display a message box inside the application main window, 
+        /// if used in await/async method it will return after closing the message box.
+        /// </summary>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon, them brush, and buttons of the message.</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the message result after closing.</returns>
+        public static Task<DialogResult> ShowMessageAsync(string text, string caption, DialogMessageType type)
+        {
+            return ShowMessageAsync(Application.Current.MainWindow, text, caption, type);
+        }
+        /// <summary>
+        /// Async version of <see cref="ShowMessage(ContentControl, string, string, DialogMessageType)"/>.
+        /// Display a message box inside a parent <see cref="ContentControl"/>, 
+        /// if used in await/async method it will return after closing the message box.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the message box inside it.</param>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon, them brush, and buttons of the message.</param>
+        /// <param name="buttons">Buttons displayed for the message box(default is OK button).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the message result after closing.</returns>
+        public static Task<DialogResult> ShowMessageAsync(this ContentControl parent, string text, string caption, DialogMessageType type, DialogButtons buttons)
+        {
+            if (!Dispatcher.CheckAccess()) return Dispatcher.Invoke(() => ShowMessageAsync(parent, text, caption, type, buttons));
+            var w = new DialogMessage();
+            w.DialogButtons = buttons;
+            w.Text = text;
+            w.DialogTitle = caption;
+            var theme = (Brush)w.TryFindResource(type.ToString() + "Brush");
+            if (theme != null) w.DialogBackGround = theme;
+            var icon = (UIElement)w.FindResource(type.ToString() + "Icon");
+            if (icon != null) w.Icon = icon;
+            return w.ShowDialogAsync(parent);
+        }
+        /// <summary>
+        /// Async version of <see cref="ShowMessage(ContentControl, string, string, DialogMessageType)"/>.
+        /// Display a message box inside the application main window/>, 
+        /// if used in await/async method it will return after closing the message box.
+        /// </summary>
+        /// <param name="text">Message text.</param>
+        /// <param name="caption">Message box title.</param>
+        /// <param name="type">Type of the message box (info, warning, error, or question) that will determine the icon and them brush of the message.</param>
+        /// <param name="buttons">Buttons displayed for the message box(default is OK button).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the message result after closing.</returns>
+        public static Task<DialogResult> ShowMessageAsync(string text, string caption, DialogMessageType type, DialogButtons buttons)
+        {
+            return ShowMessageAsync(Application.Current.MainWindow, text, caption, type, buttons);
         }
         #endregion
         #region Wait Dialog Functions
