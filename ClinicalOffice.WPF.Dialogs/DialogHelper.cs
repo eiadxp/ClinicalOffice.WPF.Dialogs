@@ -28,6 +28,7 @@ namespace ClinicalOffice.WPF.Dialogs
     /// </remarks>
     public static class DialogHelper
     {
+        #region private methods
         /// <summary>
         /// UI dispatcher used for thread safe access of UI element
         /// </summary>
@@ -52,6 +53,7 @@ namespace ClinicalOffice.WPF.Dialogs
             if (Dispatcher.CheckAccess()) action();
             else Dispatcher.Invoke(() => action());
         }
+        #endregion
 
         #region Dialog Functions
         /// <summary>
@@ -114,19 +116,61 @@ namespace ClinicalOffice.WPF.Dialogs
         {
             return ShowDialog(Application.Current.MainWindow, new TContent(), title, buttons);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog(ContentControl, object, object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the dialog inside it.</param>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync(this ContentControl parent, object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             var w = CreateDialog(content, title, buttons);
             return w.ShowDialogAsync(parent);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog(object, object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <param name="content">The content to be presented in the dialog.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync(object content, object title = null, DialogButtons buttons = DialogButtons.None)
         {
             return ShowDialogAsync(Application.Current.MainWindow, content, title, buttons);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog{TContent}(ContentControl, object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <typeparam name="TContent">Generic type of your content (should has a parameterless constructor).</typeparam>
+        /// <param name="parent">A <see cref="ContentControl"/> used to display the dialog inside it.</param>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync<TConent>(this ContentControl parent, object title = null, DialogButtons buttons = DialogButtons.None) where TConent : new()
         {
             return ShowDialogAsync(parent, new TConent(), title, buttons);
         }
+        /// <summary>
+        /// Async version of <see cref="ShowDialog{TContent}(object, DialogButtons)"/> that returns the dialog result.
+        /// </summary>
+        /// <typeparam name="TContent">Generic type of your content (should has a parameterless constructor).</typeparam>
+        /// <param name="title">Dialog title.</param>
+        /// <param name="buttons">Dialog buttons to be displayed (by default no buttons displayed).</param>
+        /// <returns>a <see cref="Task{DialogResult}"/> that can be awaited to get the dialog result after closing.</returns>
+        /// <remarks>
+        /// When we use this overload in async/await function, the calling function will wait until the dialog is closed and get the dialog result.
+        /// </remarks>
         public static Task<DialogResult> ShowDialogAsync<TConent>(object title = null, DialogButtons buttons = DialogButtons.None) where TConent : new()
         {
             return ShowDialogAsync(Application.Current.MainWindow, new TConent(), title, buttons);
