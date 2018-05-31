@@ -89,10 +89,11 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
         {
             this.ShowWait(
                 Task.Run(() => System.Threading.Thread.Sleep(10000)),
-                "Waiting...",
-                "This message will close automatically when underlaying task finish (10 seconds).",
+                null,
+                null,
                 new CustomWaitControl (),
-                DialogButtons.Ok);
+                DialogButtons.None,
+                Brushes.Transparent);
         }
     }
 }

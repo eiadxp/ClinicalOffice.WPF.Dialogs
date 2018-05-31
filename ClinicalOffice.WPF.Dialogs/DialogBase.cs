@@ -1210,15 +1210,24 @@ namespace ClinicalOffice.WPF.Dialogs
         public void SetTheme(Brush themeBrush)
         {
             _DialogParts.Background = themeBrush;
-
-            _DialogParts.DialogButtonsControl.Background = new SolidColorBrush(Colors.White) { Opacity = .4 };
+            //Borders are always same color of the them.
             _DialogParts.DialogButtonsControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
-
-            _DialogParts.DialogTitleControl.Background = new SolidColorBrush(Colors.White) { Opacity = .6 };
             _DialogParts.DialogTitleControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
-
-            _DialogParts.DialogContentControl.Background = new SolidColorBrush(Colors.White) { Opacity = .8 };
             _DialogParts.DialogContentControl.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            if (themeBrush == Brushes.Transparent)
+            {
+                //If you use transparent brush then all parts will be transparent
+                _DialogParts.DialogButtonsControl.Background = themeBrush;
+                _DialogParts.DialogTitleControl.Background = themeBrush;
+                _DialogParts.DialogContentControl.Background = themeBrush;
+            }
+            else
+            {
+                //If you did not use transparent brush then each part will have different shade.
+                _DialogParts.DialogButtonsControl.Background = new SolidColorBrush(Colors.White) { Opacity = .4 };
+                _DialogParts.DialogTitleControl.Background = new SolidColorBrush(Colors.White) { Opacity = .6 };
+                _DialogParts.DialogContentControl.Background = new SolidColorBrush(Colors.White) { Opacity = .8 };
+            }
         }
         #endregion
     }

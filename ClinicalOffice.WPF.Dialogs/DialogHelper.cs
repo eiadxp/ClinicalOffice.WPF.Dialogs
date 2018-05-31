@@ -401,7 +401,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// The function does not display the dialog.
         /// You have to call <see cref="DialogBase.ShowDialog(ContentControl)"/> or <see cref="DialogBase.ShowDialogAsync(ContentControl)"/> to show the dialog.
         /// </remarks>
-        public static DialogBase CreateWaitDialog(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
+        public static DialogBase CreateWaitDialog(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null)
         {
             return Invoke(() =>
             {
@@ -411,6 +411,7 @@ namespace ClinicalOffice.WPF.Dialogs
                 pnl.Children.Add(cont);
                 pnl.Children.Add(wait);
                 var w = new DialogBase() { DialogContent = pnl, DialogTitle = title, DialogButtons = buttons };
+                if (theme != null) w.SetTheme(theme);
                 return w;
             });
         }
@@ -427,11 +428,11 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <remarks>
         /// The function shows the dialog and returns immediately before closing the dialog.
         /// </remarks>
-        public static DialogBase ShowWait(this ContentControl parent, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
+        public static DialogBase ShowWait(this ContentControl parent, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null)
         {
             return Invoke(() =>
             {
-                var w = CreateWaitDialog(title, content, waitControl, buttons);
+                var w = CreateWaitDialog(title, content, waitControl, buttons, theme);
                 w.ShowDialog(parent);
                 return w;
             });
@@ -447,9 +448,9 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <remarks>
         /// The function shows the dialog and returns immediately before closing the dialog.
         /// </remarks>
-        public static DialogBase ShowWait(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
+        public static DialogBase ShowWait(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null)
         {
-            return ShowWait(Application.Current.MainWindow, title, content, waitControl, buttons);
+            return ShowWait(Application.Current.MainWindow, title, content, waitControl, buttons, theme);
         }
         /// <summary>
         /// Show a <see cref="DialogBase"/> that contains a waiting control, and then execute an actions, and when finished closes the dialog.
@@ -463,9 +464,9 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <remarks>
         /// The method creates and shows the dialog in the UI thread, then it calls the <c>waitingAction</c> action in the same thread as the calling function, and finally it closes the dialog in the UI thread after returning from the action.
         /// </remarks>
-        public static void ShowWait(this ContentControl parent, Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
+        public static void ShowWait(this ContentControl parent, Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null)
         {
-            var w = ShowWait(parent, title, content, waitControl, buttons);
+            var w = ShowWait(parent, title, content, waitControl, buttons, theme);
             waitingAction();
             Invoke(() => w.Close());
         }
@@ -480,9 +481,9 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <remarks>
         /// The method creates and shows the dialog in the UI thread, then it calls the <c>waitingAction</c> action in the same thread as the calling function, and finally it closes the dialog in the UI thread after returning from the action.
         /// </remarks>
-        public static void ShowWait(Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
+        public static void ShowWait(Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null)
         {
-            ShowWait(Application.Current.MainWindow, waitingAction, title, content, waitControl, buttons);
+            ShowWait(Application.Current.MainWindow, waitingAction, title, content, waitControl, buttons, theme);
         }
         /// <summary>
         /// Show a <see cref="DialogBase"/> that contains a waiting control, and then run a task, and when finished closes the dialog.
@@ -496,9 +497,9 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <remarks>
         /// The method creates and shows the dialog in the UI thread, then it starts the <c>waitingTask</c> task in a new thread, and finally it closes the dialog in the UI thread after returning from the task.
         /// </remarks>
-        public static void ShowWait(this ContentControl parent, Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, bool autoStartTask = true)
+        public static void ShowWait(this ContentControl parent, Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null, bool autoStartTask = true)
         {
-            var w = ShowWait(parent, title, content, waitControl, buttons);
+            var w = ShowWait(parent, title, content, waitControl, buttons, theme);
             waitingTask.ContinueWith((a) => Invoke(() => w.Close()));
             if (autoStartTask)
             {
@@ -522,9 +523,9 @@ namespace ClinicalOffice.WPF.Dialogs
         /// <remarks>
         /// The method creates and shows the dialog in the UI thread, then it starts the <c>waitingTask</c> task in a new thread, and finally it closes the dialog in the UI thread after returning from the task.
         /// </remarks>
-        public static void ShowWait(Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
+        public static void ShowWait(Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, Brush theme = null, bool autoStartTask = true)
         {
-            ShowWait(Application.Current.MainWindow, waitingTask, title, content, waitControl, buttons);
+            ShowWait(Application.Current.MainWindow, waitingTask, title, content, waitControl, buttons, theme, autoStartTask);
         }
         #endregion
     }
