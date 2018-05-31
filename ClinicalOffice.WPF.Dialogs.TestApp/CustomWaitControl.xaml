@@ -7,12 +7,12 @@
              mc:Ignorable="d" 
              Height="75" Width="75">
     <Grid>
-        <Ellipse Name="shape" Stroke="#FFBB0000" StrokeThickness="3" RenderTransformOrigin="0.5,0.5" >
+        <Ellipse Name="shape" Stroke="#FFFDACAC" StrokeThickness="3" RenderTransformOrigin="0.5,0.5" >
             <Ellipse.Fill>
-                <RadialGradientBrush GradientOrigin="0.2,0.8">
-                    <GradientStop Color="#FFFF0404" Offset="0.825"/>
+                <RadialGradientBrush GradientOrigin="0.13,0.8">
+                    <GradientStop Color="#FFFF0404" Offset="0.069"/>
                     <GradientStop Color="White"/>
-                    <GradientStop Color="#FFFFBFBF" Offset="1"/>
+                    <GradientStop Color="#FFFFBFBF" Offset="0.37"/>
                 </RadialGradientBrush>
             </Ellipse.Fill>
             <Ellipse.RenderTransform>
@@ -23,7 +23,7 @@
                     <BeginStoryboard>
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetName="shape" Storyboard.TargetProperty="RenderTransform.Angle"
-                                             From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever">
+                                             From="0" To="360" Duration="0:0:0.5" RepeatBehavior="Forever">
                                 <DoubleAnimation.EasingFunction>
                                     <SineEase EasingMode="EaseInOut"/>
                                 </DoubleAnimation.EasingFunction>

@@ -75,7 +75,6 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
                 null,
                 DialogButtons.Ok);
         }
-
         private void ShowWaitActionMessage(object sender, RoutedEventArgs e)
         {
             Task.Run(() =>
@@ -86,7 +85,6 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
                               DialogButtons.Ok)
             );
         }
-
         private void ShowCustomWaitTaskMessage(object sender, RoutedEventArgs e)
         {
             this.ShowWait(

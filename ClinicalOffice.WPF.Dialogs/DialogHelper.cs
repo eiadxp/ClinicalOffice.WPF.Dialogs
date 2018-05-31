@@ -389,7 +389,19 @@ namespace ClinicalOffice.WPF.Dialogs
         }
         #endregion
         #region Wait Dialog Functions
-        public static DialogBase CreateWaitDialog(object content = null, UIElement waitControl = null, string title = null, DialogButtons buttons = DialogButtons.None)
+        /// <summary>
+        /// Creates a <see cref="DialogBase"/> that contains a waiting control.
+        /// </summary>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <returns>A <see cref="DialogBase"/> that holds your contents.</returns>
+        /// <remarks>
+        /// The function does not display the dialog.
+        /// You have to call <see cref="DialogBase.ShowDialog(ContentControl)"/> or <see cref="DialogBase.ShowDialogAsync(ContentControl)"/> to show the dialog.
+        /// </remarks>
+        public static DialogBase CreateWaitDialog(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
             return Invoke(() =>
             {
@@ -403,29 +415,87 @@ namespace ClinicalOffice.WPF.Dialogs
             });
         }
 
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> that contains a waiting control.
+        /// </summary>
+        /// <param name="parent">The <see cref="ContentControl"/> that contains your dialog.</param>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <returns>A <see cref="DialogBase"/> that holds your contents.</returns>
+        /// <remarks>
+        /// The function shows the dialog and returns immediately before closing the dialog.
+        /// </remarks>
         public static DialogBase ShowWait(this ContentControl parent, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
             return Invoke(() =>
             {
-                var w = CreateWaitDialog(content, waitControl, title, buttons);
+                var w = CreateWaitDialog(title, content, waitControl, buttons);
                 w.ShowDialog(parent);
                 return w;
             });
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> that contains a waiting control inside you application's main window.
+        /// </summary>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <returns>A <see cref="DialogBase"/> that holds your contents.</returns>
+        /// <remarks>
+        /// The function shows the dialog and returns immediately before closing the dialog.
+        /// </remarks>
         public static DialogBase ShowWait(string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
             return ShowWait(Application.Current.MainWindow, title, content, waitControl, buttons);
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> that contains a waiting control, and then execute an actions, and when finished closes the dialog.
+        /// </summary>
+        /// <param name="parent">The <see cref="ContentControl"/> that contains your dialog.</param>
+        /// <param name="waitingAction">The action that will be executed and when finished, the dialog will be closed.</param>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <remarks>
+        /// The method creates and shows the dialog in the UI thread, then it calls the <c>waitingAction</c> action in the same thread as the calling function, and finally it closes the dialog in the UI thread after returning from the action.
+        /// </remarks>
         public static void ShowWait(this ContentControl parent, Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
             var w = ShowWait(parent, title, content, waitControl, buttons);
             waitingAction();
             Invoke(() => w.Close());
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> that contains a waiting control inside you application's main window, and then execute an actions, and when finished closes the dialog.
+        /// </summary>
+        /// <param name="waitingAction">The action that will be executed and when finished, the dialog will be closed.</param>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <remarks>
+        /// The method creates and shows the dialog in the UI thread, then it calls the <c>waitingAction</c> action in the same thread as the calling function, and finally it closes the dialog in the UI thread after returning from the action.
+        /// </remarks>
         public static void ShowWait(Action waitingAction, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
             ShowWait(Application.Current.MainWindow, waitingAction, title, content, waitControl, buttons);
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> that contains a waiting control, and then run a task, and when finished closes the dialog.
+        /// </summary>
+        /// <param name="parent">The <see cref="ContentControl"/> that contains your dialog.</param>
+        /// <param name="waitingTask">The task that will be executed and when finished, the dialog will be closed.</param>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <remarks>
+        /// The method creates and shows the dialog in the UI thread, then it starts the <c>waitingTask</c> task in a new thread, and finally it closes the dialog in the UI thread after returning from the task.
+        /// </remarks>
         public static void ShowWait(this ContentControl parent, Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None, bool autoStartTask = true)
         {
             var w = ShowWait(parent, title, content, waitControl, buttons);
@@ -441,6 +511,17 @@ namespace ClinicalOffice.WPF.Dialogs
                 }
             }
         }
+        /// <summary>
+        /// Show a <see cref="DialogBase"/> that contains a waiting control inside you application's main window, and then run a task, and when finished closes the dialog.
+        /// </summary>
+        /// <param name="waitingTask">The task that will be executed and when finished, the dialog will be closed.</param>
+        /// <param name="title">Waiting box title message.</param>
+        /// <param name="content">A content that will be displayed above the waiting control, usually a string note.</param>
+        /// <param name="waitControl">The waiting control to be displayed, if <c>null</c> a progress bar will be displayed with its <see cref="ProgressBar.IsIndeterminate"/> property set to <c>true</c>.</param>
+        /// <param name="buttons">Buttons displayed at the button of the dialog.</param>
+        /// <remarks>
+        /// The method creates and shows the dialog in the UI thread, then it starts the <c>waitingTask</c> task in a new thread, and finally it closes the dialog in the UI thread after returning from the task.
+        /// </remarks>
         public static void ShowWait(Task waitingTask, string title = null, object content = null, UIElement waitControl = null, DialogButtons buttons = DialogButtons.None)
         {
             ShowWait(Application.Current.MainWindow, waitingTask, title, content, waitControl, buttons);
