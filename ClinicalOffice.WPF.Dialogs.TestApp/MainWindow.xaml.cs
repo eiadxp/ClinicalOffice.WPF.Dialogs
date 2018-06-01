@@ -92,7 +92,7 @@ namespace ClinicalOffice.WPF.Dialogs.TestApp
                 null,
                 null,
                 new CustomWaitControl (),
-                DialogButtons.None,
+                DialogButtons.None_NoClose,
                 Brushes.Transparent);
         }
     }

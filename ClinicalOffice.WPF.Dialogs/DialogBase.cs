@@ -47,6 +47,7 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         ButtonBase _OkButton, _CancelButton, _YesButton, _NoButton;
         #endregion
+        #region Contractors
         /// <summary>
         /// Changes default values of some properties.
         /// </summary>
@@ -63,6 +64,7 @@ namespace ClinicalOffice.WPF.Dialogs
             CreateControls();
             _DialogCloseResetEvent = new ManualResetEvent(false);
         }
+        #endregion
         #region Properties
         /// <summary>
         /// This is a shadow property to map the content of this control to DialogContent property.
@@ -119,7 +121,7 @@ namespace ClinicalOffice.WPF.Dialogs
         static void DialogCloseButtonTypeChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dialog = d as DialogBase;
-           dialog?.CreateCloseButton();
+            dialog?.CreateCloseButton();
         }
 
         /// <summary>
@@ -646,6 +648,7 @@ namespace ClinicalOffice.WPF.Dialogs
                     if (b != null)
                     {
                         b.Content = content;
+                        b.Style = DialogCloseButtonStyle;
                         return b;
                     }
                 }
@@ -653,7 +656,7 @@ namespace ClinicalOffice.WPF.Dialogs
                 {
                 }
             }
-            return new Button() { Content = content };
+            return new Button() { Content = content, Style = DialogCloseButtonStyle };
         }
         /// <summary>
         /// Called when OK button is clicked (even via Return button or return command <see cref="DialogCommands.ReturnKey"/>) or OK command is executed via <see cref="DialogCommands.Ok"/>.
@@ -841,8 +844,6 @@ namespace ClinicalOffice.WPF.Dialogs
 
             CreateButtons();
 
-            CreateCloseButton();
-
             _DialogGrid = new Grid();
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             _DialogGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
@@ -898,7 +899,7 @@ namespace ClinicalOffice.WPF.Dialogs
             _NoButton = null;
             InputBindings.Clear();
             DialogParts.DialogButtonsControl.Visibility = Visibility.Visible;
-            switch (DialogButtons)
+            switch ((DialogButtons)((int)DialogButtons & 7))
             {
                 case DialogButtons.None:
                     DialogParts.DialogButtonsControl.Visibility = Visibility.Collapsed;
@@ -922,6 +923,8 @@ namespace ClinicalOffice.WPF.Dialogs
                 default:
                     break;
             }
+
+            CreateCloseButton();
         }
         /// <summary>
         /// Create a dialog button and associate it with its internal command and bind its style property to <see cref="DialogBase.DialogButtonStyle" />.
@@ -941,9 +944,16 @@ namespace ClinicalOffice.WPF.Dialogs
         /// </summary>
         void CreateCloseButton()
         {
-            if(DialogParts?.DialogCloseButton != null) UnregisterName(DialogParameters.DialogCloseButtonName);
-            _DialogParts.SetCloseButton(OnCreateCloseButton(DialogCloseContent));
-            RegisterName(_DialogParts.DialogCloseButton, DialogParameters.DialogCloseButtonName);
+            if (DialogParts?.DialogCloseButton != null) UnregisterName(DialogParameters.DialogCloseButtonName);
+            if (DialogButtons.HasFlag(DialogButtons.NoClose))
+            {
+                _DialogParts.SetCloseButton(null);
+            }
+            else
+            {
+                _DialogParts.SetCloseButton(OnCreateCloseButton(DialogCloseContent));
+                RegisterName(_DialogParts.DialogCloseButton, DialogParameters.DialogCloseButtonName);
+            }
         }
 
         /// <summary>
@@ -997,7 +1007,7 @@ namespace ClinicalOffice.WPF.Dialogs
                 story = new Storyboard();
             }
             EventHandler AnimationInCompleted = null;
-            CacheMode = new BitmapCache() { EnableClearType = false, RenderAtScale = 1 } ;
+            CacheMode = new BitmapCache() { EnableClearType = false, RenderAtScale = 1 };
             Background = _OldContentContainer.Background;
             switch (type)
             {
